@@ -19,28 +19,53 @@ class TCC_Register_Register {
 		if ( current_user_can( 'activate_plugins' ) ) {
 			$return = true;
 		}
-		self::theme_dependency();
 		return $return;
 	}
 
+
+	/**  Turn things on  **/
+/*
+	#	this is not currently being used by anything
+	protected static function activate_multisite() {
+		#	https://core.trac.wordpress.org/ticket/14170
+		global $wpdb;
+		if (function_exists('is_multisite') && is_multisite()) {
+			if (isset($_GET['networkwide']) && ($_GET['networkwide'] == 1)) {
+				$old_blog = $wpdb->blogid;
+				// Get all blog ids
+				$blogids = $wpdb->get_col($wpdb->prepare("SELECT blog_id FROM $wpdb->blogs"));
+				foreach ($blogids as $blog_id) {
+					switch_to_blog($blog_id);
+					self::single_blog_activate();
+				}
+				switch_to_blog($old_blog);
+				return;
+			}
+		}
+		self::single_blog_activate();
+	}
+
+	protected static function single_blog_activate() { } //*/
+
+/*
 	protected static function theme_dependency() {
 		if ( ! function_exists( self::$dep_func ) ) {
 			$error_text = self::dependency_string();
 			trigger_error( $error_text, E_USER_ERROR );
 		}
-	}
-
+	} //*/
+/*
 	public static function check_dependency() {
 		if ( current_user_can( 'manage_options' ) ) {
-/*			if ( ! function_exists( self::$dep_func ) ) {
+			if ( ! function_exists( self::$dep_func ) ) {
 				require_once( ABSPATH . 'wp-admin/include/plugin.php' );
 				deactivate_plugins( TCC_BASE ); // FIXME:  plugin name
 				$error_text = dependency_string();
 				trigger_error( $error_text, E_USER_ERROR );
-			} //*/
+			}
 		}
-	}
-
+	} //*/
+/*
 	private static function dependency_string() {
 		$site_name = _x( 'The Creative Collective', 'noun - plugin site name', 'tcc-fluid' );
 		$comp_name = _x( 'The Creative Collective', 'noun - plugin company name', 'tcc-fluid');
@@ -48,14 +73,18 @@ class TCC_Register_Register {
 		$site      = sprintf( self::$our_site, $site_name );
 		$company   = sprintf( self::our_email(), $comp_name );
 		return sprintf( $string, $site, $company );
-	}
+	} //*/
+
+
+	/**  Turn things off  **/
 
 	public static function deactivate( $option = '' ) {
 		if ( current_user_can( 'activate_plugins' ) ) {
 			$option = self::verify_option( $option );
 			if ( $option ) {
 				self::delete_blog_options( 'deactive', $option );
-				self::delete_site_options( 'deactive', $option );
+
+#				self::delete_site_options( 'deactive', $option );
 				flush_rewrite_rules();
 			}
 		}
@@ -66,7 +95,7 @@ class TCC_Register_Register {
 			$option = self::verify_option( $option );
 			if ( $option ) {
 				self::delete_blog_options( 'uninstall', $option );
-				self::delete_site_options( 'uninstall', $option );
+#				self::delete_site_options( 'uninstall', $option );
 			}
 		}
 	}

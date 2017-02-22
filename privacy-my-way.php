@@ -9,18 +9,15 @@ Author URI: richard.coffee@rtcenterprises.net
 License: MIT
 Text Domain: tcc-privacy
 Domain Path: /locales
+Tags: privacy, updates, plugins, themes, core, translations
 */
 
 defined('ABSPATH') || exit;
 
-define('TCC_PRIVACY_FILE', __FILE__ );
-define('TCC_PRIVACY_DIR', plugin_dir_path( __FILE__ ) );
-
-$data = get_file_data( __FILE__, array( 'ver' => 'Version' ) );
-define('TCC_PRIVACY_VERSION',$data['ver']);
+define( 'TCC_PRIVACY_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once( 'functions.php' );
 
-$plugin = TCC_Plugin_Privacy::get_instance();
+$plugin = TCC_Plugin_Privacy::get_instance( array( 'file' => __FILE__ ) );
 
-register_activation_hook( TCC_PRIVACY_FILE, array( 'TCC_Register_Privacy', 'activate' ) );
+register_activation_hook( __FILE__, array( 'TCC_Register_Privacy', 'activate' ) );

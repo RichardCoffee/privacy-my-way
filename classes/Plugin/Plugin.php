@@ -2,9 +2,6 @@
 
 abstract class TCC_Plugin_Plugin {
 
-	use TCC_Trait_Magic;
-	use TCC_Trait_ParseArgs;
-
 	protected $admin   = null;
 	public    $dbvers  = '0';
 	public    $paths;  = null;  #  TCC_Plugin_Paths object
@@ -14,16 +11,30 @@ abstract class TCC_Plugin_Plugin {
 	protected $tab     = 'about';
 	public    $version = '0.0.0';
 
+	use TCC_Trait_Magic;
+	use TCC_Trait_ParseArgs;
+	use TCC_Trait_Singleton;
+
 	protected function __construct( $args = array() ) {
-		$this->parse_args( $args );
-		$this->paths = new TCC_Plugin_Paths( $args );
-		$this->state = $this->state_check();
+		if ( isset( $args['file'] ) ) {
+			$data = get_file_data( $args['file'], array( 'ver' => 'Version' ) );
+			$defaults = array(
+				'dir'    => plugin_dir_path( $args['file'] ),
+				'plugin' => dirname( plugin_basename( $args['file'] ) ),
+				'url'    => plugin_dir_url( $args['file'] ),
+				'version' = $data['ver'];
+			)
+			$args = array_merge( $defaults, $args );
+			$this->parse_args( $args );
+			$this->paths = new TCC_Plugin_Paths( $args );
+			$this->state = $this->state_check();
+			$this->schedule_initialize();
+		}
 	}
 
 	abstract public function initialize();
 
-	public function add_actions() {
-	}
+	public function add_actions() { }
 
 	public function add_filters() {
 		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
@@ -35,15 +46,23 @@ abstract class TCC_Plugin_Plugin {
 	abstract public function enqueue_scripts();
 
 	public function state_check() {
-		#	silly way of doing this
-		defined('TCC_STATE_ALONE')  || define( 'TCC_STATE_ALONE',  'Stand Alone' );     #  Stand Alone
-		defined('TCC_STATE_PLUGIN') || define( 'TCC_STATE_PLUGIN', 'Plugin External' ); #  Using Theme Options plugin
-		defined('TCC_STATE_THEME')  || define( 'TCC_STATE_THEME',  'Theme Internal' );  #  Using Fluidity internal options
-		$state = TCC_STATE_ALONE;
+		$state = 'alone';
 		if ( ! function_exists( 'is_plugin_active' ) ) { include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); }
-		if ( is_plugin_active( 'tcc-theme-options/tcc-theme-options.php' ) )       { $state = TCC_STATE_PLUGIN; }
-		if ( file_exists( get_template_directory() . '/classes/Form/Admin.php' ) ) { $state = TCC_STATE_THEME; }
+		if ( is_plugin_active( 'tcc-theme-options/tcc-theme-options.php' ) )       { $state = 'plugin'; }
+		if ( file_exists( get_template_directory() . '/classes/Form/Admin.php' ) ) { $state = 'theme'; }
 		return $state;
+	}
+
+	protected function schedule_initialize() {
+		switch ( $this->state ) {
+			case 'plugin':
+				add_action( 'tcc_theme_options_loaded', array( $this, 'initialize' ) );
+				break;
+			case 'alone':
+			case 'theme':
+			default:
+				add_action( 'plugins_loaded', array( $this, 'initialize' ), 100 );
+		}
 	}
 
 
@@ -63,8 +82,8 @@ abstract class TCC_Plugin_Plugin {
 	public function settings_link( $links, $file ) {
 		if ( strpos( $file, $this->plugin ) > -1 ) {
 			unset( $links['edit'] );
-			if ( is_plugin_active( $file ) ) { // FIXME:  how would this ever get run if the plugin is not active?  why do we need this check?
-				$url   = ( $this->settings ) ? $this->setting : admin_url( "admin.php?page=fluidity_options&tab={$this->tab}" );
+			if ( is_plugin_active( $file ) ) { // NOTE:  how would this ever get run if the plugin is not active?  why do we need this check?
+				$url   = ( $this->setting ) ? $this->setting : admin_url( "admin.php?page=fluidity_options&tab={$this->tab}" );
 				$link  = array('settings' => sprintf( '<a href="%1$s"> %2$s </a>', $url, __( 'Settings', 'tcc-plugin' ) ) );
 				$links = array_merge( $link, $links );
 			}
