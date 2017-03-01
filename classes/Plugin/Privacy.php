@@ -1,18 +1,18 @@
 <?php
 
 
-class TCC_Plugin_Privacy extends TCC_Plugin_Plugin {
+class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	protected $tab   = 'privacy';
 
 	private static $privacy  = null;
 
-	use TCC_Trait_Singleton;
+	use PMW_Trait_Singleton;
 
 	public function initialize() {
 
-		register_deactivation_hook( $this->paths->file, array('TCC_Register_Privacy','deactivate'));
-		register_uninstall_hook(    $this->paths->file, array('TCC_Register_Privacy','uninstall'));
+		register_deactivation_hook( $this->paths->file, array('PMW_Register_Privacy','deactivate'));
+		register_uninstall_hook(    $this->paths->file, array('PMW_Register_Privacy','uninstall'));
 
 		$args = array(
 			'text_domain' => 'Text Domain',
@@ -31,19 +31,17 @@ class TCC_Plugin_Privacy extends TCC_Plugin_Plugin {
 			require_once( $this->paths->plugin . '/classes/privacy.php' );
 			new Privacy_My_Way;
 			if ( $this->state === 'alone' ) {
-				add_action( 'admin_menu', array( TCC_Form_Privacy::instance(), 'add_menu_option' ) );
-				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+				add_action( 'admin_menu', array( PMW_Form_Privacy::instance(), 'add_menu_option' ) );
+#				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			} else {
-				new TCC_Options_Privacy;
-				add_action( 'tcc_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+				new PMW_Options_Privacy;
+#				add_action( 'tcc_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			}
 		}
 		parent::add_actions();
 	}
 
-	public function enqueue_scripts() {
-
-	}
+	public function enqueue_scripts() { }
 
 	public function admin_menu_setup() {
 		$page_title = __('Privacy My Way','tcc-privacy');

@@ -1,6 +1,6 @@
 <?php
 
-class TCC_Plugin_Paths {
+class PMW_Plugin_Paths {
 
 	protected $file;
 	protected $dir;
@@ -9,7 +9,7 @@ class TCC_Plugin_Paths {
 	protected $url;
 	protected $version;
 
-	use TCC_Trait_Magic;
+	use PMW_Trait_Magic;
 
 	public function __construct( $args ) {
 		foreach ( $args as $key => $arg ) {

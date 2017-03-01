@@ -1,10 +1,10 @@
 <?php /* arrays.php */
 
-class TCC_Form_Privacy extends TCC_Form_Admin {
+class PMW_Form_Privacy extends PMW_Form_Admin {
 
 	private static $text = null;
 
-	use TCC_Trait_Singleton;
+	use PMW_Trait_Singleton;
 
 	protected function __construct() {
 		$this->slug = 'privacy';
@@ -23,7 +23,7 @@ class TCC_Form_Privacy extends TCC_Form_Admin {
 	}
 
 	public function enqueue_scripts() {
-		$paths = TCC_Plugin_Paths::instance();
+		$paths = PMW_Plugin_Paths::instance();
 		wp_register_style( 'privacy-form.css', $paths->get_plugin_file_uri( 'css/admin-form.css' ), null, $paths->version );
 		wp_register_script( 'privacy-form.js', $paths->get_plugin_file_uri( 'js/admin-form.js' ), array( 'jquery', 'wp-color-picker' ), $paths->version, true );
 		wp_enqueue_media();
@@ -33,7 +33,7 @@ class TCC_Form_Privacy extends TCC_Form_Admin {
 	}
 
 	protected function form_layout() {
-		$options = new TCC_Options_Privacy;
+		$options = new PMW_Options_Privacy;
 		$form    = $options->default_form_layout();
 		$form['title'] = __('Privacy My Way','tcc-privacy');
 		return $form;

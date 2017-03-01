@@ -6,7 +6,7 @@
  *  copyright 2014-2017, The Creative Collective, the-creative-collective.com
  */
 
-abstract class TCC_Form_Admin {
+abstract class PMW_Form_Admin {
 
 	protected $current   = '';
 	protected $err_func  = 'log_entry';
@@ -30,8 +30,8 @@ abstract class TCC_Form_Admin {
 		$this->screen_type();
 		add_action( 'admin_init', array( $this, 'load_form_page' ) );
 		if ( $this->type === 'tabbed' ) {
-			if ( defined( 'TCC_TAB' ) )                { $this->tab = TCC_TAB; }
-			if ( $trans = get_transient( 'TCC_TAB' ) ) { $this->tab = $trans; }
+			if ( defined( 'PMW_TAB' ) )                { $this->tab = PMW_TAB; }
+			if ( $trans = get_transient( 'PMW_TAB' ) ) { $this->tab = $trans; }
 		}
 	}
 
@@ -41,7 +41,7 @@ abstract class TCC_Form_Admin {
 			if ( $this->type === 'tabbed' ) {
 				if ( isset( $_GET['tab'] ) )  $this->tab = sanitize_key( $_GET['tab'] );
 				if ( isset( $_POST['tab'] ) ) $this->tab = sanitize_key( $_POST['tab'] );
-				set_transient( 'TCC_TAB', $this->tab, ( DAY_IN_SECONDS * 5 ) );
+				set_transient( 'PMW_TAB', $this->tab, ( DAY_IN_SECONDS * 5 ) );
 			}
 			$this->form_text();
 			$this->form = $this->form_layout();

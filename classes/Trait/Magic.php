@@ -6,7 +6,7 @@
  *  https://lornajane.net/posts/2012/9-magic-methods-in-php
  */
 
-trait TCC_Trait_Magic {
+trait PMW_Trait_Magic {
 
 	protected static $magic__call = array();
 
@@ -20,7 +20,7 @@ trait TCC_Trait_Magic {
 			$return = $this->$string;
 		}
 		if ( ! $return ) {
-			log_entry( 'unknown method called:  ' . $string, 'dump' );
+			log_entry( 'unknown method called:  ' . $string, 'stack' );
 		}
 		return $return;
 	}

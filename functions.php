@@ -1,14 +1,28 @@
 <?php
 
 
-function tcc_privacy_class_loader( $class ) {
-	if ( substr( $class, 0, 4 ) === 'TCC_' ) {
+function pmw_privacy_class_loader( $class ) {
+	if ( substr( $class, 0, 4 ) === 'PMW_' ) {
 		$load = str_replace( '_', '/', substr( $class, ( strpos( $class, '_' ) + 1 ) ) );
 		$stem = "/classes/$load.php"
-		$file = TCC_PRIVACY_DIR . $stem;
+		$file = PMW_PRIVACY_DIR . $stem;
 		if ( is_readable( $file ) ) {
 			include $file;
 		}
 	}
 }
-spl_autoload_register( 'tcc_privacy_class_loader' ); //*/
+spl_autoload_register( 'pmw_privacy_class_loader' ); //*/
+
+if ( ! function_exists( 'pmw_privacy' ) ) {
+	function pmw_privacy( $option ) {
+		static $data;
+		$request = '';
+		if ( empty( $data ) ) {
+			$data = get_option( 'tcc_options_privacy' );
+		}
+		if ( isset( $data[ $option ] ) ) {
+			$request = $data[ $option ];
+		}
+		return $request;
+	}
+}

@@ -1,19 +1,19 @@
 <?php
 
-abstract class TCC_Plugin_Plugin {
+abstract class PMW_Plugin_Plugin {
 
 	protected $admin   = null;
 	public    $dbvers  = '0';
-	public    $paths;  = null;  #  TCC_Plugin_Paths object
+	public    $paths;  = null;  #  PMW_Plugin_Paths object
 	public    $plugin  = '';
 	protected $setting = '';    #  settings link
 	protected $state   = '';
 	protected $tab     = 'about';
 	public    $version = '0.0.0';
 
-	use TCC_Trait_Magic;
-	use TCC_Trait_ParseArgs;
-	use TCC_Trait_Singleton;
+	use PMW_Trait_Magic;
+	use PMW_Trait_ParseArgs;
+	use PMW_Trait_Singleton;
 
 	protected function __construct( $args = array() ) {
 		if ( isset( $args['file'] ) ) {
@@ -23,12 +23,14 @@ abstract class TCC_Plugin_Plugin {
 				'plugin' => dirname( plugin_basename( $args['file'] ) ),
 				'url'    => plugin_dir_url( $args['file'] ),
 				'version' = $data['ver'];
-			)
+			);
 			$args = array_merge( $defaults, $args );
 			$this->parse_args( $args );
-			$this->paths = new TCC_Plugin_Paths( $args );
+			$this->paths = new PMW_Plugin_Paths( $args );
 			$this->state = $this->state_check();
 			$this->schedule_initialize();
+		} else {
+			wp_die("'__FILE__' must be passed in an associative array with a key of 'file' to the plugin constructor");
 		}
 	}
 

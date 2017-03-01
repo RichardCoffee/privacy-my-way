@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class TCC_Register_Register {
+class PMW_Register_Register {
 
 	private   static $dep_func = 'tcc_enqueue';  // FIXME:  not a good value to check for theme dependency on.
 	protected static $options  = 'about';
@@ -32,7 +32,7 @@ class TCC_Register_Register {
 		if (function_exists('is_multisite') && is_multisite()) {
 			if (isset($_GET['networkwide']) && ($_GET['networkwide'] == 1)) {
 				$old_blog = $wpdb->blogid;
-				// Get all blog ids
+				#	Get all blog ids
 				$blogids = $wpdb->get_col($wpdb->prepare("SELECT blog_id FROM $wpdb->blogs"));
 				foreach ($blogids as $blog_id) {
 					switch_to_blog($blog_id);
@@ -59,7 +59,7 @@ class TCC_Register_Register {
 		if ( current_user_can( 'manage_options' ) ) {
 			if ( ! function_exists( self::$dep_func ) ) {
 				require_once( ABSPATH . 'wp-admin/include/plugin.php' );
-				deactivate_plugins( TCC_BASE ); // FIXME:  plugin name
+				deactivate_plugins( PMW_BASE ); // FIXME:  plugin name
 				$error_text = dependency_string();
 				trigger_error( $error_text, E_USER_ERROR );
 			}
@@ -67,9 +67,9 @@ class TCC_Register_Register {
 	} //*/
 /*
 	private static function dependency_string() {
-		$site_name = _x( 'The Creative Collective', 'noun - plugin site name', 'tcc-fluid' );
-		$comp_name = _x( 'The Creative Collective', 'noun - plugin company name', 'tcc-fluid');
-		$string    = _x( 'This plugin should only be used with %1$s themes by %2$s', 'nouns - 1 is the company, 2 is the website', 'tcc-fluid' );
+		$site_name = _x( 'The Creative Collective', 'noun - plugin site name', 'tcc-privacy' );
+		$comp_name = _x( 'The Creative Collective', 'noun - plugin company name', 'tcc-privacy');
+		$string    = _x( 'This plugin should only be used with %1$s themes by %2$s', 'nouns - 1 is the company, 2 is the website', 'tcc-privacy' );
 		$site      = sprintf( self::$our_site, $site_name );
 		$company   = sprintf( self::our_email(), $comp_name );
 		return sprintf( $string, $site, $company );
@@ -137,4 +137,4 @@ class TCC_Register_Register {
 	}
 
 
-}  #  End of class TCC_Register_Register
+}  #  End of class PMW_Register_Register

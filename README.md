@@ -8,7 +8,7 @@ Requires at least: WordPress 4.6
 Tested up to: WordPress 4.7.2
 
 ## Description
-This plugin will enable you to finely control all the information that the WordPress core code sends back to wordpress.org, including your site's url, the number of user you have, what plugins are installed, and what themes are installed.
+This plugin will enable you to finely control all the information that the WordPress core code sends back to wordpress.org, including your site's url, the number of users you have, what plugins are installed and active, and what themes are installed and active.
 
 ## Installation
 

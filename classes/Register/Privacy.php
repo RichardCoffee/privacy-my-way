@@ -1,6 +1,6 @@
 <?php
 
-class TCC_Register_Privacy extends TCC_Register_Register {
+class PMW_Register_Privacy extends PMW_Register_Register {
 
 	public static $option = 'privacy';
 

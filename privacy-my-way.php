@@ -14,10 +14,10 @@ Tags: privacy, updates, plugins, themes, core, translations
 
 defined('ABSPATH') || exit;
 
-define( 'TCC_PRIVACY_DIR', plugin_dir_path( __FILE__ ) );
+define( 'PMW_PRIVACY_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once( 'functions.php' );
 
-$plugin = TCC_Plugin_Privacy::get_instance( array( 'file' => __FILE__ ) );
+$plugin = PMW_Plugin_Privacy::get_instance( array( 'file' => __FILE__ ) );
 
-register_activation_hook( __FILE__, array( 'TCC_Register_Privacy', 'activate' ) );
+register_activation_hook( __FILE__, array( 'PMW_Register_Privacy', 'activate' ) );
