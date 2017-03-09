@@ -5,6 +5,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 
 	protected $privacy = null;
+	protected $setting = 'options-general.php?page=privacy';
 
 
 	use PMW_Trait_Singleton;

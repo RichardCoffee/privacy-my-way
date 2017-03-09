@@ -121,7 +121,7 @@ class PMW_Options_Privacy {
 			'default' => $this->get_plugin_defaults( ),
 			'preset'  => 'yes',
 			'label'   => __( 'Plugin List', 'tcc-privacy' ),
-			'text'    => sprintf( $warning, __( 'plugin', 'tcc_fluid' ) ),
+			'text'    => sprintf( $warning, __( 'plugin', 'tcc-privacy' ) ),
 			'textcss' => 'red', // FIXME: bad css
 			'render'  => 'radio_multiple',
 			'source'  => $this->get_plugin_list(),
@@ -144,7 +144,7 @@ class PMW_Options_Privacy {
 			'default' => $this->get_theme_defaults( ),
 			'preset'  => 'yes',
 			'label'   => __( 'Theme List', 'tcc-privacy' ),
-			'text'    => sprintf( $warning, __( 'theme', 'tcc_fluid' ) ),
+			'text'    => sprintf( $warning, __( 'theme', 'tcc-privacy' ) ),
 			'textcss' => 'red', // FIXME: bad css
 			'postext' => __( 'The WordPress twenty* themes that are installed will always be reported.', 'tcc-privacy' ),
 			'help'    => __( 'This plugin does not filter default WordPress themes.', 'tcc-privacy' ),
@@ -179,7 +179,7 @@ class PMW_Options_Privacy {
 		#	Start with a clean slate
 		$options = $this->clean_plugin_defaults();
 		#	Load missing items with the default value, with new actives getting an automatic 'yes'
-		$preset = tcc_privacy( 'install_default', 'yes' );
+		$preset = pmw_privacy( 'install_default', 'yes' );
 		foreach( $this->plugins as $path => $plugin ) {
 			if ( ! isset( $options[ $path ] ) ) {
 				$options[ $path ] = ( in_array( $path, $this->active ) ) ? 'yes' : $preset;
@@ -192,7 +192,7 @@ class PMW_Options_Privacy {
 	private function clean_plugin_defaults() {
 		#	The beginning
 		$options = array();
-		$current = tcc_privacy( 'plugin_list', array() );
+		$current = pmw_privacy( 'plugin_list', array() );
 		foreach( $current as $key => $status ) {
 			if ( isset( $this->plugins[ $key ] ) ) {
 				$options[ $key ] = $status; # ( $key === 'privacy-my-way' )  ? 'no' : $status;
@@ -221,7 +221,7 @@ class PMW_Options_Privacy {
 
 	private function get_theme_defaults() {
 		$options = $this->clean_theme_defaults();
-		$preset  = tcc_privacy( 'install_default', 'yes' );
+		$preset  = pmw_privacy( 'install_default', 'yes' );
 		foreach( $this->themes as $slug => $theme ) {
 			if ( ! isset( $options[ $slug ] ) ) {
 				$options[ $slug ] = ( strpos( $slug, 'twenty' ) === 0 ) ? $preset : 'yes';
@@ -233,7 +233,7 @@ class PMW_Options_Privacy {
 	#	removes deleted themes by generating a new list
 	private function clean_theme_defaults() {
 		$options = array();
-		$current = tcc_privacy( 'theme_list', array() );
+		$current = pmw_privacy( 'theme_list', array() );
 		foreach( $current as $key => $status ) {
 			if ( isset( $this->plugins[ $key ] ) ) {
 				$options[ $key ] = $status;
