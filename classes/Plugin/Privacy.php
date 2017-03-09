@@ -7,6 +7,9 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	protected $privacy = null;
 
 
+	use PMW_Trait_Singleton;
+
+
 	public function initialize() {
 
 		register_deactivation_hook( $this->paths->file, array('PMW_Register_Privacy','deactivate'));

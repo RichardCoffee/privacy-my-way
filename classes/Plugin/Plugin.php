@@ -13,7 +13,7 @@ abstract class PMW_Plugin_Plugin {
 
 	use PMW_Trait_Magic;
 	use PMW_Trait_ParseArgs;
-	use PMW_Trait_Singleton;
+#	use PMW_Trait_Singleton;  This must be in child class
 
 	protected function __construct( $args = array() ) {
 		if ( isset( $args['file'] ) ) {
