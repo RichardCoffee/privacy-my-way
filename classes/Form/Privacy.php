@@ -2,9 +2,9 @@
 
 class PMW_Form_Privacy extends PMW_Form_Admin {
 
-	private static $text = null;
 
 	use PMW_Trait_Singleton;
+
 
 	protected function __construct() {
 		$this->slug = 'privacy';
@@ -35,13 +35,13 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 	protected function form_layout() {
 		$options = new PMW_Options_Privacy;
 		$form    = $options->default_form_layout();
-		$form['title'] = __('Privacy My Way','tcc-privacy');
+		$form['title'] = __( 'Privacy My Way', 'tcc-privacy' );
 		return $form;
 	}
 
-	public function form_trans_text($text,$orig) {
-		$text['submit']['object']  = __('Privacy','tcc-privacy');
-		$text['submit']['subject'] = __('Privacy','tcc-privacy');
+	public function form_trans_text( $text, $orig ) {
+		$text['submit']['object']  = __( 'Privacy', 'tcc-privacy' );
+		$text['submit']['subject'] = __( 'Privacy', 'tcc-privacy' );
 		return $text;
 	} //*/
 

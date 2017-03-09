@@ -24,6 +24,21 @@ class PMW_Register_Register {
 
 
 	/**  Turn things on  **/
+
+	protected static function create_new_page( $new ) {
+		$page = get_page_by_title( $new['post_title'] ); // FIXME: should get page by slug instead
+		if ( $page ) {
+			$class = get_class( $page );
+			foreach( $new as $key => $value ) {
+				if ( property_exists( $class, $key ) ) {
+					$page->$key = $value;
+				}
+			}
+			wp_update_post( $page );
+		} else {
+			wp_insert_post( $new );
+		}
+	}
 /*
 	#	this is not currently being used by anything
 	protected static function activate_multisite() {
@@ -83,7 +98,7 @@ class PMW_Register_Register {
 			$option = self::verify_option( $option );
 			if ( $option ) {
 				self::delete_blog_options( 'deactive', $option );
-
+				// FIXME: this needs testing, or something
 #				self::delete_site_options( 'deactive', $option );
 				flush_rewrite_rules();
 			}
@@ -95,6 +110,7 @@ class PMW_Register_Register {
 			$option = self::verify_option( $option );
 			if ( $option ) {
 				self::delete_blog_options( 'uninstall', $option );
+				//  FIXME  see above note
 #				self::delete_site_options( 'uninstall', $option );
 			}
 		}

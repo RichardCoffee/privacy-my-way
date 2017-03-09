@@ -5,7 +5,10 @@
  *           https://gist.github.com/mattyrob/2e492e5ecb92233eb307f7efd039c121
  *           https://github.com/dannyvankooten/my-precious
  *
- *  Note:  if WP_DEBUG is true, then this will fill up your log file... ;-)
+ *  Multisite code is untested
+ *  Translation code is ... well, there isn't any
+ *
+ *  Note:  if $this->debug is set to true, then it may fill up your log file... ;-)
  */
 
 defined('ABSPATH') || exit;
@@ -13,6 +16,9 @@ defined('ABSPATH') || exit;
 
 class Privacy_My_Way {
 
+	protected $debug   = false;        #  set to true to enable logging
+	protected $force   = false;        #  can be used to force a logging entry on a one time basis
+	protected $logging = 'log_entry';  #  set to a valid logging function - must be able to accept a variable number of parameters
 	protected $options;
 
 	use PMW_Trait_Singleton;
@@ -25,19 +31,21 @@ class Privacy_My_Way {
 			add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
 			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
 			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
-log_entry($this);
+			$this->logging( $this );
 		}
 	}
 
 	protected function get_options() {
-		$options = get_option( 'tcc_options_privacy' );
+		$options = get_option( 'tcc_options_privacy', array() );
 		if ( ! $options ) {
-			// FIXME - get defaults from PMW_Options_Privacy
+			$privacy = new PMW_Options_Privacy;
+			$options = $privacy->get_privacy_defaults();
+			update_option( 'tcc_options_privacy', $options );
 		}
 		$this->options = $options;
 	}
 
-	#	Only triggered on multisite installs
+	#	Filter triggered on multisite installs, called internally for single site
 	public function pre_site_option_blog_count( $count, $option, $network_id = 1 ) {
 		if ( isset( $this->options['blogs'] ) && ( $this->options['blogs'] === 'no' ) ) {
 			$count = 1;
@@ -45,35 +53,48 @@ log_entry($this);
 		return $count;
 	}
 
-	#	Only triggered on multisite installs
+	#	Filter triggered on multisite installs, called internally for single site
 	public function pre_site_option_user_count( $count, $option, $network_id = 1 ) {
 		$privacy = $this->options['users'];
 		if ( $privacy ) {
-$orig = $count;
-			#	if $count has a value, then maybe use it.
-			$users = ( $count && ( $option === 'fluid_user_count' ) ) ? $count : get_user_count();
+			$saved = $count;
+			#	if $count has a value, then use it, otherwise get our own count
+			$users = ( $count ) ? $count : $this->get_user_count();
 			switch( $privacy ) {
 				case 'all':
 					$count = false;
 					break;
 				case 'some':
-					$count = max( 1, intval( ( $users / rand(1, 10) ), 10 ) );
+					$count = random_int(1, $users);
 					break;
 				case 'one':
 					$count = 1;
 					break;
 				case 'many':
-					$count = rand( 1, ( $users * 10 ) );
+					$count = random_int( 1, ( $users * 10 ) );
 					break;
 				default:
 			}
-log_entry(
-	'setting: ' . $this->options['users'],
-	" actual: $orig",
-	" calced: $count",
-	" source: $option",
-	"network: $network_id"
-);
+			$this->logging(
+				'setting: ' . $this->options['users'],
+				"  param: $saved",
+				"  users: $users",
+				" calced: $count",
+				" source: $option",
+				"network: $network_id"
+			);
+		}
+		return $count;
+	}
+
+	private function get_user_count() {
+		$count = 1;
+		#	wp-includes/update.php
+		if ( is_multisite() ) {
+			$count = get_user_count();
+		} else {
+			$users = count_users();
+			$count = $count['total_users'];
 		}
 		return $count;
 	}
@@ -85,7 +106,7 @@ log_entry(
 		}
 		$args = $this->strip_site_url( $args );
 		$args = $this->filter_plugins( $url, $args );
-		$args = $this->filter_themes( $url, $args );
+		$args = $this->filter_themes(  $url, $args );
 		return $args;
 	}
 
@@ -94,12 +115,11 @@ log_entry(
 		if ( $preempt || isset( $args['_pmw_privacy_filter'] ) ) {
 			return $preempt;
 		}
-log_entry($url);
 		#	only act on requests to api.wordpress.org
 		if  ( ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/themes/update-check/'  ) === false )
-			//  FIXME:  I have no way of testing this or knowing what the object looks like.  Filtering this is probably a bad idea anyway.
+			//  FIXME:  I have no way of testing this or knowing what the object looks like.
 			&& ( stripos( $url, '://api.wordpress.org/translations/'         ) === false )
 			) {
 			return $preempt;
@@ -110,15 +130,15 @@ log_entry($url);
 		$args = $this->filter_themes( $url, $args );
 		#	make request
 		$args['_pmw_privacy_filter'] = true;
-log_entry($url);
 		$response = wp_remote_request( $url, $args );
-		//	response seems to have a lot of duplicated data in it.
+		//	response really seems to have a lot of duplicated data in it.
 		if ( is_wp_error( $response ) ) {
-			log_entry( $response );
+			$this->force = true;
+			$this->logging( $url, $response );
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$body = json_decode( $body, true );
-			log_entry( $body );
+			$this->logging( $body );
 		}
 		return $response;
 	}
@@ -146,17 +166,17 @@ log_entry($url);
 				#	Hmmm, really?
 				if ( isset( $args['headers']['user-agent'] ) ) {
 					$args['headers']['user-agent'] = sprintf( 'WordPress/%s', $GLOBALS['wp_version'] );
-log_entry( 'header:user-agent has been seen.' );
+					$this->logging( 'header:user-agent has been seen.' );
 				}
 				#	Anybody seen this?
 				if ( isset( $args['headers']['User-Agent'] ) ) {
 					$args['headers']['User-Agent'] = sprintf( 'WordPress/%s', $GLOBALS['wp_version'] );
-log_entry( 'header:User-Agent has been seen.' );
+					$this->logging( 'header:User-Agent has been seen.' );
 				}
 				#	Why remove this? I have not seen it...
 				if ( isset( $args['headers']['Referer'] ) ) {
 					unset( $args['headers']['Referer'] );
-log_entry( 'headers:Referer has been deleted.' );
+					$this->logging( 'headers:Referer has been deleted.' );
 				}
 			}
 			if ( isset( $this->options['install'] ) && ( $this->options['install'] === 'no' ) ) {
@@ -169,8 +189,7 @@ log_entry( 'headers:Referer has been deleted.' );
 				}
 			}
 			$args['_pmw_privacy_strip_site'] = true;
-		}
-else { log_entry($args); }
+		} else { $this->logging($args); }
 		return $args;
 	}
 
@@ -179,7 +198,7 @@ else { log_entry($args); }
 			if ( ! isset( $args['_pmw_privacy_filter_plugins'] ) || ( ! $args['_pmw_privacy_filter_plugins'] ) ) {
 				if ( ! empty( $args['body']['plugins'] ) ) {
 					$plugins = json_decode( $args['body']['plugins'] );
-#					log_entry($url,$plugins);
+					$this->logging( $url, $plugins );
 					$new_set = new stdClass;
 					if ( $this->options['plugins'] === 'none' ) {
 						$plugins = $new_set;
@@ -191,16 +210,28 @@ else { log_entry($args); }
 						}
 						$plugins->plugins = $new_set;
 					} else if ( $this->options['plugins'] === 'filter' ) {
-						$plugin_filter = $this->options['plugin_list'];
+						$plugin_filter   = $this->options['plugin_list'];
+						$installed_list  = get_plugins();
 						foreach ( $plugin_filter as $plugin => $status ) {
-							if ( ( $status === 'no' ) || ( $plugin === 'privacy-my-way' ) ) {
+							if ( ( $status === 'no' ) ) { # || ( $plugin === 'privacy-my-way' ) ) {
 								if ( isset( $plugins->plugins->$plugin ) ) {
+									unset( $plugins->plugins->$plugin );
+								}
+							}
+							if ( ( $this->options['install_default'] === 'no' ) && isset( $installed_list[ $plugin ] ) ) {
+								unset( $installed_list[ $plugin ] );
+							}
+						}
+						#	Check for newly installed plugins
+						if ( ( $this->options['install_default'] === 'no' ) && $installed_list ) {
+							foreach( $installed_list as $key => $plugin ) {
+								if ( isset( $plugins->plugins->$key ) ) {
 									unset( $plugins->plugins->$plugin );
 								}
 							}
 						}
 						#	Rebuild active plugins object
-						$count  = 1;
+						$count = 1;
 						foreach( (array)$plugins->active as $key => $plugin ) {
 							if ( isset( $plugins->plugins->$plugin ) ) {
 								$new_set->$count = $plugin;
@@ -209,12 +240,11 @@ else { log_entry($args); }
 						}
 						$plugins->active = $new_set;
 					}
-#					log_entry('plugins:  ' . $this->options['plugins'],$plugins);
+					$this->logging('plugins:  ' . $this->options['plugins'],$plugins);
 					$args['body']['plugins'] = wp_json_encode( $plugins );
 					$args['_pmw_privacy_filter_plugins'] = true;
 				}
-			}
-else { log_entry($args); }
+			} else { $this->logging( $args ); }
 		}
 		return $args;
 	}
@@ -224,7 +254,7 @@ else { log_entry($args); }
 			if ( ! isset( $args['_pmw_privacy_filter_themes'] ) || ( ! $args['_pmw_privacy_filter_themes'] ) ) {
 				if ( ! empty( $args['body']['themes'] ) ) {
 					$themes = json_decode( $args['body']['themes'] );
-#					log_entry($url,$themes);
+					$this->logging($url,$themes);
 					#	Report no themes installed
 					if ( $this->options['themes'] === 'none' ) {
 						$themes = new stdClass;
@@ -266,31 +296,29 @@ else { log_entry($args); }
 						}
 						$themes->active = $active_backup;
 					}
-#					log_entry('themes:  '.$this->options['themes'],$themes);
+					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
 					$args['_pmw_privacy_filter_plugins'] = true;
 				}
-			}
-else { log_entry($args); }
+			} else { $this->logging( $args ); }
 		}
 		return $args;
 	}
 
 	protected function filter_url( $url ) {
-$orig = $url;
+		$orig = $url;
 		#$keys = array( 'php', 'locale', 'mysql', 'local_package', 'blogs', 'users', 'multisite_enabled', 'initial_db_version',);
 		$url_array = parse_url( $url );
-#log_entry($url_array);
+		$this->logging($url_array);
 		#	Do we need to filter?
 		if ( isset( $url_array['query'] ) ) {
 			$arg_array = wp_parse_args( $url_array['query'] );
-log_entry($arg_array);
+			$this->logging( $arg_array );
 			if ( is_multisite() ) {
 				#	I really think that fibbing on this is a bad idea, but my pro-choice stance dictates that I can't make other people's choices for them.
 				if ( isset( $arg_array['multisite_enabled'] ) && ( $this->options['blogs'] === 'no' ) ) {
 					$url = add_query_arg( 'multisite_enabled', '0', $url );
 				}
-log_entry($orig,$url);
 			} else {
 				#	Need this for single site. If multisite then these have already been filtered
 				if ( isset( $arg_array['blogs'] ) ) {
@@ -303,8 +331,18 @@ log_entry($orig,$url);
 				}
 			}
 		}
-#log_entry($orig,$url);
+		$this->logging( $orig, $url );
 		return $url;
+	}
+
+
+	/*  Debugging  */
+
+	protected function logging() {
+		if ( $this->logging && ( $this->debug || $this->force ) ) {
+			call_user_func_array( $this->logging, func_get_args() );
+		}
+		$this->force = false;
 	}
 
 

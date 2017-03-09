@@ -10,12 +10,12 @@ class PMW_Plugin_Paths {
 	protected $version;
 
 	use PMW_Trait_Magic;
+	use PMW_Trait_ParseArgs;
+	use PMW_Trait_Singleton;
 
-	public function __construct( $args ) {
-		foreach ( $args as $key => $arg ) {
-			if ( property_exists( $this, $key ) ) {
-				$this->$key = $arg; }
-		}
+	protected function __construct( $args ) {
+		$this->parse_args( $args );
+		$this->dir = trailingslashit( $this->dir );
 	}
 
 	/**  Template functions  **/

@@ -23,23 +23,19 @@
 .form-title {
 	font-size: 16px;
 }
-/*  I can't seem to get this to work.  CSS expert, anyone?
-input[type="radio"].radio-multiple-list-no:checked::before {
+/*  I can't seem to get this to work.  CSS expert, anyone?  */
+input[type="radio"].radio-multiple-list-no {
 	border-color: red;
 	color: red;
 }
 
-input[type="radio"].radio-multiple-list-yes:checked::before {
+input[type="radio"].radio-multiple-list-yes {
 	border-color: green;
 	color: green;
-} //*/
+}
 
 .red {
   color: red;
-}
-
-.social-option-icon .wp-color-result {
-	margin: 0 0 0 1em;
 }
 
 .tcc_text_3em  input[type="text"]  { width: 3em;  }

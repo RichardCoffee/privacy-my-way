@@ -39,21 +39,23 @@ class PMW_Options_Privacy {
 		_e( 'Control the information that WordPress collects from your site.  The default settings here duplicate what WordPress currently collects.', 'tcc-privacy' );
 	}
 
-	public function options_layout() {
-		$warning = _x( '*** Turning off reporting a %1$s means you will not be notified of upgrades for that %1$s! ***', 'noun - singular', 'tcc-privacy' );
+	public function options_layout( $all = false ) {
 		$layout  = array( 'default' => true );
+		$warning = _x( '*** Turning off reporting a %1$s means you will not be notified of upgrades for that %1$s! ***', 'noun - singular', 'tcc-privacy' );
+		$extra_html = array( 'yes' => ' <span class="red"> ' . __( ' ( Recommended ) ', 'tcc-privacy' ) . '</span>' );
 		$layout['blog'] = array(
 			'default' => 'yes',
 			'label'   => __( 'Blog URL', 'tcc-privacy' ),
-			'text'    => __( 'I personally recommend that you not change this setting.', 'tcc-privacy' ),
+			'text'    => __( 'I would suggest that you not change this setting.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
 				'yes'  => __( "Let WordPress know your site's url.", 'tcc-privacy' ),
 				'no'   => __( 'Do not let them know where you are.', 'tcc-privacy' ),
 			),
-			'divcss'  => 'privacy-blog-active',
+			'extra_html' => $extra_html,
+			'divcss'     => 'privacy-blog-active',
 		); //*/
-		if ( is_multisite() && is_main_site() ) {
+		if ( ( is_multisite() && is_main_site() ) || $all ) {
 			$layout['blog']['change'] = 'showhidePosi( this, ".privacy-blog-option", "yes" );';
 			$layout['blogs'] = array(
 				'default' => 'yes',
@@ -63,6 +65,7 @@ class PMW_Options_Privacy {
 					'yes'  => __( "Yes - Let WordPress know if you are running a multi-site blog.", 'tcc-privacy' ),
 					'no'   => __( "No -- Tell WordPress you are running just a single blog.", 'tcc-privacy' ),
 				),
+				'extra_html' => $extra_html,
 				'change'  => 'showhidePosi( this, ".privacy-multi-option", "yes" );',
 				'divcss'  => 'privacy-multi-active privacy-blog-option',
 			); //*/
@@ -74,6 +77,7 @@ class PMW_Options_Privacy {
 					'yes'  => __( 'Let WordPress know the url you installed WordPress to.', 'tcc-privacy' ),
 					'no'   => __( 'Do not give WordPress this information.', 'tcc-privacy' ),
 				),
+				'extra_html' => $extra_html,
 				'divcss'  => 'privacy-blog-option privacy-multi-option',
 			); //*/
 		}
@@ -101,8 +105,20 @@ class PMW_Options_Privacy {
 			'change'    => 'showhidePosi( this, ".privacy-plugin-filter", "filter" );',
 			'divcss'    => 'privacy-plugin-active',
 		); //*/
+		$layout['install_default'] = array(
+			'default' => 'yes',
+			'label'   => __( 'Default', 'tcc-privacy' ),
+			'text'    => __( 'Default setting for newly installed plugins/themes.', 'tcc-privacy' ),
+			'render'  => 'radio',
+			'source'  => array(
+				'yes'  => __( 'Allow wordpress report on new installs.', 'tcc-privacy' ),
+				'no'   => __( 'Block reports on new installs.', 'tcc-privacy' ),
+			),
+			'extra_html' => $extra_html,
+			'divcss'  => 'privacy-plugin-filter',
+		);
 		$layout['plugin_list'] = array(
-			'default' => $this->get_plugin_defaults( 'yes' ),
+			'default' => $this->get_plugin_defaults( ),
 			'preset'  => 'yes',
 			'label'   => __( 'Plugin List', 'tcc-privacy' ),
 			'text'    => sprintf( $warning, __( 'plugin', 'tcc_fluid' ) ),
@@ -114,7 +130,6 @@ class PMW_Options_Privacy {
 		$layout['themes'] = array(
 			'default' => 'all',
 			'label'   => __( 'Themes', 'tcc-privacy' ),
-			'postext' => __( 'Note:  For the first three options, the WordPress twenty* themes that are installed will always be reported.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
 				'all'    => __( 'Let WordPress know what themes you have installed.', 'tcc-privacy' ),
@@ -126,12 +141,13 @@ class PMW_Options_Privacy {
 			'divcss'  => 'privacy-theme-active',
 		); //*/
 		$layout['theme_list'] = array(
-			'default' => $this->get_theme_defaults( 'yes' ),
+			'default' => $this->get_theme_defaults( ),
 			'preset'  => 'yes',
 			'label'   => __( 'Theme List', 'tcc-privacy' ),
 			'text'    => sprintf( $warning, __( 'theme', 'tcc_fluid' ) ),
 			'textcss' => 'red', // FIXME: bad css
-			'help'    => __( 'This list does not filter default WordPress themes.  If WordPress themes are installed, it will report them.', 'tcc-privacy' ),
+			'postext' => __( 'The WordPress twenty* themes that are installed will always be reported.', 'tcc-privacy' ),
+			'help'    => __( 'This plugin does not filter default WordPress themes.', 'tcc-privacy' ),
 			'render'  => 'radio_multiple',
 /*			'titles'  => array(
 				__( 'On', 'tcc-privacy' ),
@@ -145,13 +161,25 @@ class PMW_Options_Privacy {
 		return $layout;
 	}
 
+	public function get_privacy_defaults() {
+		$form = $this->options_layout( true );
+		$defs = array();
+		foreach( $form as $key => $option ) {
+			if ( isset( $option['default'] ) ) {
+				$defs[ $key ] = $option['default'];
+			}
+		}
+		return $defs;
+	}
+
 
 	/**  Plugin functions  **/
 
-	private function get_plugin_defaults( $preset ) {
+	public function get_plugin_defaults( ) {
 		#	Start with a clean slate
 		$options = $this->clean_plugin_defaults();
-		#	Load missing items with the default value
+		#	Load missing items with the default value, with new actives getting an automatic 'yes'
+		$preset = tcc_privacy( 'install_default', 'yes' );
 		foreach( $this->plugins as $path => $plugin ) {
 			if ( ! isset( $options[ $path ] ) ) {
 				$options[ $path ] = ( in_array( $path, $this->active ) ) ? 'yes' : $preset;
@@ -164,12 +192,10 @@ class PMW_Options_Privacy {
 	private function clean_plugin_defaults() {
 		#	The beginning
 		$options = array();
-		$current = tcc_privacy( 'plugin_list' );
-		if ( $current ) {
-			foreach( $current as $key => $status ) {
-				if ( isset( $this->plugins[ $key ] ) ) {
-					$options[ $key ] = ( $key === 'privacy-my-way' )  ? 'no' : $status;
-				}
+		$current = tcc_privacy( 'plugin_list', array() );
+		foreach( $current as $key => $status ) {
+			if ( isset( $this->plugins[ $key ] ) ) {
+				$options[ $key ] = $status; # ( $key === 'privacy-my-way' )  ? 'no' : $status;
 			}
 		}
 		return $options;
@@ -193,8 +219,9 @@ class PMW_Options_Privacy {
 
 	/**  Theme functions  **/
 
-	private function get_theme_defaults( $preset ) {
+	private function get_theme_defaults() {
 		$options = $this->clean_theme_defaults();
+		$preset  = tcc_privacy( 'install_default', 'yes' );
 		foreach( $this->themes as $slug => $theme ) {
 			if ( ! isset( $options[ $slug ] ) ) {
 				$options[ $slug ] = ( strpos( $slug, 'twenty' ) === 0 ) ? $preset : 'yes';
@@ -206,12 +233,10 @@ class PMW_Options_Privacy {
 	#	removes deleted themes by generating a new list
 	private function clean_theme_defaults() {
 		$options = array();
-		$current = tcc_privacy( 'theme_list' );
-		if ( $current ) {
-			foreach( $current as $key => $status ) {
-				if ( isset( $this->plugins[ $key ] ) ) {
-					$options[ $key ] = $status;
-				}
+		$current = tcc_privacy( 'theme_list', array() );
+		foreach( $current as $key => $status ) {
+			if ( isset( $this->plugins[ $key ] ) ) {
+				$options[ $key ] = $status;
 			}
 		}
 		return $options;

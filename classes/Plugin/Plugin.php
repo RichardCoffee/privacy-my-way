@@ -57,7 +57,7 @@ abstract class PMW_Plugin_Plugin {
 
 	protected function schedule_initialize() {
 		switch ( $this->state ) {
-			case 'plugin':
+			case 'plugin': # Deprecated, theme options is no longer a plugin
 				add_action( 'tcc_theme_options_loaded', array( $this, 'initialize' ) );
 				break;
 			case 'alone':

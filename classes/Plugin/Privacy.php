@@ -3,11 +3,9 @@
 
 class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
-	protected $tab   = 'privacy';
 
-	private static $privacy  = null;
+	protected $privacy = null;
 
-	use PMW_Trait_Singleton;
 
 	public function initialize() {
 
@@ -28,24 +26,36 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	public function add_actions() {
 		if ( is_admin() ) {
-			require_once( $this->paths->plugin . '/classes/privacy.php' );
-			new Privacy_My_Way;
-			if ( $this->state === 'alone' ) {
+			add_action( 'wp_version_check', array( $this, 'add_privacy_filters' ) );
+			if ( $this->state !== 'theme' ) {
 				add_action( 'admin_menu', array( PMW_Form_Privacy::instance(), 'add_menu_option' ) );
-#				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-			} else {
-				new PMW_Options_Privacy;
-#				add_action( 'tcc_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			}
 		}
 		parent::add_actions();
 	}
 
+	public function add_filters() {
+		add_filter( 'core_version_check_locale', array( $this, 'add_privacy_filters' ) );
+		if ( $this->state === 'theme' ) {
+			add_filter( 'fluidity_initialize_options', array( $this, 'add_privacy_options' ) );
+		}
+		parent::add_filters();
+	}
+
 	public function enqueue_scripts() { }
 
-	public function admin_menu_setup() {
-		$page_title = __('Privacy My Way','tcc-privacy');
-		add_options_page( $page_title, $page_title, 'update_core', $this->tab, array( $this, 'load_form_page' ) );
+	public function add_privacy_filters( $locale = '' ) {
+		if ( ! function_exists( 'random_int' ) ) {
+			require_once( $this->paths->dir . 'assets/random_compat/lib/random.php' );
+		}
+		include_once('classes/privacy.php');
+		$this->privacy = Privacy_My_Way::instance();
+		return $locale;
+	}
+
+	public function add_privacy_options( $options ) {
+		$options['Privacy'] = new PMW_Options_Privacy;
+		return $options;
 	}
 
 
