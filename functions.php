@@ -4,7 +4,7 @@
 function pmw_privacy_class_loader( $class ) {
 	if ( substr( $class, 0, 4 ) === 'PMW_' ) {
 		$load = str_replace( '_', '/', substr( $class, ( strpos( $class, '_' ) + 1 ) ) );
-		$stem = "/classes/$load.php"
+		$stem = "/classes/$load.php";
 		$file = PMW_PRIVACY_DIR . $stem;
 		if ( is_readable( $file ) ) {
 			include $file;
