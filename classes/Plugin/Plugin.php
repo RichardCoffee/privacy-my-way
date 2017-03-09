@@ -13,7 +13,6 @@ abstract class PMW_Plugin_Plugin {
 
 	use PMW_Trait_Magic;
 	use PMW_Trait_ParseArgs;
-#	use PMW_Trait_Singleton;  This must be in child class
 
 	protected function __construct( $args = array() ) {
 		if ( isset( $args['file'] ) ) {
@@ -26,7 +25,7 @@ abstract class PMW_Plugin_Plugin {
 			);
 			$args = array_merge( $defaults, $args );
 			$this->parse_args( $args );
-			$this->paths = new PMW_Plugin_Paths( $args );
+			$this->paths = PMW_Plugin_Paths::get_instance( $args );
 			$this->state = $this->state_check();
 			$this->schedule_initialize();
 		} else {
