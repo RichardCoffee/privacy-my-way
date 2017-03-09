@@ -19,10 +19,10 @@ abstract class PMW_Plugin_Plugin {
 		if ( isset( $args['file'] ) ) {
 			$data = get_file_data( $args['file'], array( 'ver' => 'Version' ) );
 			$defaults = array(
-				'dir'    => plugin_dir_path( $args['file'] ),
-				'plugin' => dirname( plugin_basename( $args['file'] ) ),
-				'url'    => plugin_dir_url( $args['file'] ),
-				'version' = $data['ver'];
+				'dir'     => plugin_dir_path( $args['file'] ),
+				'plugin'  => dirname( plugin_basename( $args['file'] ) ),
+				'url'     => plugin_dir_url( $args['file'] ),
+				'version' => $data['ver'],
 			);
 			$args = array_merge( $defaults, $args );
 			$this->parse_args( $args );
