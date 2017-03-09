@@ -4,7 +4,7 @@ abstract class PMW_Plugin_Plugin {
 
 	protected $admin   = null;
 	public    $dbvers  = '0';
-	public    $paths;  = null;  #  PMW_Plugin_Paths object
+	public    $paths   = null;  #  PMW_Plugin_Paths object
 	public    $plugin  = '';
 	protected $setting = '';    #  settings link
 	protected $state   = '';
