@@ -13,7 +13,7 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 	}
 
 	public function add_menu_option() {
-		$cap = 'edit_core';
+		$cap = 'update_core';
 		if ( current_user_can( $cap ) ) {
 			$page = __( 'Privacy My Way', 'tcc-privacy' );
 			$menu = __( 'Privacy My Way', 'tcc-privacy' );
