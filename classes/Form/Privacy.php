@@ -32,7 +32,7 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 		wp_enqueue_script( 'privacy-form.js' );
 	}
 
-	protected function form_layout() {
+	protected function form_layout( $form = array() ) {
 		$options = new PMW_Options_Privacy;
 		$form    = $options->default_form_layout();
 		$form['title'] = __( 'Privacy My Way', 'tcc-privacy' );
