@@ -1,5 +1,6 @@
 <?php
 
+include_once( 'debugging.php' );
 
 function pmw_privacy_class_loader( $class ) {
 	if ( substr( $class, 0, 4 ) === 'PMW_' ) {
