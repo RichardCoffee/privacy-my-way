@@ -26,21 +26,21 @@ class PMW_Plugin_Paths {
 		$pager->add_project_template( $slug, $text, $this->dir );
 	}
 
-	public function get_plugin_file_path( $slug ) {
+	public function get_plugin_file_path( $file ) {
 		$file_path   = false;
-		$theme_check = get_theme_file_path( $slug );
+		$theme_check = get_theme_file_path( $file );
 		if ( file_exists( $theme_check ) ) {
 			$file_path = $theme_check;
-		} else if ( file_exists( WP_PLUGIN_DIR . '/'. $slug ) ) {
-			$file_path = WP_PLUGIN_DIR . '/'. $slug;
+		} else if ( file_exists( WP_PLUGIN_DIR . '/'. $file ) ) {
+			$file_path = WP_PLUGIN_DIR . '/'. $file;
 		}
 		return $file_path;
 	}
 
 	public function get_plugin_file_uri( $file ) {
-		$theme_check = get_theme_file_path( $slug );
+		$theme_check = get_theme_file_path( $file );
 		if ( file_exists( $theme_check ) ) {
-			$file_path = get_theme_file_uri( $slug );
+			$file_path = get_theme_file_uri( $file );
 		} else {
 			$file_path = plugins_url( $file, $this->file );
 		}

@@ -181,7 +181,7 @@ class PMW_Options_Privacy {
 		#	Load missing items with the default value, with new actives getting an automatic 'yes'
 		$preset = pmw_privacy( 'install_default', 'yes' );
 		foreach( $this->plugins as $path => $plugin ) {
-			if ( ! isset( $options[ $path ] ) ) {
+			if ( ! isset( $options[ $path ] ) || empty( $options[ $path ] ) ) {
 				$options[ $path ] = ( in_array( $path, $this->active ) ) ? 'yes' : $preset;
 			}
 		}
@@ -195,7 +195,8 @@ class PMW_Options_Privacy {
 		$current = pmw_privacy( 'plugin_list', array() );
 		foreach( $current as $key => $status ) {
 			if ( isset( $this->plugins[ $key ] ) ) {
-				$options[ $key ] = $status; # ( $key === 'privacy-my-way' )  ? 'no' : $status;
+				#	set our default as 'no'
+				$options[ $key ] = ( $key === 'privacy-my-way/privacy-my-way.php' )  ? 'no' : $status;
 			}
 		}
 		return $options;
@@ -223,8 +224,8 @@ class PMW_Options_Privacy {
 		$options = $this->clean_theme_defaults();
 		$preset  = pmw_privacy( 'install_default', 'yes' );
 		foreach( $this->themes as $slug => $theme ) {
-			if ( ! isset( $options[ $slug ] ) ) {
-				$options[ $slug ] = ( strpos( $slug, 'twenty' ) === 0 ) ? $preset : 'yes';
+			if ( ! isset( $options[ $slug ] ) || empty( $options[ $slug ] ) ) {
+				$options[ $slug ] = ( stripos( $slug, 'twenty' ) === false ) ? $preset : 'yes';
 			}
 		}
 		return $options;

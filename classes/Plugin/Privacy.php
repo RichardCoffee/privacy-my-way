@@ -13,8 +13,8 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	public function initialize() {
 
-		register_deactivation_hook( $this->paths->file, array('PMW_Register_Privacy','deactivate'));
-		register_uninstall_hook(    $this->paths->file, array('PMW_Register_Privacy','uninstall'));
+		register_deactivation_hook( $this->paths->file, array( 'PMW_Register_Privacy', 'deactivate' ) );
+		register_uninstall_hook(    $this->paths->file, array( 'PMW_Register_Privacy', 'uninstall'  ) );
 
 		$args = array(
 			'text_domain' => 'Text Domain',
@@ -52,7 +52,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		if ( ! function_exists( 'random_int' ) ) {
 			require_once( $this->paths->dir . 'assets/random_compat/lib/random.php' );
 		}
-		include_once('classes/privacy.php');
+		include_once( $this->paths->dir . 'classes/privacy.php' );
 		$this->privacy = Privacy_My_Way::instance();
 		return $locale;
 	}

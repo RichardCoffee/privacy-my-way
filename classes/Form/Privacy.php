@@ -1,13 +1,14 @@
-<?php /* arrays.php */
+<?php
+
 
 class PMW_Form_Privacy extends PMW_Form_Admin {
 
+	protected $slug    = 'privacy';
+	protected $section = 'privacymyway';
 
 	use PMW_Trait_Singleton;
 
-
 	protected function __construct() {
-		$this->slug = 'privacy';
 		add_filter( "form_text_{$this->slug}", array( $this, 'form_trans_text' ), 10, 2 );
 		parent::__construct();
 	}
@@ -24,12 +25,10 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 
 	public function enqueue_scripts() {
 		$paths = PMW_Plugin_Paths::instance();
-		wp_register_style( 'privacy-form.css', $paths->get_plugin_file_uri( 'css/admin-form.css' ), null, $paths->version );
-		wp_register_script( 'privacy-form.js', $paths->get_plugin_file_uri( 'js/admin-form.js' ), array( 'jquery', 'wp-color-picker' ), $paths->version, true );
-		wp_enqueue_media();
-		wp_enqueue_style( 'privacy-form.css' );
-		wp_enqueue_style( 'wp-color-picker' );
-		wp_enqueue_script( 'privacy-form.js' );
+		wp_register_style(  'privacy-form.css', $paths->get_plugin_file_uri( 'css/admin-form.css' ), null, $paths->version );
+		wp_register_script( 'privacy-form.js',  $paths->get_plugin_file_uri( 'js/admin-form.js' ), array( 'jquery' ), $paths->version, true );
+		wp_enqueue_style(   'privacy-form.css' );
+		wp_enqueue_script(  'privacy-form.js' );
 	}
 
 	protected function form_layout( $form = array() ) {
