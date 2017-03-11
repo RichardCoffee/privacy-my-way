@@ -111,6 +111,7 @@ abstract class PMW_Form_Admin {
 		register_setting( $this->current, $this->current, array( $this, $this->validate ) );
 		$title = ( isset( $this->form['title']    ) ) ? $this->form['title']    : '';
 		$desc  = ( isset( $this->form['describe'] ) ) ? $this->form['describe'] : 'description';
+		$desc  = ( is_array( $desc ) ) ? $desc : ( ( method_exists( $this, $desc ) ) ? array( $this, $desc ) : $desc );
 		add_settings_section( $this->current, $title, $desc, $this->current );
 		foreach( $this->form['layout'] as $item => $data ) {
 			if ( is_string( $data ) ) {
