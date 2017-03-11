@@ -4,9 +4,11 @@
  *  classes/Form/Admin.php
  *
  *  copyright 2014-2017, The Creative Collective, the-creative-collective.com
+ *
+ *  I sure hope that Fields API thing works out, cause then I can get rid of this monstrosity.
  */
 
-abstract class PMW_Form_Admin {
+abstract class TCC_Form_Admin {
 
 	protected $current   = '';
 	protected $err_func  = 'log_entry';
@@ -18,7 +20,6 @@ abstract class PMW_Form_Admin {
 	protected $prefix    = 'tcc_options_';
 	protected $register;
 	protected $render;
-	protected $section   = '';
 	protected $slug      = 'default_page_slug';
 	public    $tab       = 'about';
 	protected $type      = 'single'; # two values: single, tabbed
@@ -28,25 +29,33 @@ abstract class PMW_Form_Admin {
 	public function description() { return ''; }
 
 	protected function __construct() {
-		$this->screen_type();
 		add_action( 'admin_init', array( $this, 'load_form_page' ) );
-		if ( $this->type === 'tabbed' ) {
-			if ( defined( 'PMW_TAB' ) )                { $this->tab = PMW_TAB; }
-			if ( $trans = get_transient( 'PMW_TAB' ) ) { $this->tab = $trans; }
-		}
 	}
 
 	public function load_form_page() {
 		global $plugin_page;
 		if ( ( $plugin_page === $this->slug ) || ( ( $refer = wp_get_referer() ) && ( strpos( $refer, $this->slug ) ) ) ) {
 			if ( $this->type === 'tabbed' ) {
-				if ( isset( $_GET['tab'] ) )  $this->tab = sanitize_key( $_GET['tab'] );
-				if ( isset( $_POST['tab'] ) ) $this->tab = sanitize_key( $_POST['tab'] );
-				set_transient( 'PMW_TAB', $this->tab, ( DAY_IN_SECONDS * 5 ) );
+				if ( defined( 'TCC_TAB' ) ) {
+					$this->tab = TCC_TAB;
+				}
+				if ( $trans = get_transient( 'TCC_TAB' ) ) {
+					$this->tab = $trans;
+				}
+				if ( isset( $_GET['tab'] ) )  {
+					$this->tab = sanitize_key( $_GET['tab'] );
+				}
+				if ( isset( $_POST['tab'] ) ) {
+					$this->tab = sanitize_key( $_POST['tab'] );
+				}
+				set_transient( 'TCC_TAB', $this->tab, ( DAY_IN_SECONDS * 5 ) );
 			}
+			$this->screen_type();
 			$this->form_text();
 			$this->form = $this->form_layout();
-			$this->check_tab();
+			if ( ( $this->type === 'tabbed' ) && ! isset( $this->form[ $this->tab ] ) ) {
+				$this->tab = 'about';
+			}
 			$this->determine_option();
 			$this->get_form_options();
 			$func = $this->register;
@@ -56,47 +65,47 @@ abstract class PMW_Form_Admin {
 	}
 
 	public function enqueue_scripts() {
-		wp_register_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css'), false );
-		wp_register_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js'),   array( 'jquery', 'wp-color-picker' ), false, true );
+		wp_register_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), false );
+		wp_register_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js' ), array( 'jquery', 'wp-color-picker' ), false, true );
 		wp_enqueue_media();
-		wp_enqueue_style(   'admin-form.css' );
-		wp_enqueue_style(   'wp-color-picker' );
-		wp_enqueue_script(  'admin-form.js' );
+		wp_enqueue_style(  'admin-form.css' );
+		wp_enqueue_script( 'admin-form.js'  );
 	}
+
 
   /**  Form text functions  **/
 
 	private function form_text() {
 	$text = array(
 		'error'  => array(
-			'render'    => _x( 'ERROR: Unable to locate function %s','string - a function name', 'tcc-privacy' ),
-			'subscript' => _x( 'ERROR: Not able to locate form data subscript:  %s','placeholder will be an ASCII character string', 'tcc-privacy' ),
+			'render'    => _x( 'ERROR: Unable to locate function %s', 'string - a function name', 'tcc-fluid' ),
+			'subscript' => _x( 'ERROR: Not able to locate form data subscript:  %s', 'placeholder will be an ASCII character string', 'tcc-fluid' )
 		),
 		'submit' => array(
-			'save'      => __( 'Save Changes', 'tcc-privacy' ),
-			'object'    => __( 'Form', 'tcc-privacy' ),
-			'reset'     => _x( 'Reset %s', 'placeholder is a noun, may be plural', 'tcc-privacy' ),
-			'subject'   => __( 'Form', 'tcc-privacy' ),
-			'restore'   => _x( 'Default %s options restored.', 'placeholder is a noun, probably singular', 'tcc-privacy' ),
+			'save'      => __( 'Save Changes', 'tcc-fluid' ),
+			'object'    => __( 'Form', 'tcc-fluid' ),
+			'reset'     => _x( 'Reset %s', 'placeholder is a noun, may be plural', 'tcc-fluid' ),
+			'subject'   => __( 'Form', 'tcc-fluid' ),
+			'restore'   => _x( 'Default %s options restored.', 'placeholder is a noun, probably singular', 'tcc-fluid' )
 		),
 		'media'  => array(
-			'title'     => __( 'Assign/Upload Image', 'tcc-privacy' ),
-			'button'    => __( 'Assign Image', 'tcc-privacy' ),
-			'delete'    => __( 'Unassign Image', 'tcc-privacy' ),
-			),
-		);
-		$this->form_text = apply_filters( "form_text_{$this->slug}", $text, $text );
+			'title'     => __( 'Assign/Upload Image', 'tcc-fluid' ),
+			'button'    => __( 'Assign Image', 'tcc-fluid' ),
+			'delete'    => __( 'Unassign Image', 'tcc-fluid' )
+		)
+	);
+	$this->form_text = apply_filters( 'form_text_' . $this->slug, $text, $text );
 	}
 
 
   /**  Register Screen functions **/
 
-  private function screen_type() {
-    $this->register = "register_{$this->type}_form";
-    $this->render   = "render_{$this->type}_form";
-    $this->options  = "render_{$this->type}_options";
-    $this->validate = "validate_{$this->type}_form";
-  }
+	private function screen_type() {
+		$this->register = 'register_' . $this->type . '_form';
+		$this->render   =   'render_' . $this->type . '_form';
+		$this->options  =   'render_' . $this->type . '_options';
+		$this->validate = 'validate_' . $this->type . '_form';
+	}
 
 	public function register_single_form() {
 		register_setting( $this->current, $this->current, array( $this, $this->validate ) );
@@ -104,7 +113,9 @@ abstract class PMW_Form_Admin {
 		$desc  = ( isset( $this->form['describe'] ) ) ? $this->form['describe'] : 'description';
 		add_settings_section( $this->current, $title, $desc, $this->current );
 		foreach( $this->form['layout'] as $item => $data ) {
-			if ( is_string( $data ) ) { continue; }  #  skip string variables
+			if ( is_string( $data ) ) {
+				continue;	#	skip string variables
+			}
 			$this->register_field( $this->current, $this->current, $item, $data );
 		}
 	}
@@ -171,6 +182,65 @@ abstract class PMW_Form_Admin {
     return $html;
   }
 
+
+  /**  Customizer  **/
+
+	public function customizer_settings( $wp_customize, $base ) {
+		log_entry($base,$wp_customize);
+	}
+/*  All this is either going to get moved or done away with altogether
+  public function customizer_settings($wp_customize,$base) {
+    if ($base && $this->form[$base]) {
+      $layout = $this->form[$base];
+#log_entry('customizer',"base: $base",$layout,$wp_customize); // too many recursion errors for this to be useful
+      foreach($layout as $key=>$option) {
+        if (!isset($option['default'])) { continue; }
+        if (!isset($option['render']))  { continue; }
+        if ($option['render']==='skip') { continue; }
+        $name = "tcc_options_{$base}[$key]";
+        $settings = array('default'    => $option['default'],
+                          'type'       => 'option',
+                          'capability' => 'edit_theme_options',
+                          'sanitize_callback' => $this->sanitize_callback($option));
+        $wp_customize->add_setting($name,$settings);
+        #  default WordPress sections
+        $wp_sections = array('title_tagline','colors','header_image','background_image','nav','static_front_page');
+        $section  = (in_array($base,$wp_sections)) ? $base : "fluid_$base";
+        $controls = array('label'    => $option['label'], // FIXME: use $this->field_label($ID,$option) instead, what would $ID be?
+                          'section'  => $section,
+                          'settings' => $name);
+        switch($option['render']) {
+          case "checkbox":
+            $controls['type'] = 'checkbox';
+            break;
+          case "colorpicker":
+            $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize,$name,$controls));
+            $name = false;
+            break;
+          case "image": // FIXME: does not seem to work as advertised
+            //$controls['type'] = 'image';
+            if (isset($option['context'])) $controls['context'] = $option['context'];
+log_entry($controls);
+            $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize,$name,$controls));
+            break;
+          case "radio":
+            $controls['type']    = 'radio';
+            $controls['choices'] = $option['source'];
+            break;
+          case "select":
+            if (!is_array($option['source'])) continue; // FIXME: this action leaves an orphaned setting with no control
+            $controls['type']    = 'select';
+            $controls['choices'] = $option['source'];
+            break;
+          default:
+            log_entry("WARNING:  switch case needed in customizer_settings for {$option['render']}");
+            $name = false;
+        }
+        if ($name) $wp_customize->add_control($name,$controls);
+      }
+    }
+  } //*/
+
   private function sanitize_callback($option) {
     $valid_func = "validate_{$option['render']}";
     if (method_exists($this,$valid_func)) {
@@ -186,18 +256,10 @@ abstract class PMW_Form_Admin {
 
   /**  Data functions  **/
 
-	private function check_tab() {
-		if ( $this->type === 'tabbed' ) {
-			if ( ! isset( $this->form[ $this->tab ] ) ) {
-				$this->tab = 'about';
-			}
-		}
-	}
-
 	private function determine_option() {
 		if ( $this->type === 'single' ) {
 			$this->current = $this->prefix . $this->slug;
-		} elseif ( $this->type === 'tabbed' ) {
+		} else if ( $this->type === 'tabbed' ) {
 			if ( isset( $this->form[ $this->tab ]['option'] ) ) {
 				$this->current = $this->form[ $this->tab ]['option'];
 			} else {
@@ -213,7 +275,7 @@ abstract class PMW_Form_Admin {
 		$defaults = array();
 		if ( $this->type === 'single' ) {
 			foreach( $this->form['layout'] as $ID => $item ) {
-				if ( empty( $item['default'] ) ) {
+				if ( is_string( $item ) || empty( $item['default'] ) ) {
 					continue;
 				}
 				$defaults[ $ID ] = $item['default'];
@@ -234,31 +296,35 @@ abstract class PMW_Form_Admin {
 			}
 		}
 		return $defaults;
-	}
+	} //*/
 
-  private function get_form_options() {
-    $this->form_opts = get_option($this->current);
-    if (empty($this->form_opts)) {
-      $option = explode('_',$this->current);
-      $this->form_opts = $this->get_defaults($option[2]);
-      add_option($this->current,$this->form_opts);
-    }
-  }
+	private function get_form_options() {
+		$this->form_opts = get_option( $this->current );
+		if ( empty( $this->form_opts ) ) {
+			$option = explode( '_', $this->current );
+			$this->form_opts = $this->get_defaults( $option[2] );
+			add_option( $this->current, $this->form_opts );
+		}
+	}
 
 
   /**  Render Screen functions  **/
 
 	public function render_single_form() { ?>
-		<div class="wrap"><?php /*
+		<div class="wrap"><?php
 			if ( isset( $this->form['title'] ) ) { ?>
 				<h1>
 					<?php echo esc_html( $this->form['title'] ); ?>
 				</h1><?php
-			} //*/
+			}
 			settings_errors(); ?>
 			<form method="post" action="options.php"><?php
+#				do_action( 'form_admin_pre_display' );
+#				do_action( 'form_admin_pre_display_' . $this->current );
 				settings_fields( $this->current );
 				do_settings_sections( $this->current );
+#				do_action( 'form_admin_post_display_' . $this->current );
+#				do_action( 'form_admin_post_display' );
 				$this->submit_buttons(); ?>
 			</form>
 		</div><?php //*/
@@ -288,8 +354,8 @@ abstract class PMW_Form_Admin {
         <input type='hidden' name='tab' value='<?php echo $this->tab; ?>'><?php
         $current  = (isset($this->form[$this->tab]['option'])) ? $this->form[$this->tab]['option'] : $this->prefix.$this->tab;
         do_action( "form_admin_pre_display_{$this->tab}" );
-        settings_fields($current); #$this->slug); #$this->current);
-        do_settings_sections($current); #$this->slug); #$this->current);
+        settings_fields($current);
+        do_settings_sections($current);
         do_action("form_admin_post_display_{$this->tab}");
         $this->submit_buttons($this->form[$this->tab]['title']); ?>
       </form>
@@ -335,9 +401,11 @@ abstract class PMW_Form_Admin {
 				$this->$func( $fargs );
 			} else if ( function_exists( $func ) ) {
 				$func( $fargs );
-			} else if ( ! empty( $this->err_func ) ) {
-				$func = $this->err_func;
-				$func( sprintf( $this->form_text['error']['render'], $func ) );
+			} else {
+				if ( ! empty( $this->err_func ) ) {
+					$func = $this->err_func;
+					$func( sprintf( $this->form_text['error']['render'], $func ) );
+				}
 			}
 		}
 		echo '</div>';
@@ -373,8 +441,8 @@ abstract class PMW_Form_Admin {
   }
 
 	private function render_attributes($layout) {
-		$attr = ( ! empty( $layout['divcss'] ) )  ? ' class="'.esc_attr($layout['divcss']).'"'   : '';
-		$attr.= ( isset( $layout['help'] ) )      ? ' title="'.esc_attr($layout['help']).'"'     : '';
+		$attr = ( ! empty( $layout['divcss'] ) )  ? ' class="' . esc_attr( $layout['divcss'] ).'"'   : '';
+		$attr.= ( isset( $layout['help'] ) )      ? ' title="' . esc_attr( $layout['help']   ).'"'   : '';
 		if ( ! empty( $layout['showhide'] ) ) {
 			$attr.= ' data-item="' . esc_attr( $layout['showhide']['item'] ) . '"';
 			$attr.= ' data-show="' . esc_attr( $layout['showhide']['show'] ) . '"';
@@ -456,7 +524,7 @@ abstract class PMW_Form_Admin {
 
   private function render_font($data) {
     extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-    $html = "<select id='$ID' name='$name'";
+    $html = "<select id='$ID' name='{$name}[]' multiple";
     $html.= (isset($layout['change'])) ? " onchange='{$layout['change']}'>" : ">";
     foreach($layout['source'] as $key=>$text) {
       $html.= "<option value='$key'";
@@ -506,11 +574,14 @@ abstract class PMW_Form_Admin {
 					<label>
 						<input type="radio"
 						       name="<?php echo esc_attr( $name ) ; ?>"
-						       value="<?php echo esc_attr( $key ); ?>"
+						       value="<?php echo esc_html( $key ); ?>"
 						       <?php checked( $value, $key ); ?>
 						       onchange="<?php echo esc_attr( $onchange ); ?>"
-						       aria-describedby="<?php echo $uniq; ?>">
-						<?php echo esc_html( $text ); ?>
+						       aria-describedby="<?php echo $uniq; ?>"><?php
+						echo esc_html( $text );
+						if ( isset( $layout['extra_html'][ $key ] ) ) {
+							echo $layout['extra_html'][ $key ];
+						} ?>
 					</label>
 				</div><?php
 			} ?>
@@ -534,8 +605,8 @@ abstract class PMW_Form_Admin {
 				<?php e_esc_html( $pre_text ); ?>
 			</div>
 			<div class="radio-multiple-header">
-				<span class="radio-multiple-yes"><?php esc_html_e( 'Yes', 'tcc-privacy' ); ?></span>&nbsp;
-				<span class="radio-multiple-no" ><?php esc_html_e( 'No',  'tcc-privacy' ); ?></span>
+				<span class="radio-multiple-yes"><?php esc_html_e( 'Yes',  'tcc-fluid' ); ?></span>&nbsp;
+				<span class="radio-multiple-no" ><?php esc_html_e( 'No', 'tcc-fluid' ); ?></span>
 			</div><?php
 			foreach( $layout['source'] as $key => $text ) {
 				$check  = ( isset( $value[ $key ] ) ) ? $value[ $key ] : $preset; ?>
@@ -563,13 +634,14 @@ abstract class PMW_Form_Admin {
     extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
     if (empty($layout['source'])) return;
     $source_func = $layout['source'];
-    if (!empty($layout['text'])) echo "<div class='form-select-text'> ".esc_attr($layout['text'])."</div>";
+    if (!empty($layout['text'])) echo '<div class="form-select-text"> ' . esc_attr( $layout['text'] ) . '</div>';
     $html = "<select id='$ID' name='$name'";
+    $html.= ( strpos( '[]', $name ) )  ? ' multiple="multiple"' : '';
     $html.= (isset($layout['change'])) ? " onchange='{$layout['change']}'>" : ">";
     echo $html;
     if (is_array($source_func)) {
       foreach($source_func as $key=>$text) {
-        $select = ($key==$value) ? "selected='selected'" : '';
+        $select = ( in_array( $key, (array)$value ) ) ? "selected='selected'" : '';
         echo "<option value='$key' $select> $text </option>";
       }
     } elseif (method_exists($this,$source_func)) {
@@ -580,9 +652,21 @@ abstract class PMW_Form_Admin {
     echo '</select>';
   }
 
+	private function render_select_multiple( $data ) {
+		$data['name'] .= '[]';
+		render_select( $data );
+	}
+
 	private function render_spinner( $data ) {
 		extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-		$tooltip = ( isset( $layout['help'] ) ) ? $layout['help'] : ''; ?>
+		$tooltip = ( isset( $layout['help'] ) ) ? $layout['help'] : '';
+/*		$attrs = array(
+			'id'    => $ID,
+			'name'  => $name,
+			'title' => $tooltip,
+			'value' => $value, */
+
+ ?>
 		<input type="number" class="small-text" min="1" step="1"
 		       id="<?php e_esc_attr( $ID ); ?>"
 		       name="<?php e_esc_attr( $name ); ?>"
@@ -591,9 +675,24 @@ abstract class PMW_Form_Admin {
 		if ( ! empty( $layout['stext'] ) ) { e_esc_attr( $layout['stext'] ); }
 	}
 
-  private function render_text($data) {
-    extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-    $html = (!empty($layout['text']))  ? "<p> ".esc_attr($layout['text'])."</p>" : "";
+	private function render_text( $data ) {
+		extract( $data );  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
+		$html = (!empty($layout['text']))  ? "<p> ".esc_attr($layout['text'])."</p>" : "";
+/*
+		$html.= '<input type="text"';
+		$attrs = array(
+			'id' => $ID,
+			'class' => ( isset( $layout['class'] ) )  ? $layout['class'] : 'regular-text';
+			'name'  => $name,
+			'value' => $value,
+			'title' => ( isset( $layout['help'] ) )   ? $layout['help']  : '';
+			'placeholder' => ( isset( $layout['place'] ) ) ? $layout['place'] : '';
+			'onchange' => ( isset( $layout['change'] ) ) ? $layout['change']  : '';
+
+
+
+//*/
+
     $html.= "<input type='text' id='$ID' class='";
     $html.= (isset($layout['class']))  ? esc_attr($layout['class'])."'" : "regular-text'";
     $html.= " name='$name' value='".esc_attr(sanitize_text_field($value))."'";
@@ -623,14 +722,14 @@ abstract class PMW_Form_Admin {
     $this->render_display($data);
   }
 
-	/**  Validate functions  **/
+  /**  Validate functions  **/
 
 	public function validate_single_form( $input ) {
 		$output = $this->get_defaults();
 		if ( isset( $_POST['reset'] ) ) {
 			$object = ( isset( $this->form['title'] ) ) ? $this->form['title'] : $this->form_test['submit']['object'];
 			$string = sprintf( $this->form_text['submit']['restore'], $object );
-			add_settings_error( $this->current, 'restore_defaults', $string, 'updated fade' );
+			add_settings_error( $this->slug, 'restore_defaults', $string, 'updated fade' );
 			return $output;
 		}
 		foreach( $input as $ID => $data ) {
@@ -639,7 +738,7 @@ abstract class PMW_Form_Admin {
 			if ( in_array( $item['render'], $multiple ) ) {
 				$item['render'] = ( isset( $item['type'] ) ) ? $item['type'] : 'text';
 				$vals = array();
-				foreach( (array)$data as $key => $indiv ) {
+				foreach( $subdata as $key => $indiv ) {
 					$vals[ $key ] = $this->do_validate_function( $indiv, $item );
 				}
 				$output[ $ID ] = $vals;
@@ -647,16 +746,15 @@ abstract class PMW_Form_Admin {
 				$output[ $ID ] = $this->do_validate_function( $data, $item );
 			}
 		}
-		#	check for required fields
-		foreach($output as $ID=>$data) {
-			if ( ( ! is_array( $data ) ) || ( ! isset( $this->form['layout'][ $ID ]['require'] ) ) ) {
-				continue;
-			}
-			if ( empty( $output[ $ID ] ) ) {
-				$output[ $ID ] = $data;
+		// check for required fields FIXME: notify user
+		foreach( $this->form['layout'] as $ID => $item ) {
+			if ( is_array( $item ) && isset( $item['require'] ) ) {
+				if ( empty( $output[ $ID ] ) ) {
+					$output[ $ID ] = $item['default'];
+				}
 			}
 		}
-		return apply_filters( $this->slug . '_validate_settings', $output, $input );
+		return apply_filters( "{$this->slug}_validate_settings", $output, $input );
 	}
 
   public function validate_tabbed_form($input) {
@@ -681,23 +779,30 @@ abstract class PMW_Form_Admin {
     return apply_filters($this->current.'_validate_settings',$output,$input);
   }
 
-  private function do_validate_function($input,$item) {
-    if (empty($item['render'])) { $item['render'] = 'non_existing_render_type'; }
-    $func = 'validate_';
-    $func.= (isset($item['validate'])) ? $item['validate'] : $item['render'];
-    if (method_exists($this,$func)) {
-      $output = $this->$func($input);
-    } elseif (function_exists($func)) {
-      $output = $func($input);
-    } else { // FIXME:  test for data type
-      $output = $this->validate_text($input);
-    }
-    return $output;
-  }
+	private function do_validate_function( $input, $item ) {
+		if ( empty( $item['render'] ) ) {
+			$item['render'] = 'non_existing_render_type';
+		}
+		$func = ( isset( $item['validate'] ) ) ? $item['validate'] : 'validate_' . $item['render'];
+		if ( method_exists( $this, $func ) ) {
+			$output = $this->$func( $input );
+		} elseif ( function_exists( $func ) ) {
+			$output = $func( $input );
+		} else { // FIXME:  test for data type?
+			$output = $this->validate_text( $input );
+			log_entry( "missing validation function: $func" );
+		}
+		return $output;
+	}
 
   private function validate_colorpicker($input) {
     return (preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|',$input)) ? $input : '';
   }
+
+	private function validate_font( $input ) {
+log_entry($input);
+		return $input; // FIXME NOW!
+	}
 
   private function validate_image($input) {
     return esc_url_raw(strip_tags(stripslashes($input)));
@@ -711,13 +816,25 @@ abstract class PMW_Form_Admin {
     return sanitize_key($input);
   }
 
+	private function validate_radio_multiple( $input ) {
+		return $this->validate_radio( $input );
+	}
+
   private function validate_select($input) {
     return sanitize_file_name($input);
   }
 
-  protected function validate_text($input) {
-    return strip_tags(stripslashes($input));
-  }
+	private function validate_select_multiple( $input ) {
+		return array_map( array( $this, 'validate_select' ), $input ); // FIXME
+	}
+
+	private function validate_spinner( $input ) {
+		return $this->validate_text( $input );
+	}
+
+	protected function validate_text( $input ) {
+		return strip_tags( stripslashes( $input ) );
+	}
 
   private function validate_text_color($input) {
     return $this->validate_text($input);
@@ -728,10 +845,38 @@ abstract class PMW_Form_Admin {
   }
 
 
+}	#	end of TCC_Form_Admin class
+
+
+if ( ! function_exists( 'get_applied_attrs' ) ) {
+	function get_applied_attrs( $args ) {
+		return apply_attrs( $args, false );
+	}
+}
+
+if ( ! function_exists( 'apply_attrs' ) ) {
+	function apply_attrs( $args, $echo = true ) {
+		$attrs = ' ';
+		foreach( $args as $attr => $value ) {
+			if ( empty( $value ) ) {
+				continue;
+			}
+			// FIXME: use assoc array
+			$sanitize = ( $attr === 'href'  ) ? 'esc_url'  : 'esc_attr';
+			$sanitize = ( $attr === 'src'   ) ? 'esc_url'  : $sanitize;
+			$sanitize = ( $attr === 'value' ) ? 'esc_html' : $sanitize;
+			$attrs .= $attr . '="'. $sanitize( $value ) . '" ';
+		}
+		if ( $echo ) {
+			echo $attrs;
+		} else {
+			return $attrs;
+		}
+	}
 }
 
 if ( ! function_exists('e_esc_html') ) {
-	#	This is just a shorthand function
+	#   This is just a shorthand function
 	function e_esc_html( $string ) {
 		echo esc_html( $string );
 	}
