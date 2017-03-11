@@ -8,7 +8,7 @@
  *  I sure hope that Fields API thing works out, cause then I can get rid of this monstrosity.
  */
 
-abstract class TCC_Form_Admin {
+abstract class PMW_Form_Admin {
 
 	protected $current   = '';
 	protected $err_func  = 'log_entry';
@@ -36,10 +36,10 @@ abstract class TCC_Form_Admin {
 		global $plugin_page;
 		if ( ( $plugin_page === $this->slug ) || ( ( $refer = wp_get_referer() ) && ( strpos( $refer, $this->slug ) ) ) ) {
 			if ( $this->type === 'tabbed' ) {
-				if ( defined( 'TCC_TAB' ) ) {
-					$this->tab = TCC_TAB;
+				if ( defined( 'PMW_TAB' ) ) {
+					$this->tab = PMW_TAB;
 				}
-				if ( $trans = get_transient( 'TCC_TAB' ) ) {
+				if ( $trans = get_transient( 'PMW_TAB' ) ) {
 					$this->tab = $trans;
 				}
 				if ( isset( $_GET['tab'] ) )  {
@@ -48,7 +48,7 @@ abstract class TCC_Form_Admin {
 				if ( isset( $_POST['tab'] ) ) {
 					$this->tab = sanitize_key( $_POST['tab'] );
 				}
-				set_transient( 'TCC_TAB', $this->tab, ( DAY_IN_SECONDS * 5 ) );
+				set_transient( 'PMW_TAB', $this->tab, ( DAY_IN_SECONDS * 5 ) );
 			}
 			$this->screen_type();
 			$this->form_text();
@@ -78,20 +78,20 @@ abstract class TCC_Form_Admin {
 	private function form_text() {
 	$text = array(
 		'error'  => array(
-			'render'    => _x( 'ERROR: Unable to locate function %s', 'string - a function name', 'tcc-fluid' ),
-			'subscript' => _x( 'ERROR: Not able to locate form data subscript:  %s', 'placeholder will be an ASCII character string', 'tcc-fluid' )
+			'render'    => _x( 'ERROR: Unable to locate function %s', 'string - a function name', 'tcc-privacy' ),
+			'subscript' => _x( 'ERROR: Not able to locate form data subscript:  %s', 'placeholder will be an ASCII character string', 'tcc-privacy' )
 		),
 		'submit' => array(
-			'save'      => __( 'Save Changes', 'tcc-fluid' ),
-			'object'    => __( 'Form', 'tcc-fluid' ),
-			'reset'     => _x( 'Reset %s', 'placeholder is a noun, may be plural', 'tcc-fluid' ),
-			'subject'   => __( 'Form', 'tcc-fluid' ),
-			'restore'   => _x( 'Default %s options restored.', 'placeholder is a noun, probably singular', 'tcc-fluid' )
+			'save'      => __( 'Save Changes', 'tcc-privacy' ),
+			'object'    => __( 'Form', 'tcc-privacy' ),
+			'reset'     => _x( 'Reset %s', 'placeholder is a noun, may be plural', 'tcc-privacy' ),
+			'subject'   => __( 'Form', 'tcc-privacy' ),
+			'restore'   => _x( 'Default %s options restored.', 'placeholder is a noun, probably singular', 'tcc-privacy' )
 		),
 		'media'  => array(
-			'title'     => __( 'Assign/Upload Image', 'tcc-fluid' ),
-			'button'    => __( 'Assign Image', 'tcc-fluid' ),
-			'delete'    => __( 'Unassign Image', 'tcc-fluid' )
+			'title'     => __( 'Assign/Upload Image', 'tcc-privacy' ),
+			'button'    => __( 'Assign Image', 'tcc-privacy' ),
+			'delete'    => __( 'Unassign Image', 'tcc-privacy' )
 		)
 	);
 	$this->form_text = apply_filters( 'form_text_' . $this->slug, $text, $text );
@@ -605,8 +605,8 @@ log_entry($controls);
 				<?php e_esc_html( $pre_text ); ?>
 			</div>
 			<div class="radio-multiple-header">
-				<span class="radio-multiple-yes"><?php esc_html_e( 'Yes',  'tcc-fluid' ); ?></span>&nbsp;
-				<span class="radio-multiple-no" ><?php esc_html_e( 'No', 'tcc-fluid' ); ?></span>
+				<span class="radio-multiple-yes"><?php esc_html_e( 'Yes',  'tcc-privacy' ); ?></span>&nbsp;
+				<span class="radio-multiple-no" ><?php esc_html_e( 'No', 'tcc-privacy' ); ?></span>
 			</div><?php
 			foreach( $layout['source'] as $key => $text ) {
 				$check  = ( isset( $value[ $key ] ) ) ? $value[ $key ] : $preset; ?>
@@ -845,7 +845,7 @@ log_entry($input);
   }
 
 
-}	#	end of TCC_Form_Admin class
+}	#	end of PMW_Form_Admin class
 
 
 if ( ! function_exists( 'get_applied_attrs' ) ) {
