@@ -4,7 +4,6 @@
 class PMW_Form_Privacy extends PMW_Form_Admin {
 
 	protected $slug    = 'privacy';
-	protected $section = 'privacymyway';
 
 	use PMW_Trait_Singleton;
 
