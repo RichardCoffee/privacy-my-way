@@ -2,14 +2,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
+
 class PMW_Register_Register {
 
-	private   static $dep_func = 'tcc_enqueue';  // FIXME:  not a good value to check for theme dependency on.
 	protected static $options  = 'about';
 	private   static $our_site = '<a href="the-creative-collective.com" target="tcc">%s</a>';
+	private   static $php_vers = '5.3.6';  #  trait feature added
 	protected static $prefix   = 'tcc_options_';  #  Option slug prefix
+	protected static $title    = 'This plugin';
+	private   static $wp_vers  = '4.7.0';  #  added get_theme_file_uri function
 
-	private   static $rc_email = '<a href="mailto:richard.coffee@gmail.com">%s</a>';
+	private   static $rc_email = '<a href="mailto:richard.coffee@rtcenterprises.net">%s</a>';
 	private   static $jg_email = '<a href="mailto:cableman371@gmail.com">%s</a>';
 
 	private static function our_email() { return ( ( mt_rand( 1, 10 ) > 5 ) ? self::$rc_email : self::$jg_email ); }
@@ -17,9 +20,81 @@ class PMW_Register_Register {
 	public static function activate() {
 		$return = false;
 		if ( current_user_can( 'activate_plugins' ) ) {
-			$return = true;
+			$return  = self::php_version_check();
+			$return &= self::wp_version_check();
 		}
 		return $return;
+	}
+
+
+	/**  Dependency Checking - Will It Work?  **/
+
+	# https://github.com/GlotPress/GlotPress-WP/blob/develop/glotpress.php
+
+	/**  PHP version check  **/
+
+	protected static function php_version_required() {
+		return self::$php_vers;
+	}
+
+	private static function php_version_check() {
+		if ( version_compare( phpversion(), self::php_version_required(), '<' ) ) {
+			add_action( 'admin_notices', array( 'PMW_Register_Register', 'unsupported_php_version' ), 10, 2 );
+			return false;
+		}
+		return true;
+	}
+
+	public static function unsupported_php_version() {
+		$short = __( '&#151; You are running an unsupported version of PHP.', 'tcc-privacy' );
+		$long  = sprintf(
+			_x( '%1$s requires PHP Version %2$s, please upgrade to activate this plugin. ', '1: Plugin name   2: php version', 'tcc-privacy' ),
+			self::$title,
+			self::$php_vers
+		);
+		self::display_admin_notice( $short, $long );
+	}
+
+	/**  WordPress version check  **/
+
+	protected static function wp_version_required() {
+		return self::$wp_vers;
+	}
+
+	private static function wp_version_check() {
+		if ( version_compare( $GLOBALS['wp_version'], self::wp_version_required(), '<' ) ) {
+			add_action( 'admin_notices', array( 'PMW_Register_Register', 'unsupported_wp_version' ), 10, 2 );
+			return false;
+		}
+		return true;
+	}
+
+	public static function unsupported_wp_version() {
+		$short = __( '&#151; You are running an unsupported version of WordPress.', 'tcc-privacy' );
+		$long  = sprintf(
+			/* translators: 1: Plugin name  2: Required version of WordPress  3: Current version of WordPress */
+			__( '%1$s requires WordPress %2$s or later and has detected you are running %3$s. Upgrade your WordPress install before activating this plugin.', 'tcc-privacy' ),
+			self::$title,
+			self::wp_version_required(),
+			$GLOBALS['wp_version']
+		);
+		self::display_admin_notice( $short, $long );
+	}
+
+	private static function display_admin_notice( $short, $long ) {
+		$screen = get_current_screen();
+		if ( 'plugins' !== $screen->id ) {
+			return;
+		} ?>
+		<div class="notice notice-error">
+			<p style="max-width:800px;">
+				<b><?php echo esc_html( sprintf( _x( '%s can not be activated.', 'Plugin title', 'tcc-privacy' ), self::$title ) );?></b>
+				<?php echo esc_html( $short ); ?>
+			</p>
+			<p style="max-width:800px;">
+				<?php echo esc_html( $long ); ?>
+			</p>
+		</div><?php
 	}
 
 
