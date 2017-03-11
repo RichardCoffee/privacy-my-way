@@ -29,6 +29,7 @@ abstract class PMW_Form_Admin {
 	public function description() { return ''; }
 
 	protected function __construct() {
+		$this->screen_type();
 		add_action( 'admin_init', array( $this, 'load_form_page' ) );
 	}
 
@@ -50,7 +51,6 @@ abstract class PMW_Form_Admin {
 				}
 				set_transient( 'PMW_TAB', $this->tab, ( DAY_IN_SECONDS * 5 ) );
 			}
-			$this->screen_type();
 			$this->form_text();
 			$this->form = $this->form_layout();
 			if ( ( $this->type === 'tabbed' ) && ! isset( $this->form[ $this->tab ] ) ) {
