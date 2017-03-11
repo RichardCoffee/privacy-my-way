@@ -1,4 +1,4 @@
-This is alpha code.  Not currently functional.
+This is beta code.  Not guaranteed to be functional.
 
 # Privacy My Way
 Control the information that your wordpress site is sending to wordpress.org
@@ -18,12 +18,26 @@ Currently, only the manual installation is available.
 
 Hmmm, don't install this.  Check back here later.  I am working on it...
 
+Honestly, if you really need these instructions, then perhaps installing this plugin may not be the right thing for you..
+
+#### SSH
+
 1.  SSH onto your site.
-2.  cd to your plugin directory.
-3.  clone this repository with 'git clone git@github.com:RichardCoffee/privacy-my-way.git'.
-4.  Go to your WordPress dashboard and activate the plugin.
-5.  go to dashboard->setting->Privacy My Way to edit and save the options.
+2.  'cd' to your plugin directory.
+3.  Clone this repository with 'git clone git@github.com:RichardCoffee/privacy-my-way.git'.
+4.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
+5.  Either click on the Settings link, or go to dashboard->setting->Privacy My Way, to edit and save the options.
+6.  Open an issue on github about what went wrong.
+
+#### FTP
+
+1.  Clone the repository to your computer
+2.  FTP to your site.
+3.  Using your FTP client copy the repository into your server's WordPress plugin directory.  You can delete the .git folder on the server, if you need the space...
+4.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
+5.  Either click on the Settings link, or go to Dashboard->Settings->Privacy My Way, to edit and save the options.
+6.  Open an issue on github about what went wrong.
 
 ### Warning
 
-This is alpha code.  Use at your own risk.  I would not expect it to break your site, but if it does, then it's all on you.
+This is beta code.  Use at your own risk.  I do not expect it to break your site, but if it does, then you get to keep the pieces.  Please do not email them to me.
