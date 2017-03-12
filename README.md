@@ -24,7 +24,7 @@ Honestly, if you really need these instructions, then perhaps installing this pl
 
 1.  SSH onto your site.
 2.  'cd' to your plugin directory.
-3.  Clone this repository with 'git clone git@github.com:RichardCoffee/privacy-my-way.git'.
+3.  Clone this repository.
 4.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
 5.  Either click on the Settings link, or go to dashboard->setting->Privacy My Way, to edit and save the options.
 6.  Open an issue on github about what went wrong.
