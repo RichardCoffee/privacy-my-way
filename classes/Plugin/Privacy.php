@@ -13,6 +13,10 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	public function initialize() {
 
+		if ( ( ! PMW_Register_Privacy::php_version_check() ) || ( ! PMW_Register_Privacy::wp_version_check() ) ) {
+			return;
+		}
+
 		register_deactivation_hook( $this->paths->file, array( 'PMW_Register_Privacy', 'deactivate' ) );
 		register_uninstall_hook(    $this->paths->file, array( 'PMW_Register_Privacy', 'uninstall'  ) );
 
@@ -31,18 +35,14 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	public function add_actions() {
 		if ( is_admin() ) {
 			add_action( 'wp_version_check', array( $this, 'add_privacy_filters' ) );
-			if ( $this->state !== 'theme' ) {
-				add_action( 'admin_menu', array( PMW_Form_Privacy::instance(), 'add_menu_option' ) );
-			}
+			add_action( 'admin_menu', array( PMW_Form_Privacy::instance(), 'add_menu_option' ) );
 		}
 		parent::add_actions();
 	}
 
 	public function add_filters() {
-		add_filter( 'core_version_check_locale', array( $this, 'add_privacy_filters' ) );
-		if ( $this->state === 'theme' ) {
-			add_filter( 'fluidity_initialize_options', array( $this, 'add_privacy_options' ) );
-		}
+		add_filter( 'core_version_check_locale',   array( $this, 'add_privacy_filters' ) );
+		add_filter( 'fluidity_initialize_options', array( $this, 'add_privacy_options' ) );
 		parent::add_filters();
 	}
 
@@ -50,6 +50,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	public function add_privacy_filters( $locale = '' ) {
 		if ( ! function_exists( 'random_int' ) ) {
+			# PHP 7.0 compatibility
 			require_once( $this->paths->dir . 'assets/random_compat/lib/random.php' );
 		}
 		include_once( $this->paths->dir . 'classes/privacy.php' );

@@ -6,39 +6,41 @@ defined( 'ABSPATH' ) || exit;
 class PMW_Register_Register {
 
 	protected static $options  = 'about';
-	private   static $our_site = '<a href="the-creative-collective.com" target="tcc">%s</a>';
-	private   static $php_vers = '5.3.6';  #  trait feature added
+	protected static $php_vers = '5.3.6';         #  trait feature added
 	protected static $prefix   = 'tcc_options_';  #  Option slug prefix
 	protected static $title    = 'This plugin';
-	private   static $wp_vers  = '4.7.0';  #  added get_theme_file_uri function
+	protected static $wp_vers  = '4.7.0';         #  added get_theme_file_uri function
 
+	private   static $our_site = '<a href="the-creative-collective.com" target="tcc">%s</a>';
 	private   static $rc_email = '<a href="mailto:richard.coffee@rtcenterprises.net">%s</a>';
 	private   static $jg_email = '<a href="mailto:cableman371@gmail.com">%s</a>';
 
 	private static function our_email() { return ( ( mt_rand( 1, 10 ) > 5 ) ? self::$rc_email : self::$jg_email ); }
 
 	public static function activate() {
-		$return = false;
-		if ( current_user_can( 'activate_plugins' ) ) {
-			$return  = self::php_version_check();
-			$return &= self::wp_version_check();
+		if ( ! static::php_version_check() ) {
+			wp_die( static::php_bad_version_text() );
 		}
-		return $return;
+		if ( ! static::wp_version_check() ) {
+			wp_die( static::wp_bad_version_text() );
+		}
 	}
 
 
 	/**  Dependency Checking - Will It Work?  **/
 
-	# https://github.com/GlotPress/GlotPress-WP/blob/develop/glotpress.php
+	#	https://github.com/GlotPress/GlotPress-WP/blob/develop/glotpress.php
+	#	https://pento.net/2014/02/18/dont-let-your-plugin-be-activated-on-incompatible-sites/
 
 	/**  PHP version check  **/
 
 	protected static function php_version_required() {
-		return self::$php_vers;
+		return static::$php_vers;
 	}
 
-	private static function php_version_check() {
-		if ( version_compare( phpversion(), self::php_version_required(), '<' ) ) {
+	public static function php_version_check() {
+		if ( version_compare( phpversion(), static::php_version_required(), '<' ) ) {
+			deactivate_plugins( static::$plugin_file );
 			add_action( 'admin_notices', array( 'PMW_Register_Register', 'unsupported_php_version' ), 10, 2 );
 			return false;
 		}
@@ -47,22 +49,31 @@ class PMW_Register_Register {
 
 	public static function unsupported_php_version() {
 		$short = __( '&#151; You are running an unsupported version of PHP.', 'tcc-privacy' );
-		$long  = sprintf(
-			_x( '%1$s requires PHP Version %2$s, please upgrade to activate this plugin. ', '1: Plugin name   2: php version', 'tcc-privacy' ),
-			self::$title,
-			self::$php_vers
-		);
+		$long  = static::php_bad_version_text();
 		self::display_admin_notice( $short, $long );
+	}
+
+	protected static function php_bad_version_text() {
+		return sprintf(
+			_x(
+				'%1$s requires PHP version %2$s, version %3$s detected.  Please upgrade your PHP before attempting to use this plugin. ',
+				'1: Plugin name   2: php version required  3: php version detected',
+				'tcc-privacy' ),
+			static::$title,
+			static::$php_vers,
+			phpversion()
+		);
 	}
 
 	/**  WordPress version check  **/
 
 	protected static function wp_version_required() {
-		return self::$wp_vers;
+		return static::$wp_vers;
 	}
 
-	private static function wp_version_check() {
-		if ( version_compare( $GLOBALS['wp_version'], self::wp_version_required(), '<' ) ) {
+	public static function wp_version_check() {
+		if ( version_compare( $GLOBALS['wp_version'], static::wp_version_required(), '<' ) ) {
+			deactivate_plugins( static::$plugin_file );
 			add_action( 'admin_notices', array( 'PMW_Register_Register', 'unsupported_wp_version' ), 10, 2 );
 			return false;
 		}
@@ -71,14 +82,21 @@ class PMW_Register_Register {
 
 	public static function unsupported_wp_version() {
 		$short = __( '&#151; You are running an unsupported version of WordPress.', 'tcc-privacy' );
-		$long  = sprintf(
-			/* translators: 1: Plugin name  2: Required version of WordPress  3: Current version of WordPress */
-			__( '%1$s requires WordPress %2$s or later and has detected you are running %3$s. Upgrade your WordPress install before activating this plugin.', 'tcc-privacy' ),
-			self::$title,
-			self::wp_version_required(),
+		$long  = static::wp_bad_version_text();
+		self::display_admin_notice( $short, $long );
+	}
+
+	protected static function wp_bad_version_text() {
+		return sprintf(
+			_x(
+				'%1$s requires WordPress %2$s or later and has detected you are running %3$s. Upgrade your WordPress install before using this plugin.',
+				'1: Plugin name  2: Required version of WordPress  3: Current version of WordPress',
+				'tcc-privacy'
+			),
+			static::$title,
+			static::wp_version_required(),
 			$GLOBALS['wp_version']
 		);
-		self::display_admin_notice( $short, $long );
 	}
 
 	private static function display_admin_notice( $short, $long ) {
