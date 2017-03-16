@@ -6,7 +6,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	protected $privacy = null;
 	protected $setting = 'options-general.php?page=privacy';
-
+	protected $tab     = 'privacy';
 
 	use PMW_Trait_Singleton;
 
@@ -33,8 +33,8 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	}
 
 	public function add_actions() {
+		add_action( 'wp_version_check', array( $this, 'add_privacy_filters' ) );
 		if ( is_admin() ) {
-			add_action( 'wp_version_check', array( $this, 'add_privacy_filters' ) );
 			add_action( 'admin_menu', array( PMW_Form_Privacy::instance(), 'add_menu_option' ) );
 		}
 		parent::add_actions();
@@ -59,6 +59,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	}
 
 	public function add_privacy_options( $options ) {
+		$this->setting = 'admin.php?page=fluidity_options&tab=privacy';
 		$options['Privacy'] = new PMW_Options_Privacy;
 		return $options;
 	}

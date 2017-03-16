@@ -84,7 +84,7 @@ abstract class PMW_Plugin_Plugin {
 		if ( strpos( $file, $this->plugin ) > -1 ) {
 			unset( $links['edit'] );
 			if ( is_plugin_active( $file ) ) { // NOTE:  how would this ever get run if the plugin is not active?  why do we need this check?
-				$url   = ( $this->setting ) ? $this->setting : admin_url( "admin.php?page=fluidity_options&tab={$this->tab}" );
+				$url   = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
 				$link  = array('settings' => sprintf( '<a href="%1$s"> %2$s </a>', $url, __( 'Settings', 'tcc-plugin' ) ) );
 				$links = array_merge( $link, $links );
 			}

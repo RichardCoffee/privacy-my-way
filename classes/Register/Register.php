@@ -31,6 +31,7 @@ class PMW_Register_Register {
 
 	#	https://github.com/GlotPress/GlotPress-WP/blob/develop/glotpress.php
 	#	https://pento.net/2014/02/18/dont-let-your-plugin-be-activated-on-incompatible-sites/
+	#	https://buddypress.trac.wordpress.org/attachment/ticket/7196/7196.diff
 
 	/**  PHP version check  **/
 
@@ -40,7 +41,6 @@ class PMW_Register_Register {
 
 	public static function php_version_check() {
 		if ( version_compare( phpversion(), static::php_version_required(), '<' ) ) {
-			deactivate_plugins( static::$plugin_file );
 			add_action( 'admin_notices', array( 'PMW_Register_Register', 'unsupported_php_version' ), 10, 2 );
 			return false;
 		}
@@ -73,7 +73,6 @@ class PMW_Register_Register {
 
 	public static function wp_version_check() {
 		if ( version_compare( $GLOBALS['wp_version'], static::wp_version_required(), '<' ) ) {
-			deactivate_plugins( static::$plugin_file );
 			add_action( 'admin_notices', array( 'PMW_Register_Register', 'unsupported_wp_version' ), 10, 2 );
 			return false;
 		}
