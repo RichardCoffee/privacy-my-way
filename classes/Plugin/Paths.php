@@ -31,20 +31,21 @@ class PMW_Plugin_Paths {
 		$theme_check = get_theme_file_path( $file );
 		if ( file_exists( $theme_check ) ) {
 			$file_path = $theme_check;
-		} else if ( file_exists( WP_PLUGIN_DIR . '/'. $file ) ) {
-			$file_path = WP_PLUGIN_DIR . '/'. $file;
+		} else if ( file_exists( $this->dir . $file ) ) {
+			$file_path = $this->dir . $file;
 		}
 		return $file_path;
 	}
 
 	public function get_plugin_file_uri( $file ) {
+		$file_uri    = false;
 		$theme_check = get_theme_file_path( $file );
 		if ( file_exists( $theme_check ) ) {
-			$file_path = get_theme_file_uri( $file );
+			$file_uri = get_theme_file_uri( $file );
 		} else {
-			$file_path = plugins_url( $file, $this->file );
+			$file_uri = plugins_url( $file, $this->file );
 		}
-		return $file_path;
+		return $file_uri;
 	}
 
 

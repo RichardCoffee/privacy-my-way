@@ -10,7 +10,7 @@
  */
 trait PMW_Trait_ParseArgs {
 
-	private function parse_args( $args ) {
+	protected function parse_args( $args ) {
 		if ( ! $args ) return;
 		foreach( $args as $prop => $value ) {
 			if ( property_exists( $this, $prop ) ) {
@@ -19,7 +19,7 @@ trait PMW_Trait_ParseArgs {
 		}
 	}
 
-	private function parse_all_args( $args ) {
+	protected function parse_all_args( $args ) {
 		if ( ! $args ) return;
 		foreach( $args as $prop => $value ) {
 			$this->{$prop} = $value;

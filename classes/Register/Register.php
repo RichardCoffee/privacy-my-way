@@ -2,7 +2,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-
 class PMW_Register_Register {
 
 	protected static $options  = 'about';
@@ -58,12 +57,14 @@ class PMW_Register_Register {
 			_x(
 				'%1$s requires PHP version %2$s, version %3$s detected.  Please upgrade your PHP before attempting to use this plugin. ',
 				'1: Plugin name   2: php version required  3: php version detected',
-				'tcc-privacy' ),
+				'tcc-privacy'
+			),
 			static::$title,
 			static::$php_vers,
 			phpversion()
 		);
 	}
+
 
 	/**  WordPress version check  **/
 
@@ -117,17 +118,23 @@ class PMW_Register_Register {
 
 	/**  Turn things on  **/
 
-	protected static function create_new_page( $new ) {
-		$page = get_page_by_title( $new['post_title'] ); // FIXME: should get page by slug instead
-		if ( $page ) {
-			$class = get_class( $page );
-			foreach( $new as $key => $value ) {
-				if ( property_exists( $class, $key ) ) {
-					$page->$key = $value;
+	protected static function create_new_page( $new = array() ) {
+		if ( $new ) {
+			$page = false;
+			if ( ! empty( $new['post_name'] ) ) {
+				global $wpdb;
+				$page_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_name = '$slug' AND post_type = 'page'" );
+				if ( $page_id ) {
+					$page = get_post( $page_id );
 				}
 			}
-			wp_update_post( $page );
-		} else {
+			if ( ! $page && ! empty( $new['post_title'] ) ) {
+				$page = get_page_by_title( $new['post_title'] );
+			}
+			if ( $page ) {
+				$new = array_merge( (array) $page, $new );
+				unset( $new['ID'] );
+			}
 			wp_insert_post( $new );
 		}
 	}
