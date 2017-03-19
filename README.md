@@ -15,7 +15,16 @@ This plugin will enable you to finely control all the information that the WordP
 
 ## Installation
 
-### Manual
+### Releases
+
+1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
+2.  Copy the `privacy-my-way` directory into your WordPress plugin directory.  Remove the version number when doing so.
+3.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
+4.  Either click on the Settings link, or go to Dashboard->Setting->Privacy My Way, to edit and save the options.
+
+Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
+
+### Development
 
 #### SSH
 
@@ -35,9 +44,6 @@ This plugin will enable you to finely control all the information that the WordP
 5.  Either click on the Settings link, or go to Dashboard->Settings->Privacy My Way, to edit and save the options.
 6.  Open an issue on github about what went wrong.
 
-## Updates
-
-Updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
 
 # Warning
 
