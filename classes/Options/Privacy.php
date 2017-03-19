@@ -36,7 +36,7 @@ class PMW_Options_Privacy {
 	}
 
 	public function title_description() {
-		_e( 'Control the information that WordPress collects from your site.  The default settings here duplicate what WordPress currently collects.', 'tcc-privacy' );
+		esc_html_e( 'Control the information that WordPress collects from your site.  The default settings here duplicate what WordPress currently collects.', 'tcc-privacy' );
 	}
 
 	public function options_layout( $all = false ) {
@@ -62,8 +62,8 @@ class PMW_Options_Privacy {
 				'label'   => __( 'Multi-Site', 'tcc-privacy' ),
 				'render'  => 'radio',
 				'source'  => array(
-					'yes'  => __( "Yes - Let WordPress know if you are running a multi-site blog.", 'tcc-privacy' ),
-					'no'   => __( "No -- Tell WordPress you are running just a single blog.", 'tcc-privacy' ),
+					'yes'  => __( 'Yes - Let WordPress know if you are running a multi-site blog.', 'tcc-privacy' ),
+					'no'   => __( 'No -- Tell WordPress you are running just a single blog.', 'tcc-privacy' ),
 				),
 				'extra_html' => $extra_html,
 				'change'  => 'showhidePosi( this, ".privacy-multi-option", "yes" );',

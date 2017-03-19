@@ -3,10 +3,11 @@
 
 class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
-
-	protected $privacy = null;
-	protected $setting = 'options-general.php?page=privacy';
-	protected $tab     = 'privacy';
+	private   $checker  = null;
+	protected $privacy  = null;
+	protected $puc_vers = '4.0.3';
+	protected $setting  = 'options-general.php?page=privacy';
+	protected $tab      = 'privacy';
 
 	use PMW_Trait_Singleton;
 
@@ -19,6 +20,8 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 		register_deactivation_hook( $this->paths->file, array( 'PMW_Register_Privacy', 'deactivate' ) );
 		register_uninstall_hook(    $this->paths->file, array( 'PMW_Register_Privacy', 'uninstall'  ) );
+
+		$this->load_update_checker();
 
 		$args = array(
 			'text_domain' => 'Text Domain',
@@ -46,8 +49,6 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		parent::add_filters();
 	}
 
-	public function enqueue_scripts() { }
-
 	public function add_privacy_filters( $locale = '' ) {
 		if ( ! function_exists( 'random_int' ) ) {
 			# PHP 7.0 compatibility
@@ -62,6 +63,15 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		$this->setting = 'admin.php?page=fluidity_options&tab=privacy';
 		$options['Privacy'] = new PMW_Options_Privacy;
 		return $options;
+	}
+
+	private function load_update_checker() {
+		require_once( $this->paths->dir . 'assets/plugin-update-checker-' . $this->puc_vers . '/plugin-update-checker.php' );
+		$this->checker = Puc_v4_Factory::buildUpdateChecker(
+			'https://github.com/RichardCoffee/privacy-my-way/',
+			$this->paths->file,
+			'privacy-my-way'
+		);
 	}
 
 

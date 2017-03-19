@@ -11,13 +11,13 @@
  *  Note:  if $this->debug is set to true, then it may fill up your log file... ;-)
  */
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 
 class Privacy_My_Way {
 
-	protected $debug   = false;        #  set to true to enable logging
-	protected $force   = false;        #  can be used to force a logging entry on a one time basis
+	protected $debug   =  false;       #  set to true to enable logging
+	protected $force   =  false;       #  can be used to force a logging entry on a one time basis
 	protected $logging = 'log_entry';  #  set to a valid logging function - must be able to accept a variable number of parameters
 	protected $options;
 
@@ -65,7 +65,7 @@ class Privacy_My_Way {
 					$count = false;
 					break;
 				case 'some':
-					$count = random_int(1, $users);
+					$count = random_int( 1, $users );
 					break;
 				case 'one':
 					$count = 1;
@@ -116,7 +116,7 @@ class Privacy_My_Way {
 			return $preempt;
 		}
 		#	only act on requests to api.wordpress.org
-		if  ( ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
+		if ( ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/themes/update-check/'  ) === false )
 			//  FIXME:  I have no way of testing this or knowing what the object looks like.
@@ -133,7 +133,7 @@ class Privacy_My_Way {
 		$response = wp_remote_request( $url, $args );
 		//	response really seems to have a lot of duplicated data in it.
 		if ( is_wp_error( $response ) ) {
-			$this->force = true;
+			$this->force = true;  #  Log it.
 			$this->logging( $url, $response );
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
@@ -143,17 +143,17 @@ class Privacy_My_Way {
 		return $response;
 	}
 
-/**
- *  @brief  Strip site URL from headers & user-agent.
- *
- *		I would consider including the url in user-agent as a matter of courtesy.
- *		Besides, what is the point in not giving them your website url?  Don't
- *		you want more people to see it?  Privacy does not mean you shouldn't say
- *		hi to your neighbors. I really think this whole header section is a moot
- *		point.  Also, what if the devs at wordpress.org have decided to cause the
- *		version check/update to fail because of no url?
- *
- */
+	/**
+	 *  @brief  Strip site URL from headers & user-agent.
+	 *
+	 *		I would consider including the url in user-agent as a matter of courtesy.
+	 *		Besides, what is the point in not giving them your website url?  Don't
+	 *		you want more people to see it?  Privacy does not mean you shouldn't say
+	 *		hi to your neighbors. I really think this whole header section is a moot
+	 *		point.  Also, what if the devs at wordpress.org have decided to cause the
+	 *		version check/update to fail because of no url?
+	 *
+	 */
 	protected function strip_site_url( $args ) {
 		if ( ! isset( $args['_pmw_privacy_strip_site'] ) || ( ! $args['_pmw_privacy_strip_site'] ) ) {
 			if ( $this->options['blog'] === 'no' ) {
@@ -240,7 +240,7 @@ class Privacy_My_Way {
 						}
 						$plugins->active = $new_set;
 					}
-					$this->logging('plugins:  ' . $this->options['plugins'],$plugins);
+					$this->logging( 'plugins:  ' . $this->options['plugins'], $plugins );
 					$args['body']['plugins'] = wp_json_encode( $plugins );
 					$args['_pmw_privacy_filter_plugins'] = true;
 				}
@@ -254,7 +254,7 @@ class Privacy_My_Way {
 			if ( ! isset( $args['_pmw_privacy_filter_themes'] ) || ( ! $args['_pmw_privacy_filter_themes'] ) ) {
 				if ( ! empty( $args['body']['themes'] ) ) {
 					$themes = json_decode( $args['body']['themes'] );
-					$this->logging($url,$themes);
+					$this->logging( $url, $themes );
 					#	Report no themes installed
 					if ( $this->options['themes'] === 'none' ) {
 						$themes = new stdClass;
@@ -308,8 +308,8 @@ class Privacy_My_Way {
 	protected function filter_url( $url ) {
 		$orig = $url;
 		#$keys = array( 'php', 'locale', 'mysql', 'local_package', 'blogs', 'users', 'multisite_enabled', 'initial_db_version',);
-		$url_array = parse_url( $url );
-		$this->logging($url_array);
+		$url_array = wp_parse_url( $url );
+		$this->logging( $url_array );
 		#	Do we need to filter?
 		if ( isset( $url_array['query'] ) ) {
 			$arg_array = wp_parse_args( $url_array['query'] );

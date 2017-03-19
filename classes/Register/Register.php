@@ -18,10 +18,10 @@ class PMW_Register_Register {
 
 	public static function activate() {
 		if ( ! static::php_version_check() ) {
-			wp_die( static::php_bad_version_text() );
+			wp_die( esc_html( static::php_bad_version_text() ) );
 		}
 		if ( ! static::wp_version_check() ) {
-			wp_die( static::wp_bad_version_text() );
+			wp_die( esc_html( static::wp_bad_version_text() ) );
 		}
 	}
 

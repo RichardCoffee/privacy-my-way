@@ -19,20 +19,18 @@ trait PMW_Trait_Magic {
 		} else if ( property_exists( $this, $string ) ) {
 			$return = $this->$string;
 		}
-		if ( ! $return ) {
-			log_entry( 'unknown method called:  ' . $string, 'stack' );
-		}
 		return $return;
 	}
 
-	public function __get($name) {
-		if (property_exists($this,$name)) {
-			return $this->$name; } #  Allow read access to private/protected variables
+	public function __get( $name ) {
+		if ( property_exists( $this, $name ) ) {
+			return $this->$name;  #  Allow read access to private/protected variables
+		}
 		return null;
 	}
 
-	public function __isset($name) {
-		return isset($this->$name); #  Allow read access to private/protected variables
+	public function __isset( $name ) {
+		return isset( $this->$name ); #  Allow read access to private/protected variables
 	} //*/
 
 	public static function register__call( $method, $alias = false ) {

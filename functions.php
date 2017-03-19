@@ -5,8 +5,7 @@ include_once( 'debugging.php' );
 function pmw_privacy_class_loader( $class ) {
 	if ( substr( $class, 0, 4 ) === 'PMW_' ) {
 		$load = str_replace( '_', '/', substr( $class, ( strpos( $class, '_' ) + 1 ) ) );
-		$stem = "/classes/$load.php";
-		$file = PMW_PRIVACY_DIR . $stem;
+		$file = PMW_PRIVACY_DIR . '/classes/' . $load . '.php';
 		if ( is_readable( $file ) ) {
 			include $file;
 		}

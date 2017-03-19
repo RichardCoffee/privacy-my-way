@@ -3,8 +3,7 @@ error_log
 *.swp
 **/*.swp
 logs
-old
-old/*
 .sass-cache
 .sass-cache/*
 css/*.map
+.DS_Store # OS X file

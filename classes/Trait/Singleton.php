@@ -10,35 +10,35 @@ trait PMW_Trait_Singleton {
 	private static $instance;
 
 	public static function instance() {
-		if ( ! (self::$instance instanceof self) ) {
+		if ( ! ( self::$instance instanceof self ) ) {
 			self::$instance = new self();
 		}
 		return self::$instance;
 	}
 
 	public static function get_instance( $args = array() ) {
-		if ( ! (self::$instance instanceof self) ) {
+		if ( ! ( self::$instance instanceof self ) ) {
 			self::$instance = new self( $args );
 		}
 		return self::$instance;
 	}
 
 	public function __clone() {
-		$message = __( 'This class can not be cloned.' , 'tcc-privacy') . ' * ' . debug_calling_function();
+		$message = __( 'This class can not be cloned.' , 'tcc-privacy' ) . ' * ' . debug_calling_function();
 		$version = ( isset( $this->version ) ) ? $this->version : '0.0.0';
-		_doing_it_wrong( __FUNCTION__, $message, $version );
+		_doing_it_wrong( __FUNCTION__, esc_html( $message ), esc_html( $version ) );
 	}
 
 	public function __sleep() {
-		$message = __( 'This class can not be serialized.' , 'tcc-privacy') . ' * ' . debug_calling_function();
+		$message = __( 'This class can not be serialized.' , 'tcc-privacy' ) . ' * ' . debug_calling_function();
 		$version = ( isset( $this->version ) ) ? $this->version : '0.0.0';
-		_doing_it_wrong( __FUNCTION__, $message, $version );
+		_doing_it_wrong( __FUNCTION__, esc_html( $message ), esc_html( $version ) );
 	}
 
 	public function __wakeup() {
-		$message = __( 'This class can not be unserialized.' , 'tcc-privacy') . ' * ' . debug_calling_function();
+		$message = __( 'This class can not be unserialized.' , 'tcc-privacy' ) . ' * ' . debug_calling_function();
 		$version = ( isset( $this->version ) ) ? $this->version : '0.0.0';
-		_doing_it_wrong( __FUNCTION__, $message, $version );
+		_doing_it_wrong( __FUNCTION__, esc_html( $message ), esc_html( $version ) );
 	}
 
 
