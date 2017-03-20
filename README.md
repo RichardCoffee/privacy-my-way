@@ -4,8 +4,7 @@ This is beta code.  Not guaranteed to be functional.
 
 Control the information that your wordpress site is sending to wordpress.org
 
-Requires at least: WordPress 4.7 - `get_theme_file_path()`, `get_theme_file_uri()`
-                   PHP 5.3.6 - traits
+Requires at least: WordPress 4.7 and PHP 5.3.6
 
 Tested up to: WordPress 4.7.3
 

@@ -18,25 +18,18 @@ active.
 
 This plugin is not available from the WordPress repository, and must be installed manually.
 
-= SSH =
 
-1.  SSH onto your site.
-2.  'cd' to your plugin directory.
-3.  Clone this repository.
-4.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
-5.  Either click on the Settings link, or go to Dashboard->Setting->Privacy My Way, to edit and save the options.
-6.  Open an issue on github about what went wrong.
+1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
+2.  Copy the `privacy-my-way` directory into your WordPress plugin directory.  Remove the version number when doing so.
+3.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
+4.  Either click on the Settings link, or go to Dashboard->Setting->Privacy My Way, to edit and save the options.
 
-= FTP =
-
-1.  Clone the repository to your computer.
-2.  FTP to your site.
-3.  Using your FTP client copy the repository into your server's WordPress plugin directory.  You can delete the .git folder on the server, if you need the space...
-4.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
-5.  Either click on the Settings link, or go to Dashboard->Settings->Privacy My Way, to edit and save the options.
-6.  Open an issue on github about what went wrong.
+Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
 
 == Changelog ==
+
+= 1.1.0 =
+* add use of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker)
 
 = 1.0.0 =
 * Initial release
