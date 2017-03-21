@@ -44,7 +44,7 @@ class Privacy_My_Way {
 		}
 		$this->options = $options;
 		#	check logging option
-		if ( is_string( $this->logging ) {
+		if ( is_string( $this->logging ) ) {
 			if ( ! function_exists( $this->logging ) ) {
 				$this->logging = '';
 			}
