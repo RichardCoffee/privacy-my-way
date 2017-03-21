@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 
 class Privacy_My_Way {
 
-	protected $debug   =  false;       #  set to true to enable logging
+	protected $debug   =  true;       #  set to true to enable logging
 	protected $force   =  false;       #  can be used to force a logging entry on a one time basis
 	protected $logging = 'log_entry';  #  set to a valid logging function - must be able to accept a variable number of parameters
 	protected $options;
@@ -43,6 +43,18 @@ class Privacy_My_Way {
 			update_option( 'tcc_options_privacy', $options );
 		}
 		$this->options = $options;
+		#	check logging option
+		if ( is_string( $this->logging ) {
+			if ( ! function_exists( $this->logging ) ) {
+				$this->logging = '';
+			}
+		} else if ( is_array( $this->logging ) ) {
+			if ( ! method_exists( $this->logging[0], $this->logging[1] ) ) {
+				$this->logging = '';
+			}
+		} else {
+			$this->logging = '';
+		}
 	}
 
 	#	Filter triggered on multisite installs, called internally for single site
@@ -94,7 +106,7 @@ class Privacy_My_Way {
 			$count = get_user_count();
 		} else {
 			$users = count_users();
-			$count = $count['total_users'];
+			$count = $users['total_users'];
 		}
 		return $count;
 	}
@@ -189,7 +201,7 @@ class Privacy_My_Way {
 				}
 			}
 			$args['_pmw_privacy_strip_site'] = true;
-		} else { $this->logging($args); }
+		} #else { $this->logging( 'already been here', $args ); }
 		return $args;
 	}
 
@@ -244,7 +256,7 @@ class Privacy_My_Way {
 					$args['body']['plugins'] = wp_json_encode( $plugins );
 					$args['_pmw_privacy_filter_plugins'] = true;
 				}
-			} else { $this->logging( $args ); }
+			} #else { $this->logging( 'already been here', $args ); }
 		}
 		return $args;
 	}
@@ -276,6 +288,7 @@ class Privacy_My_Way {
 						$theme_filter  = $this->options['theme_list'];
 						#	Store site active theme
 						$active_backup = $themes->active;
+						$this->logging( 'active theme:  ' . $active_backup );
 						#	Loop through our filter list
 						foreach ( $theme_filter as $theme => $status ) {
 							#	Is theme still installed?
@@ -295,12 +308,13 @@ class Privacy_My_Way {
 							}
 						}
 						$themes->active = $active_backup;
+						$this->logging( 'calced active theme:  ' . $active_backup );
 					}
 					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
 					$args['_pmw_privacy_filter_plugins'] = true;
 				}
-			} else { $this->logging( $args ); }
+			} #else { $this->logging( 'already been here', $args ); }
 		}
 		return $args;
 	}

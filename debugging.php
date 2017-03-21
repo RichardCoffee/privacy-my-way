@@ -19,7 +19,7 @@ if ( ! function_exists( 'debug_calling_function' ) ) {
 		$default = $file = $func = $line = 'n/a';
 		$call_trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
 		$total_cnt  = count( $call_trace );
-		#	This is not an exhaustive list
+		#	This is not meant to be an exhaustive list
 		$skip_list  = array(
 			'call_user_func',
 			'call_user_func_array',
