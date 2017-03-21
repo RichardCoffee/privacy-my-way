@@ -11,6 +11,7 @@ Author:            Richard Coffee
 Author URI:        richard.coffee@rtcenterprises.net
 GitHub Plugin URI: https://github.com/RichardCoffee/privacy-my-way
 GitHub Branch:     master
+Stable Tag:        1.1.1
 License:           MIT
 Text Domain:       tcc-privacy
 Domain Path:       /locales

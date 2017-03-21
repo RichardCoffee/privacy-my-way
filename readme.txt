@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 4.7.3
-Stable Tag: 1.0.0
+Stable Tag: 1.1.1
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org
@@ -27,6 +27,14 @@ This plugin is not available from the WordPress repository, and must be installe
 Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
 
 == Changelog ==
+
+= 1.1.1 =
+* Enhancement:  added check for valid logging function.
+* Enhancement:  added header field for GitHub Updater.
+* Debug:  added more logging, commented out some.
+* Fix: corrected variable reference left over from old code.
+* Minor:  changed some comment text
+
 
 = 1.1.0 =
 * add use of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker)

@@ -22,6 +22,7 @@ This plugin will enable you to finely control all the information that the WordP
 4.  Either click on the Settings link, or go to Dashboard->Setting->Privacy My Way, to edit and save the options.
 
 Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
+Support for [GitHub Updater](https://github.com/afragen/github-updater) is present.
 
 ### Development
 
