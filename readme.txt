@@ -28,6 +28,10 @@ Release updates are handled using [Plugin Update Checker](https://github.com/Yah
 
 == Changelog ==
 
+= 1.1.2 =
+* Fix:  active theme not being reset properly when filtering themes.
+* Debug:  added run_tests methods
+
 = 1.1.1 =
 * Enhancement:  added check for valid logging function.
 * Enhancement:  added header field for GitHub Updater.

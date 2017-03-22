@@ -34,7 +34,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		$this->add_filters();
 
 		if ( WP_DEBUG ) {
-#			$this->run_tests();
+			$this->run_tests();
 		}
 
 	}
@@ -80,18 +80,55 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 			$this->paths->file,
 			'privacy-my-way'
 		);
+log_entry($this->checker);
 	}
 
+
+	/**  Tests  **/
+
 	private function run_tests() {
+		$plugins = get_plugins();
+		$active  = get_option( 'active_plugins', array() );
 		$args = array(
+			'plugins' => array(
+				'function' => 'filter_themes',
+				'url'      => 'https://api.wordpress.org/themes/update-check/',
+				'args'     =>  array(
+					'body' => array(
+						'plugins' => wp_json_encode( compact( 'plugins', 'active' ) ),
+					),
+				),
+			),
 			'themes' => array(
 				'function' => 'filter_themes',
 				'url'      => 'https://api.wordpress.org/themes/update-check/',
-				'args'     =>  wp_get_themes(),
-			)
+				'args'     =>  array(
+					'body' => array(
+						'themes' => wp_json_encode( $this->get_installed_themes() ),
+					),
+				),
+			),
 		);
 		$this->privacy_setup();
 		Privacy_My_Way::get_instance( $args );
+	}
+
+	private function get_installed_themes() {
+		$installed = wp_get_themes();
+		$themes    = array();
+		$active    = get_option( 'stylesheet' );
+		foreach ( $installed as $theme ) {
+			$themes[ $theme->get_stylesheet() ] = array(
+#				'Name'       => $theme->get('Name'),
+#				'Title'      => $theme->get('Name'),
+#				'Version'    => $theme->get('Version'),
+#				'Author'     => $theme->get('Author'),
+#				'Author URI' => $theme->get('AuthorURI'),
+				'Template'   => $theme->get_template(),
+				'Stylesheet' => $theme->get_stylesheet(),
+			);
+		}
+		return compact( 'active', 'themes' );
 	}
 
 

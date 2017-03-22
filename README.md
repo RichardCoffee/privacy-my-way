@@ -1,4 +1,4 @@
-This is beta code.  Not guaranteed to be functional.
+This is beta code.  Not guaranteed to do anything more than take up space on your computer.
 
 # Privacy My Way
 
@@ -10,7 +10,8 @@ Tested up to: WordPress 4.7.3
 
 ## Description
 
-This plugin will enable you to finely control all the information that the WordPress core code sends back to wordpress.org, including your site's url, the number of users you have, what plugins are installed and active, and what themes are installed and active.
+This plugin will enable you to finely control all the information that the WordPress core code sends back to wordpress.org, including your site's url,
+the number of users you have, what plugins are installed and active, and what themes are installed and active.
 
 ## Installation
 
@@ -22,7 +23,7 @@ This plugin will enable you to finely control all the information that the WordP
 4.  Either click on the Settings link, or go to Dashboard->Setting->Privacy My Way, to edit and save the options.
 
 Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
-Support for [GitHub Updater](https://github.com/afragen/github-updater) is present.
+Support for [GitHub Updater](https://github.com/afragen/github-updater) is also present.
 
 ### Development
 
@@ -45,8 +46,30 @@ Support for [GitHub Updater](https://github.com/afragen/github-updater) is prese
 6.  Open an issue on github about what went wrong.
 
 
-# Warning
+### Warning
 
-This is beta code.  Use at your own risk.  I do not expect it to break your site, but if it does, then you get to keep the pieces.  Please do not email them to me.
+This is beta code.  Use at your own risk.  I do not expect it to break your site, but if it does, then you get to keep the pieces.
+Please do not email them to me.
 
 If you are running multisite, please let me know if you have any issues.
+
+## Changelog
+
+= 1.1.2 =
+* Fix:  active theme not being reset properly when filtering themes.
+* Debug:  added run_tests methods
+
+= 1.1.1 =
+* Enhancement:  added check for valid logging function.
+* Enhancement:  added header field for GitHub Updater.
+* Debug:  added more logging, commented out some.
+* Fix: corrected variable reference left over from old code.
+* Minor:  changed some comment text
+
+
+= 1.1.0 =
+* add use of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker)
+
+= 1.0.0 =
+* Initial release
+

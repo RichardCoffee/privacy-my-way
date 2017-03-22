@@ -216,7 +216,6 @@ class Privacy_My_Way {
 				if ( ! empty( $args['body']['plugins'] ) ) {
 					$plugins = json_decode( $args['body']['plugins'] );
 #					$this->logging( $url, $plugins );
-					$this->logging( $args );
 					$new_set = new stdClass;
 					if ( $this->options['plugins'] === 'none' ) {
 						$plugins = $new_set;
@@ -275,9 +274,10 @@ class Privacy_My_Way {
 					$this->logging( $url, $themes );
 					#	Report no themes installed
 					if ( $this->options['themes'] === 'none' ) {
-						$themes = new stdClass;
-						$themes->active = '';
-						$themes->themes = new stdClass;
+						$themes = array(
+							'active' => '',
+							'themes' => array(),
+						);
 					#	Report only active theme, plus parent if active is child
 					} else if ( $this->options['themes'] === 'active' ) {
 						$installed = new stdClass;
@@ -291,32 +291,36 @@ class Privacy_My_Way {
 						$themes->themes = $installed;
 					#	Filter themes
 					} else if ( $this->options['themes'] === 'filter' ) {
-						$theme_filter  = $this->options['theme_list'];
+						$filter = $this->options['theme_list'];
 						#	Store site active theme
-						$active_backup = $themes->active;
+						$active = $themes->active;
 						$this->logging( 0, 'active theme:  ' . $active_backup );
 						#	Loop through our filter list
-						foreach ( $theme_filter as $theme => $status ) {
+						foreach ( $filter as $theme => $status ) {
 							#	Is theme still installed?
 							if ( isset( $themes->themes->$theme ) ) {
 								#	Is the theme being filtered?
 								if ( ( $status === 'no' ) ) {
 									unset( $themes->themes->$theme );
 									#	Is this the active theme?
-									$active_backup = ( $active_backup === $theme ) ? '' : $active_backup;
-									$this->logging( 0, 'unset theme:  ' . $theme, 'active theme:  ' . $active_backup );
+									$active = ( $active === $theme ) ? '' : $active;
+									$this->logging( 0, 'unset theme:  ' . $theme, 'active theme:  ' . $active );
 								} else {
-									#	Should a different active theme be reported?
-									$active_backup = ( $active_backup ) ? $active_backup : $theme;
-									$this->logging( 0, 'current theme:  ' . $theme, 'active theme:  ' . $active_backup );
+									#	Do we need to set a new active theme?
+									$active = ( $active ) ? $active : $theme;
+									$this->logging( 0, 'current theme:  ' . $theme, 'active theme:  ' . $active );
 								}
-							} else {
+							} else {  #  Theme has been deleted
 								#	Is this the active theme?
-								$active_backup = ( $active_backup === $theme ) ? '' : $active_backup;
+								$active = ( $active === $theme ) ? '' : $active;
 							}
 						}
-						$themes->active = $active_backup;
-						$this->logging( 0, 'calced active theme:  ' . $active_backup );
+						if ( empty( $active ) ) {
+							$keys = array_keys( (array) $themes->themes );
+							$active = $keys[0];
+						}
+						$themes->active = $active;
+						$this->logging( 0, 'calced active theme:  ' . $active );
 					}
 					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
