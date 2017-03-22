@@ -4,6 +4,7 @@
 class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	private   $checker  = null;
+	private   $debug    = false;
 	protected $privacy  = null;
 	protected $puc_vers = '4.0.3';
 	protected $setting  = 'options-general.php?page=privacy';
@@ -33,7 +34,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		$this->add_actions();
 		$this->add_filters();
 
-		if ( WP_DEBUG ) {
+		if ( WP_DEBUG && $this->debug ) {
 			$this->run_tests();
 		}
 
