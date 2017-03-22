@@ -16,29 +16,34 @@ defined( 'ABSPATH' ) || exit;
 
 class Privacy_My_Way {
 
-	protected $debug   =  true;       #  set to true to enable logging
+	protected $debug   =  WP_DEBUG;    #  set to true to enable logging
 	protected $force   =  false;       #  can be used to force a logging entry on a one time basis
+	protected $form    =  null;
 	protected $logging = 'log_entry';  #  set to a valid logging function - must be able to accept a variable number of parameters
 	protected $options;
 
 	use PMW_Trait_Singleton;
 
-	protected function __construct() {
+	protected function __construct( $args = array() ) {
 		$this->get_options();
-		if ( $this->options ) {  #  opt-in only
-			#	These first two filters are multisite only
-			add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
-			add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
-			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
-			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
-			$this->logging( $this );
+		if ( $this->debug && $args ) {
+			$this->run_tests( $args );
+		} else {
+			if ( $this->options ) {  #  opt-in only
+				#	These first two filters are multisite only
+				add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
+				add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
+				add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
+				add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
+			}
 		}
+		$this->logging( $this );
 	}
 
 	protected function get_options() {
 		$options = get_option( 'tcc_options_privacy', array() );
 		if ( ! $options ) {
-			$privacy = new PMW_Options_Privacy;
+			$this->form = new PMW_Options_Privacy;
 			$options = $privacy->get_privacy_defaults();
 			update_option( 'tcc_options_privacy', $options );
 		}
@@ -46,14 +51,14 @@ class Privacy_My_Way {
 		#	check logging option
 		if ( is_string( $this->logging ) ) {
 			if ( ! function_exists( $this->logging ) ) {
-				$this->logging = '';
+				$this->logging = $this->debug = false;
 			}
 		} else if ( is_array( $this->logging ) ) {
 			if ( ! method_exists( $this->logging[0], $this->logging[1] ) ) {
-				$this->logging = '';
+				$this->logging = $this->debug = false;
 			}
 		} else {
-			$this->logging = '';
+			$this->logging = $this->debug = false;
 		}
 	}
 
@@ -210,7 +215,8 @@ class Privacy_My_Way {
 			if ( ! isset( $args['_pmw_privacy_filter_plugins'] ) || ( ! $args['_pmw_privacy_filter_plugins'] ) ) {
 				if ( ! empty( $args['body']['plugins'] ) ) {
 					$plugins = json_decode( $args['body']['plugins'] );
-					$this->logging( $url, $plugins );
+#					$this->logging( $url, $plugins );
+					$this->logging( $args );
 					$new_set = new stdClass;
 					if ( $this->options['plugins'] === 'none' ) {
 						$plugins = $new_set;
@@ -288,7 +294,7 @@ class Privacy_My_Way {
 						$theme_filter  = $this->options['theme_list'];
 						#	Store site active theme
 						$active_backup = $themes->active;
-						$this->logging( 'active theme:  ' . $active_backup );
+						$this->logging( 0, 'active theme:  ' . $active_backup );
 						#	Loop through our filter list
 						foreach ( $theme_filter as $theme => $status ) {
 							#	Is theme still installed?
@@ -298,9 +304,11 @@ class Privacy_My_Way {
 									unset( $themes->themes->$theme );
 									#	Is this the active theme?
 									$active_backup = ( $active_backup === $theme ) ? '' : $active_backup;
+									$this->logging( 0, 'unset theme:  ' . $theme, 'active theme:  ' . $active_backup );
 								} else {
 									#	Should a different active theme be reported?
 									$active_backup = ( $active_backup ) ? $active_backup : $theme;
+									$this->logging( 0, 'current theme:  ' . $theme, 'active theme:  ' . $active_backup );
 								}
 							} else {
 								#	Is this the active theme?
@@ -308,7 +316,7 @@ class Privacy_My_Way {
 							}
 						}
 						$themes->active = $active_backup;
-						$this->logging( 'calced active theme:  ' . $active_backup );
+						$this->logging( 0, 'calced active theme:  ' . $active_backup );
 					}
 					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
@@ -357,6 +365,14 @@ class Privacy_My_Way {
 			call_user_func_array( $this->logging, func_get_args() );
 		}
 		$this->force = false;
+	}
+
+	private function run_tests( $args ) {
+		if ( isset( $args['themes'] ) ) {
+			$test_data = $args['themes'];
+			$themes = $this->filter_themes( $test_data['url'], $test_data['args'] );
+			$this->logging( $test_data, $themes );
+		}
 	}
 
 
