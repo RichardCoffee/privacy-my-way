@@ -294,7 +294,7 @@ class Privacy_My_Way {
 						$filter = $this->options['theme_list'];
 						#	Store site active theme
 						$active = $themes->active;
-						$this->logging( 0, 'active theme:  ' . $active_backup );
+						$this->logging( 0, 'active theme:  ' . $active );
 						#	Loop through our filter list
 						foreach ( $filter as $theme => $status ) {
 							#	Is theme still installed?
