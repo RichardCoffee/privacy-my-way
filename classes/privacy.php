@@ -151,11 +151,11 @@ class Privacy_My_Way {
 		//	response really seems to have a lot of duplicated data in it.
 		if ( is_wp_error( $response ) ) {
 			$this->force = true;  #  Log it.
-			$this->logging( $url, $response );
+			$this->logging( 'response error', $url, $response );
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$body = json_decode( $body, true );
-			$this->logging( $body );
+			$this->logging( 'response body', $body );
 		}
 		return $response;
 	}
@@ -294,7 +294,7 @@ class Privacy_My_Way {
 						$filter = $this->options['theme_list'];
 						#	Store site active theme
 						$active = $themes->active;
-						$this->logging( 0, 'active theme:  ' . $active );
+#						$this->logging( 0, 'active theme:  ' . $active );
 						#	Loop through our filter list
 						foreach ( $filter as $theme => $status ) {
 							#	Is theme still installed?
@@ -304,11 +304,11 @@ class Privacy_My_Way {
 									unset( $themes->themes->$theme );
 									#	Is this the active theme?
 									$active = ( $active === $theme ) ? '' : $active;
-									$this->logging( 0, 'unset theme:  ' . $theme, 'active theme:  ' . $active );
+#									$this->logging( 0, 'unset theme:  ' . $theme, 'active theme:  ' . $active );
 								} else {
 									#	Do we need to set a new active theme?
 									$active = ( $active ) ? $active : $theme;
-									$this->logging( 0, 'current theme:  ' . $theme, 'active theme:  ' . $active );
+#									$this->logging( 0, 'current theme:  ' . $theme, 'active theme:  ' . $active );
 								}
 							} else {  #  Theme has been deleted
 								#	Is this the active theme?
@@ -320,11 +320,11 @@ class Privacy_My_Way {
 							$active = $keys[0];
 						}
 						$themes->active = $active;
-						$this->logging( 0, 'calced active theme:  ' . $active );
+#						$this->logging( 0, 'calced active theme:  ' . $active );
 					}
 					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
-					$args['_pmw_privacy_filter_plugins'] = true;
+					$args['_pmw_privacy_filter_themes'] = true;
 				}
 			} #else { $this->logging( 'already been here', $args ); }
 		}
