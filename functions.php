@@ -1,6 +1,6 @@
 <?php
 
-include_once( 'debugging.php' );
+include_once( 'includes/debugging.php' );
 
 function pmw_privacy_class_loader( $class ) {
 	if ( substr( $class, 0, 4 ) === 'PMW_' ) {

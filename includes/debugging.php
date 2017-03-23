@@ -64,8 +64,7 @@ if ( ! function_exists( 'log_entry' ) ) {
 			$args  = func_get_args();
 			$depth = 1;
 			if ( $args && is_int( $args[0] ) ) {
-				$depth = $args[0];
-				unset( $args[0] );
+				$depth = array_shift( $args );
 			}
 			if ( $depth ) { error_log( 'source:  ' . debug_calling_function( $depth ) ); }
 			foreach( $args as $message ) {
