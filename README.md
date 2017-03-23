@@ -61,7 +61,7 @@ If you are running multisite, please let me know if you have any issues.
 
 = 1.1.1 =
 * Enhancement:  added check for valid logging function.
-* Enhancement:  added header field for GitHub Updater.
+* Enhancement:  added header field for [GitHub Updater](https://github.com/afragen/github-updater).
 * Debug:  added more logging, commented out some.
 * Fix: corrected variable reference left over from old code.
 * Minor:  changed some comment text
