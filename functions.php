@@ -14,15 +14,14 @@ function pmw_privacy_class_loader( $class ) {
 spl_autoload_register( 'pmw_privacy_class_loader' ); //*/
 
 if ( ! function_exists( 'pmw_privacy' ) ) {
-	function pmw_privacy( $option ) {
+	function pmw_privacy( $option, $value = '' ) {
 		static $data;
-		$request = '';
 		if ( empty( $data ) ) {
 			$data = get_option( 'tcc_options_privacy' );
 		}
 		if ( isset( $data[ $option ] ) ) {
-			$request = $data[ $option ];
+			$value = $data[ $option ];
 		}
-		return $request;
+		return $value;
 	}
 }
