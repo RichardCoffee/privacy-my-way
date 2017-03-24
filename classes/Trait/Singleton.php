@@ -7,18 +7,25 @@
 
 trait PMW_Trait_Singleton {
 
-	private static $instance;
+	protected static $abort_construct;
+	private   static $instance;
 
 	public static function instance() {
 		if ( ! ( self::$instance instanceof self ) ) {
-			self::$instance = new self();
+			$instance = new self();
+			if ( ! self::$abort_construct ) {
+				self::$instance = $instance;
+			}
 		}
 		return self::$instance;
 	}
 
 	public static function get_instance( $args = array() ) {
 		if ( ! ( self::$instance instanceof self ) ) {
-			self::$instance = new self( $args );
+			$instance = new self( $args );
+			if ( ! self::$abort_construct ) {
+				self::$instance = $instance;
+			}
 		}
 		return self::$instance;
 	}

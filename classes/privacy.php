@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  *  sources: https://core.trac.wordpress.org/ticket/16778
  *           https://gist.github.com/mattyrob/2e492e5ecb92233eb307f7efd039c121
@@ -16,26 +16,20 @@ defined( 'ABSPATH' ) || exit;
 
 class Privacy_My_Way {
 
-	protected $debug   =  WP_DEBUG;    #  set to true to enable logging
-	protected $force   =  false;       #  can be used to force a logging entry on a one time basis
-	protected $form    =  null;
-	protected $logging = 'log_entry';  #  set to a valid logging function - must be able to accept a variable number of parameters
-	protected $options;
+	protected $form = null;  #  object -- PMW_Form_Privacy, child of PMW_Form_Admin
+	protected $options;      #  array --- privacy options
 
+	use PMW_Trait_Logging;
 	use PMW_Trait_Singleton;
 
 	protected function __construct( $args = array() ) {
 		$this->get_options();
-		if ( $this->debug && $args ) {
-			$this->run_tests( $args );
-		} else {
-			if ( $this->options ) {  #  opt-in only
-				#	These first two filters are multisite only
-				add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
-				add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
-				add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
-				add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
-			}
+		if ( $this->options ) {  #  opt-in only
+			#	These first two filters are multisite only
+			add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
+			add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
+			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
+			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
 		}
 		$this->logging( $this );
 	}
@@ -48,18 +42,6 @@ class Privacy_My_Way {
 			update_option( 'tcc_options_privacy', $options );
 		}
 		$this->options = $options;
-		#	check logging option
-		if ( is_string( $this->logging ) ) {
-			if ( ! function_exists( $this->logging ) ) {
-				$this->logging = $this->debug = false;
-			}
-		} else if ( is_array( $this->logging ) ) {
-			if ( ! method_exists( $this->logging[0], $this->logging[1] ) ) {
-				$this->logging = $this->debug = false;
-			}
-		} else {
-			$this->logging = $this->debug = false;
-		}
 	}
 
 	#	Filter triggered on multisite installs, called internally for single site
@@ -167,7 +149,7 @@ class Privacy_My_Way {
 	 *		Besides, what is the point in not giving them your website url?  Don't
 	 *		you want more people to see it?  Privacy does not mean you shouldn't say
 	 *		hi to your neighbors. I really think this whole header section is a moot
-	 *		point.  Also, what if the devs at wordpress.org have decided to cause the
+	 *		point.  Also, what if the devs at wordpress.org decide to cause the
 	 *		version check/update to fail because of no url?
 	 *
 	 */
@@ -180,7 +162,7 @@ class Privacy_My_Way {
 				if ( isset( $args['user-agent'] ) ) {
 					$args['user-agent'] = sprintf( 'WordPress/%s', $GLOBALS['wp_version'] );
 				}
-				#	Hmmm, really?
+				#	Next three checks taken from resources.  I have not seen these in testing...
 				if ( isset( $args['headers']['user-agent'] ) ) {
 					$args['headers']['user-agent'] = sprintf( 'WordPress/%s', $GLOBALS['wp_version'] );
 					$this->logging( 'header:user-agent has been seen.' );
@@ -190,7 +172,7 @@ class Privacy_My_Way {
 					$args['headers']['User-Agent'] = sprintf( 'WordPress/%s', $GLOBALS['wp_version'] );
 					$this->logging( 'header:User-Agent has been seen.' );
 				}
-				#	Why remove this? I have not seen it...
+				#	I have not seen it...
 				if ( isset( $args['headers']['Referer'] ) ) {
 					unset( $args['headers']['Referer'] );
 					$this->logging( 'headers:Referer has been deleted.' );
@@ -257,7 +239,7 @@ class Privacy_My_Way {
 						}
 						$plugins->active = $new_set;
 					}
-					$this->logging( 'plugins:  ' . $this->options['plugins'], $plugins );
+					$this->logging( 'plugins option:  ' . $this->options['plugins'], $plugins );
 					$args['body']['plugins'] = wp_json_encode( $plugins );
 					$args['_pmw_privacy_filter_plugins'] = true;
 				}
@@ -294,7 +276,6 @@ class Privacy_My_Way {
 						$filter = $this->options['theme_list'];
 						#	Store site active theme
 						$active = $themes->active;
-#						$this->logging( 0, 'active theme:  ' . $active );
 						#	Loop through our filter list
 						foreach ( $filter as $theme => $status ) {
 							#	Is theme still installed?
@@ -304,23 +285,21 @@ class Privacy_My_Way {
 									unset( $themes->themes->$theme );
 									#	Is this the active theme?
 									$active = ( $active === $theme ) ? '' : $active;
-#									$this->logging( 0, 'unset theme:  ' . $theme, 'active theme:  ' . $active );
 								} else {
 									#	Do we need to set a new active theme?
 									$active = ( $active ) ? $active : $theme;
-#									$this->logging( 0, 'current theme:  ' . $theme, 'active theme:  ' . $active );
 								}
 							} else {  #  Theme has been deleted
 								#	Is this the active theme?
 								$active = ( $active === $theme ) ? '' : $active;
 							}
 						}
+						#	Do we need to set a new active theme?
 						if ( empty( $active ) ) {
-							$keys = array_keys( (array) $themes->themes );
+							$keys   = array_keys( (array) $themes->themes );
 							$active = $keys[0];
 						}
 						$themes->active = $active;
-#						$this->logging( 0, 'calced active theme:  ' . $active );
 					}
 					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
@@ -364,14 +343,7 @@ class Privacy_My_Way {
 
 	/*  Debugging  */
 
-	protected function logging() {
-		if ( $this->logging && ( $this->debug || $this->force ) ) {
-			call_user_func_array( $this->logging, func_get_args() );
-		}
-		$this->force = false;
-	}
-
-	private function run_tests( $args ) {
+	public function run_tests( $args ) {
 		if ( isset( $args['themes'] ) ) {
 			$test_data = $args['themes'];
 			$themes = $this->filter_themes( $test_data['url'], $test_data['args'] );
