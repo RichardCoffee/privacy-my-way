@@ -4,7 +4,6 @@
 class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	private   $checker  = null;
-	private   $debug    = true;
 	protected $privacy  = null;
 	protected $puc_vers = '4.0.3';
 	protected $setting  = 'options-general.php?page=privacy';
@@ -27,7 +26,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		load_plugin_textdomain( $data['text_domain'], false, $this->paths->dir . $data['lang_dir'] );
 		$this->add_actions();
 		$this->add_filters();
-		if ( WP_DEBUG && $this->debug ) {
+		if ( WP_DEBUG && file_exists( WP_CONTENT_DIR . '/run_tests.flg' ) ) {
 			$this->run_tests();
 		}
 	}
