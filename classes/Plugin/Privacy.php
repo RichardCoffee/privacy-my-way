@@ -4,7 +4,7 @@
 class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	private   $checker  = null;
-	private   $debug    = false;
+	private   $debug    = true;
 	protected $privacy  = null;
 	protected $puc_vers = '4.0.3';
 	protected $setting  = 'options-general.php?page=privacy';
