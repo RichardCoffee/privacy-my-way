@@ -31,7 +31,7 @@ abstract class PMW_Plugin_Plugin {
 			$this->state = $this->state_check();
 			$this->schedule_initialize();
 		} else {
-			wp_die( "'__FILE__' must be passed in an associative array with a key of 'file' to the plugin constructor" );
+			static::$abort_construct = true;
 		}
 	}
 

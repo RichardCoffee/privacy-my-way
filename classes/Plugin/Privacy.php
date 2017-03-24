@@ -12,32 +12,24 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	use PMW_Trait_Singleton;
 
-
 	public function initialize() {
-
 		if ( ( ! PMW_Register_Privacy::php_version_check() ) || ( ! PMW_Register_Privacy::wp_version_check() ) ) {
 			return;
 		}
-
 		register_deactivation_hook( $this->paths->file, array( 'PMW_Register_Privacy', 'deactivate' ) );
 		register_uninstall_hook(    $this->paths->file, array( 'PMW_Register_Privacy', 'uninstall'  ) );
-
 		$this->load_update_checker();
-
 		$args = array(
 			'text_domain' => 'Text Domain',
 			'lang_dir'    => 'Domain Path',
 		);
 		$data = get_file_data( $this->paths->file, $args );
-		load_plugin_textdomain( $data['text_domain'], false, $this->paths->plugin . $data['lang_dir'] );
-
+		load_plugin_textdomain( $data['text_domain'], false, $this->paths->dir . $data['lang_dir'] );
 		$this->add_actions();
 		$this->add_filters();
-
 		if ( WP_DEBUG && $this->debug ) {
 			$this->run_tests();
 		}
-
 	}
 
 	public function add_actions() {
@@ -55,16 +47,18 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	}
 
 	private function privacy_setup() {
-		if ( ! function_exists( 'random_int' ) ) {
-			# PHP 7.0 compatibility
-			require_once( $this->paths->dir . 'assets/random_compat/lib/random.php' );
+		if ( ! $this->privacy ) {
+			if ( ! function_exists( 'random_int' ) ) {
+				# PHP 7.0 compatibility
+				require_once( $this->paths->dir . 'assets/random_compat/lib/random.php' );
+			}
+			include_once( $this->paths->dir . 'classes/privacy.php' );
+			$this->privacy = Privacy_My_Way::instance();
 		}
-		include_once( $this->paths->dir . 'classes/privacy.php' );
 	}
 
 	public function add_privacy_filters( $locale = '' ) {
 		$this->privacy_setup();
-		$this->privacy = Privacy_My_Way::instance();
 		return $locale;
 	}
 
@@ -81,19 +75,20 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 			$this->paths->file,
 			'privacy-my-way'
 		);
-log_entry($this->checker);
+#log_entry($this->checker);
 	}
 
 
 	/**  Tests  **/
 
 	private function run_tests() {
+		$this->privacy_setup();
 		$plugins = get_plugins();
 		$active  = get_option( 'active_plugins', array() );
-		$args = array(
+		$args    = array(
 			'plugins' => array(
-				'function' => 'filter_themes',
-				'url'      => 'https://api.wordpress.org/themes/update-check/',
+				'function' => 'filter_plugins',
+				'url'      => 'https://api.wordpress.org/plugins/update-check/',
 				'args'     =>  array(
 					'body' => array(
 						'plugins' => wp_json_encode( compact( 'plugins', 'active' ) ),
@@ -110,8 +105,7 @@ log_entry($this->checker);
 				),
 			),
 		);
-		$this->privacy_setup();
-		Privacy_My_Way::get_instance( $args );
+		$this->privacy->run_tests( $args );
 	}
 
 	private function get_installed_themes() {
