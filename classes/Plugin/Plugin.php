@@ -88,7 +88,7 @@ abstract class PMW_Plugin_Plugin {
 	/**  Template functions **/
 
 	#	used in classes/pagetemplater.php
-	public function get_stylesheet( $file = 'tcc-plugin.css' ) {
+	public function get_stylesheet( $file = 'tcc-privacy.css' ) {
 		return $this->paths->get_plugin_file_path( $file );
 	}
 
@@ -103,7 +103,7 @@ abstract class PMW_Plugin_Plugin {
 			unset( $links['edit'] );
 			if ( is_plugin_active( $file ) ) { // NOTE:  how would this ever get run if the plugin is not active?  why do we need this check?
 				$url   = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
-				$links['settings'] = sprintf( '<a href="%1$s"> %2$s </a>', $url, esc_html__( 'Settings', 'tcc-plugin' ) );
+				$links['settings'] = sprintf( '<a href="%1$s"> %2$s </a>', $url, esc_html__( 'Settings', 'tcc-privacy' ) );
 			}
 		}
 		return $links;
