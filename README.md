@@ -48,28 +48,27 @@ Support for [GitHub Updater](https://github.com/afragen/github-updater) is also 
 
 ### Warning
 
-This is beta code.  Use at your own risk.  I do not expect it to break your site, but if it does, then you get to keep the pieces.
-Please do not email them to me.
+This is beta code.  Use at your own risk.  I do not expect it to break your site, but if it does, then you get to keep the pieces.  Please do not email them to me.
 
 If you are running multisite, please let me know if you have any issues.
 
 ## Changelog
 
-= 1.1.2 =
-* Fix:  active theme not being reset properly when filtering themes.
-* Debug:  added run_tests methods
+### 1.1.2
 
-= 1.1.1 =
+### 1.1.1
+* Enhancement:  updated Plugin and Trait classes
 * Enhancement:  added check for valid logging function.
 * Enhancement:  added header field for [GitHub Updater](https://github.com/afragen/github-updater).
-* Debug:  added more logging, commented out some.
-* Fix: corrected variable reference left over from old code.
+* Debug:  added run_tests methods, now uses flag file
+* Fix:  active theme not being reset properly when filtering themes.
+* Fix:  corrected variable reference left over from old code.
 * Minor:  changed some comment text
 
 
-= 1.1.0 =
+### 1.1.0
 * add use of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker)
 
-= 1.0.0 =
+### 1.0.0
 * Initial release
 
