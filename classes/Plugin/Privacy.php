@@ -4,29 +4,28 @@
 class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	private   $checker  = null;
+	protected $github   = 'https://github.com/RichardCoffee/privacy-my-way/';
 	protected $privacy  = null;
-	protected $puc_vers = '4.0.3';
 	protected $setting  = 'options-general.php?page=privacy';
+	protected $slug     = 'privacy-my-way';
 	protected $tab      = 'privacy';
 
 	use PMW_Trait_Singleton;
 
+
 	public function initialize() {
+
 		if ( ( ! PMW_Register_Privacy::php_version_check() ) || ( ! PMW_Register_Privacy::wp_version_check() ) ) {
 			return;
 		}
+
 		register_deactivation_hook( $this->paths->file, array( 'PMW_Register_Privacy', 'deactivate' ) );
 		register_uninstall_hook(    $this->paths->file, array( 'PMW_Register_Privacy', 'uninstall'  ) );
-		$this->load_update_checker();
-		$args = array(
-			'text_domain' => 'Text Domain',
-			'lang_dir'    => 'Domain Path',
-		);
-		$data = get_file_data( $this->paths->file, $args );
-		load_plugin_textdomain( $data['text_domain'], false, $this->paths->dir . $data['lang_dir'] );
+
 		$this->add_actions();
 		$this->add_filters();
-		if ( WP_DEBUG && file_exists( WP_CONTENT_DIR . '/run_tests.flg' ) ) {
+
+		if ( WP_DEBUG && file_exists( WP_CONTENT_DIR . '/run-tests.flg' ) ) {
 			$this->run_tests();
 		}
 	}
@@ -65,16 +64,6 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		$this->setting = 'admin.php?page=fluidity_options&tab=privacy';
 		$options['Privacy'] = new PMW_Options_Privacy;
 		return $options;
-	}
-
-	private function load_update_checker() {
-		require_once( $this->paths->dir . 'assets/plugin-update-checker-' . $this->puc_vers . '/plugin-update-checker.php' );
-		$this->checker = Puc_v4_Factory::buildUpdateChecker(
-			'https://github.com/RichardCoffee/privacy-my-way/',
-			$this->paths->file,
-			'privacy-my-way'
-		);
-#log_entry($this->checker);
 	}
 
 

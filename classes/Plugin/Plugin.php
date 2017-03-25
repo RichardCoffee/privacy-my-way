@@ -2,14 +2,17 @@
 
 abstract class PMW_Plugin_Plugin {
 
-	protected $admin   = null;
-	public    $dbvers  = '0';
-	public    $paths   = null;  #  PMW_Plugin_Paths object
-	public    $plugin  = '';
-	protected $setting = '';    #  settings link
-	protected $state   = '';
-	protected $tab     = 'about';
-	public    $version = '0.0.0';
+	protected $admin    = null;
+	public    $dbvers   = '0';
+	protected $github   = '';    #  'https://github.com/GithubName/my-plugin-name/';
+	public    $paths    = null;  #  PMW_Plugin_Paths object
+	public    $plugin   = '';
+	private   $puc_vers = '4.0.3';
+	protected $setting  = '';    #  settings link
+	protected $slug     = 'my-plugin-slug';
+	protected $state    = '';
+	protected $tab      = 'about';
+	public    $version  = '0.0.0';
 
 	use PMW_Trait_Magic;
 	use PMW_Trait_ParseArgs;
@@ -30,6 +33,8 @@ abstract class PMW_Plugin_Plugin {
 			$this->paths = PMW_Plugin_Paths::get_instance( $args );
 			$this->state = $this->state_check();
 			$this->schedule_initialize();
+			$this->load_text_domain();
+			$this->load_update_checker();
 		} else {
 			static::$abort_construct = true;
 		}
@@ -70,6 +75,14 @@ abstract class PMW_Plugin_Plugin {
 		}
 	}
 
+	private function load_text_domain() {
+		$args = array(
+			'text_domain' => 'Text Domain',
+			'lang_dir'    => 'Domain Path',
+		);
+		$data = get_file_data( $this->paths->file, $args );
+		load_plugin_textdomain( $data['text_domain'], false, $this->paths->dir . $data['lang_dir'] );
+	}
 
 	/**  Template functions **/
 
@@ -93,6 +106,16 @@ abstract class PMW_Plugin_Plugin {
 			}
 		}
 		return $links;
+	}
+
+	/**  Updates  **/
+
+	private function load_update_checker() {
+		$puc_file = $this->paths->dir . 'assets/plugin-update-checker-' . $this->puc_vers . '/plugin-update-checker.php';
+		if ( file_exists( $puc_file ) && ! empty( $this->github ) ) {
+			require_once( $puc_file );
+			$this->checker = Puc_v4_Factory::buildUpdateChecker( $this->github, $this->paths->file, $this->slug );
+		}
 	}
 
 

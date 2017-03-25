@@ -121,8 +121,8 @@ class Privacy_My_Way {
 		}
 		$url  = $this->filter_url( $url );
 		$args = $this->strip_site_url( $args );
-		$args = $this->filter_plugins( $url, $args );
-		$args = $this->filter_themes( $url, $args );
+		$args = $this->filter_plugins( $args, $url );
+		$args = $this->filter_themes( $args, $url );
 		#	make request
 		$args['_pmw_privacy_filter'] = true;
 		$response = wp_remote_request( $url, $args );
