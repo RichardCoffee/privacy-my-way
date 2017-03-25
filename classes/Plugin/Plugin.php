@@ -7,6 +7,7 @@ abstract class PMW_Plugin_Plugin {
 	protected $github   = '';    #  'https://github.com/GithubName/my-plugin-name/';
 	public    $paths    = null;  #  PMW_Plugin_Paths object
 	public    $plugin   = '';
+	protected $puc      = null;
 	private   $puc_vers = '4.0.3';
 	protected $setting  = '';    #  settings link
 	protected $slug     = 'my-plugin-slug';
@@ -114,7 +115,7 @@ abstract class PMW_Plugin_Plugin {
 		$puc_file = $this->paths->dir . 'assets/plugin-update-checker-' . $this->puc_vers . '/plugin-update-checker.php';
 		if ( file_exists( $puc_file ) && ! empty( $this->github ) ) {
 			require_once( $puc_file );
-			$this->checker = Puc_v4_Factory::buildUpdateChecker( $this->github, $this->paths->file, $this->slug );
+			$this->puc = Puc_v4_Factory::buildUpdateChecker( $this->github, $this->paths->file, $this->slug );
 		}
 	}
 
