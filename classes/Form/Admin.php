@@ -546,14 +546,7 @@ abstract class PMW_Form_Admin {
 				<span class="radio-multiple-no" ><?php esc_html_e( 'No', 'tcc-privacy' ); ?></span>
 			</div><?php
 			foreach( $layout['source'] as $key => $text ) {
-				$check  = ( isset( $value[ $key ] ) ) ? $value[ $key ] : $preset;
-
-if ( ! is_string( $check ) ) {
-	log_entry($check,$value);
-	$check = $check[0];
-}
-
- ?>
+				$check  = ( isset( $value[ $key ] ) ) ? $value[ $key ] : $preset; ?>
 				<div class="radio-multiple-list-item">
 					<label>
 						<input type="radio" value="yes" class="radio-multiple-list radio-multiple-list-yes"
