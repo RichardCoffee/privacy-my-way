@@ -23,6 +23,7 @@ class Privacy_My_Way {
 	use PMW_Trait_Singleton;
 
 	protected function __construct( $args = array() ) {
+		$this->debug = file_exists( WP_CONTENT_DIR . '/privacy.flg' );
 		$this->get_options();
 		if ( $this->options ) {  #  opt-in only
 			#	These first two filters are multisite only

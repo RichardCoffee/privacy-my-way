@@ -55,7 +55,7 @@ If you are running multisite, please let me know if you have any issues.
 ## Changelog
 
 ### 1.1.2
-
+* Enhancement:  add flag file to aid in debugging
 
 ### 1.1.1
 * Enhancement:  updated Plugin and Trait classes
