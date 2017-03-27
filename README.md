@@ -56,6 +56,7 @@ If you are running multisite, please let me know if you have any issues.
 
 ### 1.1.2
 
+
 ### 1.1.1
 * Enhancement:  updated Plugin and Trait classes
 * Enhancement:  added check for valid logging function.

@@ -12,7 +12,7 @@ Author URI:        richard.coffee@rtcenterprises.net
 GitHub Plugin URI: https://github.com/RichardCoffee/privacy-my-way
 License:           MIT
 Text Domain:       tcc-privacy
-Domain Path:       /locales
+Domain Path:       /languages
 Tags:              privacy, updates, plugins, themes, core, translations
  *
  *  @package Privacy
