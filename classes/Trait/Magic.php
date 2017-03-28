@@ -41,4 +41,13 @@ trait PMW_Trait_Magic {
 		}
 	} //*/
 
+	public function set( $property, $value ) {
+		if ( ( ! empty( $property ) ) && ( ! empty( $value ) ) ) {
+			if ( property_exists( $this, $property ) ) {
+				$this->{$property} = $value;
+			}
+		}
+	}
+
+
 }

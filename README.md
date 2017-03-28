@@ -1,4 +1,4 @@
-This is beta code.  Not guaranteed to do anything more than take up space on your computer.
+This is beta code.  Not guaranteed to do anything more than take up space on your computer.  The multisite code =should= work, but needs more testing.
 
 # Privacy My Way
 
@@ -54,8 +54,9 @@ If you are running multisite, please let me know if you have any issues.
 
 ## Changelog
 
-### 1.1.2
-* Enhancement:  add flag file to aid in debugging
+### To Be Released - 1.2.0
+* Enhancement:  add prefix to debugging functions
+* Enhancement:  updated Trait classes
 
 ### 1.1.1
 * Enhancement:  updated Plugin and Trait classes

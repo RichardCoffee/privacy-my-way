@@ -13,7 +13,7 @@ trait PMW_Trait_Singleton {
 	public static function instance() {
 		if ( ! ( self::$instance instanceof self ) ) {
 			$instance = new self();
-			if ( ! self::$abort_construct ) {
+			if ( ! static::$abort_construct ) {
 				self::$instance = $instance;
 			}
 		}
@@ -23,7 +23,7 @@ trait PMW_Trait_Singleton {
 	public static function get_instance( $args = array() ) {
 		if ( ! ( self::$instance instanceof self ) ) {
 			$instance = new self( $args );
-			if ( ! self::$abort_construct ) {
+			if ( ! static::$abort_construct ) {
 				self::$instance = $instance;
 			}
 		}

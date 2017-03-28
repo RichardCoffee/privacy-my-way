@@ -4,13 +4,12 @@ abstract class PMW_Plugin_Plugin {
 
 	protected $admin    = null;
 	public    $dbvers   = '0';
-	protected $github   = '';    #  'https://github.com/GithubName/my-plugin-name/';
+	protected $github   = '';    #  'https://github.com/MyGithubName/my-plugin-name/';
 	public    $paths    = null;  #  PMW_Plugin_Paths object
 	public    $plugin   = '';
 	protected $puc      = null;
 	private   $puc_vers = '4.0.3';
 	protected $setting  = '';    #  settings link
-	protected $slug     = 'my-plugin-slug';
 	protected $state    = '';
 	protected $tab      = 'about';
 	public    $version  = '0.0.0';
@@ -87,14 +86,13 @@ abstract class PMW_Plugin_Plugin {
 
 	/**  Template functions **/
 
-	#	used in classes/pagetemplater.php
-	public function get_stylesheet( $file = 'tcc-privacy.css' ) {
+	public function get_stylesheet( $file = 'css/tcc-privacy.css' ) {
 		return $this->paths->get_plugin_file_path( $file );
 	}
 
 	/*
-	 *  Removes 'Edit' option from plugin page
-	 *  Adds 'Settings' option to plugin page
+	 *  Removes 'Edit' option from plugin page entry
+	 *  Adds 'Settings' option to plugin page entry
 	 *
 	 *  sources:  http://code.tutsplus.com/tutorials/integrating-with-wordpress-ui-the-basics--wp-26713
 	 */
@@ -115,7 +113,7 @@ abstract class PMW_Plugin_Plugin {
 		$puc_file = $this->paths->dir . 'assets/plugin-update-checker-' . $this->puc_vers . '/plugin-update-checker.php';
 		if ( file_exists( $puc_file ) && ! empty( $this->github ) ) {
 			require_once( $puc_file );
-			$this->puc = Puc_v4_Factory::buildUpdateChecker( $this->github, $this->paths->file, $this->slug );
+			$this->puc = Puc_v4_Factory::buildUpdateChecker( $this->github, $this->paths->file, $this->plugin );
 		}
 	}
 

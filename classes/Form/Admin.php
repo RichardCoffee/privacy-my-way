@@ -233,7 +233,6 @@ abstract class PMW_Form_Admin {
 				}
 			} else {
 				$this->logging( sprintf( $this->form_text['error']['subscript'], $option ), 'stack' );
-				}
 			}
 		}
 		return $defaults;
@@ -339,7 +338,6 @@ abstract class PMW_Form_Admin {
 				$func( $fargs );
 			} else {
 				$this->logging( sprintf( $this->form_text['error']['render'], $func ) );
-				}
 			}
 		}
 		echo '</div>';
@@ -442,10 +440,12 @@ abstract class PMW_Form_Admin {
 		<input type="text" class="form-colorpicker"
 		       name="<?php e_esc_attr( $name ); ?>"
 		       value="<?php e_esc_attr( $value ); ?>"
-		       data-default-color="<?php e_esc_attr( $layout['default'] ); ?>" />&nbsp;
-		<span class="form-colorpicker-text">
-			<?php e_esc_html( $text ); ?>
-		</span><?php
+		       data-default-color="<?php e_esc_attr( $layout['default'] ); ?>" />&nbsp;<?php
+		if ( ! empty( $text ) ) { ?>
+			<span class="form-colorpicker-text">
+				<?php e_esc_html( $text ); ?>
+			</span><?php
+		}
 	}
 
   private function render_display($data) {

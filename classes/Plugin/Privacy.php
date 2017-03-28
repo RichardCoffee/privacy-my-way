@@ -101,14 +101,15 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		$themes    = array();
 		$active    = get_option( 'stylesheet' );
 		foreach ( $installed as $theme ) {
-			$themes[ $theme->get_stylesheet() ] = array(
+			$style = $theme->get_stylesheet();
+			$themes[ $style ] = array(
 #				'Name'       => $theme->get('Name'),
 #				'Title'      => $theme->get('Name'),
 #				'Version'    => $theme->get('Version'),
 #				'Author'     => $theme->get('Author'),
 #				'Author URI' => $theme->get('AuthorURI'),
 				'Template'   => $theme->get_template(),
-				'Stylesheet' => $theme->get_stylesheet(),
+				'Stylesheet' => $style,
 			);
 		}
 		return compact( 'active', 'themes' );
