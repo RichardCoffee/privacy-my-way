@@ -1,4 +1,8 @@
-This is beta code.  Not guaranteed to do anything more than take up space on your computer.  The multisite code _should_ work, but needs more testing.
+This is beta code.  Not guaranteed to do anything more than take up space on your computer.  If you do download it, get the
+[the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).  The multisite code _should_ work, but
+needs more testing.  _Please_ [contact me](https://github.com/RichardCoffee/privacy-my-way/issues/1) if you are interested in
+being a multi-site beta tester, or if you are interested in being a beta tester and are running a multilingual site.
+
 
 # Privacy My Way
 
@@ -57,18 +61,21 @@ If you are running multisite, please let me know if you have any issues.
 
 ## Changelog
 
-### To Be Released - 1.2.0
-* Enhancement:  add prefix to debugging functions
-* Enhancement:  updated Trait classes
+### 1.2.0
+* Enhancement:  expanded prefix use to prevent possible function/file name conflicts.  Thanks [nacin](https://nacin.com/2010/05/11/in-wordpress-prefix-everything/)
+* Enhancement:  added color to plugin/theme filter lists for active/inactive status.
+* Enhancement:  updated Trait classes.
+* Logging:  added use of flag file to give better logging control.
+* Minor:  better integration with my personal theme option framework
 
 ### 1.1.1
-* Enhancement:  updated Plugin and Trait classes
+* Enhancement:  updated Plugin and Trait classes.
 * Enhancement:  added check for valid logging function.
 * Enhancement:  added header field for [GitHub Updater](https://github.com/afragen/github-updater).
-* Debug:  added run_tests methods, now uses flag file
+* Debug:  added run_tests methods, now uses flag file.
 * Fix:  active theme not being reset properly when filtering themes.
 * Fix:  corrected variable reference left over from old code.
-* Minor:  changed some comment text
+* Minor:  changed some comment text.
 
 
 ### 1.1.0

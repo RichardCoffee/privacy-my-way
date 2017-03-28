@@ -3,7 +3,7 @@
 
 class PMW_Form_Privacy extends PMW_Form_Admin {
 
-	protected $slug    = 'privacy';
+	protected $slug = 'privacy';
 
 	use PMW_Trait_Singleton;
 
@@ -28,6 +28,12 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 		wp_register_script( 'privacy-form.js',  $paths->get_plugin_file_uri( 'js/pmw-admin-form.js' ), array( 'jquery' ), $paths->version, true );
 		wp_enqueue_style(   'privacy-form.css' );
 		wp_enqueue_script(  'privacy-form.js' );
+	}
+
+	public function enqueue_theme_scripts() {
+		$paths = PMW_Plugin_Paths::instance();
+		wp_register_style(  'privacy-form.css', $paths->get_plugin_file_uri( 'css/pmw-theme-form.css' ), null, $paths->version );
+		wp_enqueue_style(   'privacy-form.css' );
 	}
 
 	protected function form_layout( $form = array() ) {

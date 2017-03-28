@@ -34,6 +34,9 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		add_action( 'wp_version_check', array( $this, 'add_privacy_filters' ) );
 		if ( is_admin() ) {
 			add_action( 'admin_menu', array( PMW_Form_Privacy::instance(), 'add_menu_option' ) );
+			add_action( 'tcc_load_form_page', function() {
+				add_action( 'admin_enqueue_scripts', array( PMW_Form_Privacy::instance(), 'enqueue_theme_scripts' ) );
+			});
 		}
 		parent::add_actions();
 	}
