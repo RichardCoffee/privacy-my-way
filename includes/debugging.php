@@ -3,7 +3,7 @@
  *
  */
 
-if ( ! function_exists( 'debug_calling_function' ) ) {
+if ( ! function_exists( 'pmw_debug_calling_function' ) ) {
 	/**
 	*	Get the calling function.
 	*
@@ -15,7 +15,7 @@ if ( ! function_exists( 'debug_calling_function' ) ) {
 	*	@requires   PHP 5.3.6
 	*/
 	#	http://php.net/debug_backtrace
-	function debug_calling_function( $depth = 1 ) {
+	function pmw_debug_calling_function( $depth = 1 ) {
 		$default = $file = $func = $line = 'n/a';
 		$call_trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
 		$total_cnt  = count( $call_trace );
@@ -23,7 +23,7 @@ if ( ! function_exists( 'debug_calling_function' ) ) {
 		$skip_list  = array(
 			'call_user_func',
 			'call_user_func_array',
-			'debug_calling_function',
+			'pmw_debug_calling_function',
 			'logging'
 		);
 		do {
@@ -36,15 +36,15 @@ if ( ! function_exists( 'debug_calling_function' ) ) {
 	}
 }
 
-if ( ! function_exists( 'get_calling_function' ) ) {
-	function get_calling_function( $depth = 1 ) {
-		$result = debug_calling_function( $depth );
+if ( ! function_exists( 'pmw_get_calling_function' ) ) {
+	function pmw_get_calling_function( $depth = 1 ) {
+		$result = pmw_debug_calling_function( $depth );
 		$trace  = array_map( 'trim', explode( ',', $result ) );
 		return $trace[1];
 	}
 }
 
-if ( ! function_exists( 'was_called_by' ) ) {
+if ( ! function_exists( 'pmw_was_called_by' ) ) {
 	function pmw_was_called_by( $func ) {
 		$call_trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
 		foreach( $call_trace as $current ) {
@@ -66,7 +66,7 @@ if ( ! function_exists( 'pmw_log_entry' ) ) {
 			if ( $args && is_int( $args[0] ) ) {
 				$depth = array_shift( $args );
 			}
-			if ( $depth ) { error_log( 'source:  ' . debug_calling_function( $depth ) ); }
+			if ( $depth ) { error_log( 'source:  ' . pmw_debug_calling_function( $depth ) ); }
 			foreach( $args as $message ) {
 				#	log an array or object
 				if ( is_array( $message ) || is_object( $message ) ) {
