@@ -4,7 +4,7 @@ trait PMW_Trait_Logging {
 
 	protected $debug   =  WP_DEBUG;    #  boolean - enable/disable logging
 	protected $force   =  false;       #  boolean - for debugging, can be used to force a single log entry
-	protected $logging = 'log_entry';  #  string/array - logging function: must be able to accept a variable number of parameters
+	protected $logging = 'pmw_log_entry';  #  string/array - logging function: must be able to accept a variable number of parameters
 
 
 	protected function check_logging_option() {

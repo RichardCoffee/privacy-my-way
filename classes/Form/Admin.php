@@ -11,7 +11,6 @@
 abstract class PMW_Form_Admin {
 
 	protected $current   = '';
-	protected $err_func  = 'log_entry';
 	protected $form      =  array();
 	protected $form_opts =  array();
 	protected $form_text =  array();
@@ -24,6 +23,8 @@ abstract class PMW_Form_Admin {
 	public    $tab       = 'about';
 	protected $type      = 'single'; # two values: single, tabbed
 	protected $validate;
+
+	use PMW_Trait_Logging;
 
 	abstract protected function form_layout( $option );
 	public function description() { return ''; }
@@ -65,7 +66,7 @@ abstract class PMW_Form_Admin {
 	}
 
 	public function enqueue_scripts() {
-		wp_register_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), false );
+		wp_register_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), array( 'wp-color-picker' ) );
 		wp_register_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js' ), array( 'jquery', 'wp-color-picker' ), false, true );
 		wp_enqueue_media();
 		wp_enqueue_style(  'admin-form.css' );
@@ -231,9 +232,7 @@ abstract class PMW_Form_Admin {
 					$defaults[ $key ] = $item['default'];
 				}
 			} else {
-				if ( ! empty( $this->err_func ) ) {
-					$func = $this->err_func;
-					$func( sprintf( $this->form_text['error']['subscript'], $option ), debug_backtrace() );
+				$this->logging( sprintf( $this->form_text['error']['subscript'], $option ), 'stack' );
 				}
 			}
 		}
@@ -339,9 +338,7 @@ abstract class PMW_Form_Admin {
 			} else if ( function_exists( $func ) ) {
 				$func( $fargs );
 			} else {
-				if ( ! empty( $this->err_func ) ) {
-					$func = $this->err_func;
-					$func( sprintf( $this->form_text['error']['render'], $func ) );
+				$this->logging( sprintf( $this->form_text['error']['render'], $func ) );
 				}
 			}
 		}
@@ -366,9 +363,7 @@ abstract class PMW_Form_Admin {
       } elseif (function_exists($func)) {
         $func($fargs);
       } else {
-        if (!empty($this->err_func))
-          $func = $this->err_func;
-          $func(sprintf($this->form_text['error']['render'],$func));
+        $this->logging( sprintf( $this->form_text['error']['render'], $func ) );
       }
     }
     echo "</div>"; //*/
@@ -727,7 +722,7 @@ abstract class PMW_Form_Admin {
 			$output = $func( $input );
 		} else { // FIXME:  test for data type?
 			$output = $this->validate_text( $input );
-			log_entry( "missing validation function: $func" );
+			$this->logging( 'missing validation function: ' . $func );
 		}
 		return $output;
 	}
@@ -737,7 +732,7 @@ abstract class PMW_Form_Admin {
   }
 
 	private function validate_font( $input ) {
-log_entry($input);
+		$this->logging( $input );
 		return $input; // FIXME NOW!
 	}
 
