@@ -1,4 +1,4 @@
-This is beta code.  Not guaranteed to do anything more than take up space on your computer.  The multisite code =should= work, but needs more testing.
+This is beta code.  Not guaranteed to do anything more than take up space on your computer.  The multisite code _should_ work, but needs more testing.
 
 # Privacy My Way
 

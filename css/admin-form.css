@@ -34,8 +34,13 @@ input[type="radio"].radio-multiple-list-yes {
 	color: green;
 }
 
-.red {
-  color: red;
+.pmw-plugin-active {
+	color: green;
+}
+
+.pmw-plugin-inactive,
+.red   {
+	color: red;
 }
 
 .tcc_text_3em  input[type="text"]  { width: 3em;  }
