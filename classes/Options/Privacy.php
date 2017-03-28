@@ -210,9 +210,9 @@ class PMW_Options_Privacy {
 			$title  = '<a href="' . esc_attr( $plugin['PluginURI'] ) . '" target="' . esc_attr( $path ) . '">';
 			$title .= esc_html( $plugin['Name'] ) . '</a>';
 			if ( in_array( $path, $this->active ) ) {
-				$status = sprintf( '<span class="red">(%s)</span>', esc_html__( 'active', 'tcc-privacy' ) );
+				$status = sprintf( '<span class="pmw-plugin-active">(%s)</span>', esc_html__( 'active', 'tcc-privacy' ) );
 			} else {
-				$status = sprintf( '(%s)', esc_html__( 'inactive', 'tcc-privacy' ) );
+				$status = sprintf( '<span class="pmw-plugin-inactive">(%s)</span>', esc_html__( 'inactive', 'tcc-privacy' ) );
 			}
 			$author  = '<a href="' . esc_attr( $plugin['AuthorURI'] ) . '" target="' . sanitize_title( $plugin['Author'] ) . '">';
 			$author .= esc_html( $plugin['Author'] ) . '</a>';
