@@ -15,6 +15,9 @@ the number of users you have, what plugins are installed and active, and what th
 
 ## Installation
 
+Please use [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).  The zip file downloadable on the github code page
+is the development version, which is almost guaranteed to contain bugs.
+
 ### Releases
 
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).

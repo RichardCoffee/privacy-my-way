@@ -36,7 +36,7 @@ class PMW_Options_Privacy {
 	}
 
 	public function title_description() {
-		esc_html_e( 'Control the information that WordPress collects from your site.  The default settings here duplicate what WordPress currently collects.', 'tcc-privacy' );
+		esc_html_e( 'Control the information that WordPress collects from your site.  The default settings, marked by a (*), duplicate what WordPress currently collects.', 'tcc-privacy' );
 	}
 
 	public function options_layout( $all = false ) {
@@ -49,7 +49,7 @@ class PMW_Options_Privacy {
 			'text'    => __( 'I would suggest that you not change this setting.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
-				'yes'  => __( "Let WordPress know your site's url.", 'tcc-privacy' ),
+				'yes'  => __( "Let WordPress know your site's url. (*)", 'tcc-privacy' ),
 				'no'   => __( 'Do not let them know where you are.', 'tcc-privacy' ),
 			),
 			'extra_html' => $extra_html,
@@ -62,7 +62,7 @@ class PMW_Options_Privacy {
 				'label'   => __( 'Multi-Site', 'tcc-privacy' ),
 				'render'  => 'radio',
 				'source'  => array(
-					'yes'  => __( 'Yes - Let WordPress know if you are running a multi-site blog.', 'tcc-privacy' ),
+					'yes'  => __( 'Yes - Let WordPress know if you are running a multi-site blog. (*)', 'tcc-privacy' ),
 					'no'   => __( 'No -- Tell WordPress you are running just a single blog.', 'tcc-privacy' ),
 				),
 				'extra_html' => $extra_html,
@@ -74,7 +74,7 @@ class PMW_Options_Privacy {
 				'label'   => __( 'Install URL', 'tcc-privacy' ),
 				'render'  => 'radio',
 				'source'  => array(
-					'yes'  => __( 'Let WordPress know the url you installed WordPress to.', 'tcc-privacy' ),
+					'yes'  => __( 'Let WordPress know the url you installed WordPress to. (*)', 'tcc-privacy' ),
 					'no'   => __( 'Do not give WordPress this information.', 'tcc-privacy' ),
 				),
 				'extra_html' => $extra_html,
@@ -86,7 +86,7 @@ class PMW_Options_Privacy {
 			'label'   => __( 'Users', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
-				'all'  => __( 'Accurately report to WordPress how many users you have.', 'tcc-privacy' ),
+				'all'  => __( 'Accurately report to WordPress how many users you have. (*)', 'tcc-privacy' ),
 				'some' => __( 'Only let WordPress know that you have some users.', 'tcc-privacy' ),
 				'one'  => __( 'Tell WordPress that you are the only user.', 'tcc-privacy' ),
 				'many' => __( 'Just generate some random number to give WordPress.', 'tcc-privacy' ),
@@ -97,7 +97,7 @@ class PMW_Options_Privacy {
 			'label'     => __( 'Plugins', 'tcc-privacy' ),
 			'render'    => 'radio',
 			'source'    => array(
-				'all'    => __( 'Let WordPress know what plugins you have installed.', 'tcc-privacy' ),
+				'all'    => __( 'Let WordPress know what plugins you have installed. (*)', 'tcc-privacy' ),
 				'active' => __( 'Only report active plugins.', 'tcc-privacy' ),
 				'filter' => __( 'Filter the plugin list that gets sent to WordPress.', 'tcc-privacy' ),
 				'none'   => __( 'Do not let them know about your plugins.', 'tcc-privacy' ),
@@ -111,7 +111,7 @@ class PMW_Options_Privacy {
 			'text'    => __( 'Default setting for newly installed plugins/themes.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
-				'yes'  => __( 'Allow wordpress report on new installs.', 'tcc-privacy' ),
+				'yes'  => __( 'Allow wordpress report on new installs. (*)', 'tcc-privacy' ),
 				'no'   => __( 'Block reports on new installs.', 'tcc-privacy' ),
 			),
 			'extra_html' => $extra_html,
@@ -132,7 +132,7 @@ class PMW_Options_Privacy {
 			'label'   => __( 'Themes', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
-				'all'    => __( 'Let WordPress know what themes you have installed.', 'tcc-privacy' ),
+				'all'    => __( 'Let WordPress know what themes you have installed. (*)', 'tcc-privacy' ),
 				'active' => __( 'Only let them know about your active theme.', 'tcc-privacy' ),
 				'filter' => __( 'Filter the theme list that gets sent to WordPress.', 'tcc-privacy' ),
 				'none'   => __( 'Do not let them know about your themes.', 'tcc-privacy' ),
@@ -183,6 +183,9 @@ class PMW_Options_Privacy {
 		foreach( $this->plugins as $path => $plugin ) {
 			if ( ! isset( $options[ $path ] ) || empty( $options[ $path ] ) ) {
 				$options[ $path ] = ( in_array( $path, $this->active ) ) ? 'yes' : $preset;
+				if ( $path === 'privacy-my-way/privacy-my-way.php' ) {
+					$options[ $path ] = 'no';  #  Set our own initial value
+				}
 			}
 		}
 		return $options;
@@ -195,8 +198,7 @@ class PMW_Options_Privacy {
 		$current = pmw_privacy( 'plugin_list', array() );
 		foreach( $current as $key => $status ) {
 			if ( isset( $this->plugins[ $key ] ) ) {
-				#	set our default as 'no'
-				$options[ $key ] = ( $key === 'privacy-my-way/privacy-my-way.php' )  ? 'no' : $status;
+				$options[ $key ] = $status;
 			}
 		}
 		return $options;
@@ -205,14 +207,16 @@ class PMW_Options_Privacy {
 	private function get_plugin_list() {
 		$plugin_list = array();
 		foreach ( $this->plugins as $path => $plugin ) {
-			$title = '<a href="' . esc_attr( $plugin['PluginURI'] ) . '" target="' . esc_attr( $path ) . '">';
-			$title.= esc_html( $plugin['Name'] ) . '</a>';
+			$title  = '<a href="' . esc_attr( $plugin['PluginURI'] ) . '" target="' . esc_attr( $path ) . '">';
+			$title .= esc_html( $plugin['Name'] ) . '</a>';
 			if ( in_array( $path, $this->active ) ) {
-				$title .= ' <span class="red">(active)</span>';
+				$status = sprintf( '<span class="red">(%s)</span>', esc_html__( 'active', 'tcc-privacy' ) );
+			} else {
+				$status = sprintf( '(%s)', esc_html__( 'inactive', 'tcc-privacy' ) );
 			}
-			$title.= ' by <a href="' . esc_attr( $plugin['AuthorURI'] ) . '" target="' . sanitize_title( $plugin['Author'] ) . '">';
-			$title.= esc_html( $plugin['Author'] ) . '</a>';
-			$plugin_list[ $path ] = $title;
+			$author  = '<a href="' . esc_attr( $plugin['AuthorURI'] ) . '" target="' . sanitize_title( $plugin['Author'] ) . '">';
+			$author .= esc_html( $plugin['Author'] ) . '</a>';
+			$plugin_list[ $path ] = sprintf( _x( '%1$s %2$s by %3$s', '1: plugin title, 2: plugin active/inactive status, 3: plugin author name', 'tcc-privacy' ), $title, $status, $author );
 		}
 		return $plugin_list;
 	}
