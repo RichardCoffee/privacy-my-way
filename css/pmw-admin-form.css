@@ -34,11 +34,9 @@ input[type="radio"].radio-multiple-list-yes {
 	color: green;
 }
 
-.pmw-plugin-active {
-	color: green;
-}
+.pmw-plugin-active { color: green; }
+.pmw-plugin-inactive { color: firebrick; }
 
-.pmw-plugin-inactive,
 .red   {
 	color: red;
 }
