@@ -28,16 +28,20 @@ Release updates are handled using [Plugin Update Checker](https://github.com/Yah
 
 == Changelog ==
 
-= 1.1.2 =
-* Fix:  active theme not being reset properly when filtering themes.
-* Debug:  added run_tests methods
+= 1.2.0 =
+* Enhancement:  expanded prefix use to prevent possible function/file name conflicts.  Thanks [nacin](https://nacin.com/2010/05/11/in-wordpress-prefix-everything/)
+* Enhancement:  added color to plugin/theme filter lists for active/inactive status.
+* Enhancement:  updated Trait classes.
+* Logging:  added use of flag file to give better logging control.
+* Minor:  better integration with my personal theme option framework.
 
 = 1.1.1 =
+* Enhancement:  updated Plugin and Trait classes.
 * Enhancement:  added check for valid logging function.
 * Enhancement:  added header field for GitHub Updater.
 * Debug:  added more logging, commented out some.
 * Fix: corrected variable reference left over from old code.
-* Minor:  changed some comment text
+* Minor:  changed some comment text.
 
 
 = 1.1.0 =

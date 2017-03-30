@@ -216,7 +216,7 @@ class PMW_Options_Privacy {
 			}
 			$author  = '<a href="' . esc_attr( $plugin['AuthorURI'] ) . '" target="' . sanitize_title( $plugin['Author'] ) . '">';
 			$author .= esc_html( $plugin['Author'] ) . '</a>';
-			$plugin_list[ $path ] = sprintf( _x( '%1$s %2$s by %3$s', '1: plugin title, 2: plugin active/inactive status, 3: plugin author name', 'tcc-privacy' ), $title, $status, $author );
+			$plugin_list[ $path ] = sprintf( esc_html_x( '%1$s %2$s by %3$s', '1: plugin title, 2: plugin active/inactive status, 3: plugin author name', 'tcc-privacy' ), $title, $status, $author );
 		}
 		return $plugin_list;
 	}
@@ -251,13 +251,13 @@ class PMW_Options_Privacy {
 		$theme_list = array();
 		foreach( $this->themes as $slug => $theme ) {
 			if ( strpos( $slug, 'twenty' ) === 0 ) {
-				continue;  #  Do not filter wordpress themes
+				continue;  #  Do not allow filtering of wordpress themes
 			}
-			$title = '<a href="' . esc_attr( $theme->get( 'ThemeURI' ) ) . '" target="' . esc_attr( $slug ) . '">';
-			$title.= esc_html( $theme->get( 'Name' ) ) . '</a> by ';
-			$title.= '<a href="' . esc_attr( $theme->get( 'AuthorURI' ) ) . '" target="' . sanitize_title( $theme->get( 'Author' ) ) . '">';
-			$title.= esc_html( $theme->get( 'Author' ) ) . '</a>';
-			$theme_list[ $slug ] = $title;
+			$title  = '<a href="' . esc_attr( $theme->get( 'ThemeURI' ) ) . '" target="' . esc_attr( $slug ) . '">';
+			$title .= esc_html( $theme->get( 'Name' ) ) . '</a>';
+			$author = '<a href="' . esc_attr( $theme->get( 'AuthorURI' ) ) . '" target="' . sanitize_title( $theme->get( 'Author' ) ) . '">';
+			$author.= esc_html( $theme->get( 'Author' ) ) . '</a>';
+			$theme_list[ $slug ] = sprintf( esc_html_x( '%1$s by %2$s', '1: Theme title, 2: Author name', 'tcc-privacy' ), $title, $author );
 		}
 		return $theme_list;
 	}
