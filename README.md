@@ -66,7 +66,7 @@ If you are running multisite, please let me know if you have any issues.
 * Enhancement:  added color to plugin/theme filter lists for active/inactive status.
 * Enhancement:  updated Trait classes.
 * Logging:  added use of flag file to give better logging control.
-* Minor:  better integration with my personal theme option framework
+* Minor:  better integration with my personal theme option framework.
 
 ### 1.1.1
 * Enhancement:  updated Plugin and Trait classes.

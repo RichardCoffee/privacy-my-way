@@ -47,9 +47,9 @@ class PMW_Register_Register {
 	}
 
 	public static function unsupported_php_version() {
-		$short = __( '&#151; You are running an unsupported version of PHP.', 'tcc-privacy' );
+		$short = __( 'You are running an unsupported version of PHP.', 'tcc-privacy' );
 		$long  = static::php_bad_version_text();
-		self::display_admin_notice( $short, $long );
+		self::display_admin_notice( '&#151; ' . $short, $long );
 	}
 
 	protected static function php_bad_version_text() {
@@ -81,9 +81,9 @@ class PMW_Register_Register {
 	}
 
 	public static function unsupported_wp_version() {
-		$short = __( '&#151; You are running an unsupported version of WordPress.', 'tcc-privacy' );
+		$short = __( 'You are running an unsupported version of WordPress.', 'tcc-privacy' );
 		$long  = static::wp_bad_version_text();
-		self::display_admin_notice( $short, $long );
+		self::display_admin_notice( '&#151; ' . $short, $long );
 	}
 
 	protected static function wp_bad_version_text() {
