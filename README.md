@@ -61,6 +61,9 @@ If you are running multisite, please let me know if you have any issues.
 
 ## Changelog
 
+### 1.2.1
+* Enhancement:  added pot file.
+
 ### 1.2.0
 * Enhancement:  expanded prefix use to prevent possible function/file name conflicts.  Thanks [nacin](https://nacin.com/2010/05/11/in-wordpress-prefix-everything/)
 * Enhancement:  added color to plugin/theme filter lists for active/inactive status.
