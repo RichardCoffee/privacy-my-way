@@ -157,6 +157,21 @@ class PMW_Options_Privacy {
 			'source'  => $this->get_theme_list(),
 			'divcss'  => 'privacy-theme-filter',
 		); //*/
+		$layout['plugindata'] = array(
+			'label'   => __( 'Plugin Data', 'tcc-privacy' ),
+			'text'    => __( 'Control when plugin data is removed.', 'tcc-privacy' ),
+			'render'  => 'title',
+		);
+		$layout['deledata'] = array(
+			'default' => 'uninstall',
+			'label'   => __( 'Data Deletion', 'tcc-privacy' ),
+			'render'  => 'radio',
+			'source'  => array(
+				'deactive'  => __( 'Delete plugin data upon plugin deactivation.', 'tcc-privacy' ),
+				'uninstall' => __( 'Delete plugin data upon plugin deletion.', 'tcc-privacy' ),
+				'nodelete'  => __( 'Do not delete plugin data.', 'tcc-privacy' ),
+			),
+		);
 		$layout = apply_filters( "tcc_{$this->base}_options_layout", $layout );
 		return $layout;
 	}

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Privacy My Way 1.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/privacy-my-way\n"
-"POT-Creation-Date: 2017-04-03 16:20:56+00:00\n"
+"POT-Creation-Date: 2017-04-03 19:33:25+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -230,21 +230,45 @@ msgstr ""
 msgid "This plugin does not filter default WordPress themes."
 msgstr ""
 
-#: classes/Options/Privacy.php:213
+#: classes/Options/Privacy.php:161
+msgid "Plugin Data"
+msgstr ""
+
+#: classes/Options/Privacy.php:162
+msgid "Control when plugin data is removed."
+msgstr ""
+
+#: classes/Options/Privacy.php:167
+msgid "Data Deletion"
+msgstr ""
+
+#: classes/Options/Privacy.php:170
+msgid "Delete plugin data upon plugin deactivation."
+msgstr ""
+
+#: classes/Options/Privacy.php:171
+msgid "Delete plugin data upon plugin deletion."
+msgstr ""
+
+#: classes/Options/Privacy.php:172
+msgid "Do not delete plugin data."
+msgstr ""
+
+#: classes/Options/Privacy.php:228
 msgid "active"
 msgstr ""
 
-#: classes/Options/Privacy.php:215
+#: classes/Options/Privacy.php:230
 msgid "inactive"
 msgstr ""
 
-#: classes/Options/Privacy.php:219
+#: classes/Options/Privacy.php:234
 msgctxt ""
 "1: plugin title, 2: plugin active/inactive status, 3: plugin author name"
 msgid "%1$s %2$s by %3$s"
 msgstr ""
 
-#: classes/Options/Privacy.php:260
+#: classes/Options/Privacy.php:275
 msgctxt "1: Theme title, 2: Author name"
 msgid "%1$s by %2$s"
 msgstr ""
@@ -309,7 +333,7 @@ msgid "Richard Coffee"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "richard.coffee@rtcenterprises.net"
+msgid "http://rtcenterprises.net"
 msgstr ""
 
 #. Tags of the plugin/theme

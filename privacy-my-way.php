@@ -1,21 +1,29 @@
 <?php
+
 /**
-Plugin Name:       Privacy My Way
-Plugin URI:        https://github.com/RichardCoffee/privacy-my-way
-Description:       Control what your WordPress site phones home about.  Does WordPress.org =really= need to know how many users you have?
-Version:           1.2.0
-Requires at least: 4.7.0
-Tested up to:      4.7.3
-Required PHP:      5.3.6
-Author:            Richard Coffee
-Author URI:        richard.coffee@rtcenterprises.net
-GitHub Plugin URI: https://github.com/RichardCoffee/privacy-my-way
-License:           MIT
-Text Domain:       tcc-privacy
-Domain Path:       /languages
-Tags:              privacy, updates, plugins, themes, core, translations
+ * Privacy My Way
  *
- *  @package Privacy
+ * @package   Privacy_My_Way
+ * @author    Richard Coffee
+ * @license   MIT
+ * @link      https://github.com/RichardCoffee/privacy-my-way
+ * @copyright 2017 Richard Coffee
+ *
+ * @wordpress-plugin
+ * Plugin Name:       Privacy My Way
+ * Plugin URI:        https://github.com/RichardCoffee/privacy-my-way
+ * Description:       Control what your WordPress site phones home about.  Does WordPress.org =really= need to know how many users you have?
+ * Version:           1.2.0
+ * Requires at least: 4.7.0
+ * Tested up to:      4.7.3
+ * Required PHP:      5.3.6
+ * Author:            Richard Coffee
+ * Author URI:        http://rtcenterprises.net
+ * GitHub Plugin URI: https://github.com/RichardCoffee/privacy-my-way
+ * License:           MIT
+ * Text Domain:       tcc-privacy
+ * Domain Path:       /languages
+ * Tags:              privacy, updates, plugins, themes, core, translations
  *
  */
 

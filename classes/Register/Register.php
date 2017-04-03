@@ -218,20 +218,20 @@ class PMW_Register_Register {
 	private static function verify_option( $option ) {
 		$option = ( $option )
 			? $option
-			: ( ( ! empty( self::$option ) )
-				? self::$option
-				: $option );
+			: ( ( ! empty( static::$option ) )
+				? static::$option
+				: '' );
 		return $option;
 	}
 
 	protected static function delete_blog_options( $action, $option ) {
 		$log_id   = get_current_blog_id();
 		$opt_slug = self::$prefix . $option;
-		$options  = get_blog_option( $blog_id, $opt_slug );
+		$options  = get_blog_option( $blog_id, $opt_slug, array() );
 		if ( $options ) {
 			#	Is there an $action option?  What is it?
-			if ( isset( $options[ $action] ) && ( $options[ $action ] === 'no' ) ) {
-				#	No option or 'no' option, don't do anything
+			if ( isset( $options['deledata'] ) && ( $options['deledata'] === $action ) ) {
+				#	No option or not this option, don't do anything
 			} else {
 				delete_blog_option( $blog_id, $opt_slug );
 			}
@@ -240,11 +240,11 @@ class PMW_Register_Register {
 
 	protected static function delete_site_options( $action, $option ) {
 		$opt_slug = self::$prefix . $option;
-		$options  = get_site_option( $blog_id, "tcc_options_$option" );
+		$options  = get_site_option( $opt_slug, array() );
 		if ( $options ) {
 			#| Is there an $action option?  What is it?
-			if ( isset( $options[ $action] ) && ( $options[ $action ] === 'no' ) ) {
-				#| No option or 'no' option, don't do anything
+			if ( isset( $options['deledata'] ) && ( $options['deledata'] === $action ) ) {
+				#| No option or not this option, don't do anything
 			} else {
 				delete_site_option( $blog_id, "tcc_options_$option" );
 			}
