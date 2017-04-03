@@ -77,6 +77,7 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).
 
 ### 1.2.1
 * Enhancement:  added pot file, with en_US.po file.
+* Enhancement:  added data deletion option.
 
 ### 1.2.0
 * Enhancement:  expanded prefix use to prevent possible function/file name conflicts.  Thanks [nacin](https://nacin.com/2010/05/11/in-wordpress-prefix-everything/)
