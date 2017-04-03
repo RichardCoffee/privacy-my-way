@@ -16,24 +16,37 @@ active.
 
 == Installation ==
 
-This plugin is not available from the WordPress repository, and must be installed manually.
+= Upload =
 
+1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
+2.  Go to the Plugins -> Add New screen and click the Upload tab.
+3.  Upload the zipped archive directly.
+4.  Go to the Plugins screen and click Activate.
+5.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
+
+= Manual =
 
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 2.  Copy the `privacy-my-way` directory into your WordPress plugin directory.  Remove the version number when doing so.
-3.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
-4.  Either click on the Settings link, or go to Dashboard->Setting->Privacy My Way, to edit and save the options.
+3.  Go to your WordPress Dashboard -> Plugins screen and activate the plugin.
+4.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
 
 Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
 
+== FAQ ==
+
+See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).
+
 == Changelog ==
+
+= 1.2.1 =
+* Enhancement:  added pot file, with en_US.po file.
 
 = 1.2.0 =
 * Enhancement:  expanded prefix use to prevent possible function/file name conflicts.  Thanks [nacin](https://nacin.com/2010/05/11/in-wordpress-prefix-everything/)
 * Enhancement:  added color to plugin/theme filter lists for active/inactive status.
 * Enhancement:  updated Trait classes.
 * Logging:  added use of flag file to give better logging control.
-* Minor:  better integration with my personal theme option framework.
 
 = 1.1.1 =
 * Enhancement:  updated Plugin and Trait classes.
@@ -41,8 +54,6 @@ Release updates are handled using [Plugin Update Checker](https://github.com/Yah
 * Enhancement:  added header field for GitHub Updater.
 * Debug:  added more logging, commented out some.
 * Fix: corrected variable reference left over from old code.
-* Minor:  changed some comment text.
-
 
 = 1.1.0 =
 * add use of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker)

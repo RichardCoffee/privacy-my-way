@@ -24,10 +24,20 @@ is the development version, which is almost guaranteed to contain bugs.
 
 ### Releases
 
+#### Upload
+
+1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
+2.  Go to __Plugins -> Add New__ screen and click the __Upload__ tab.
+3.  Upload the zipped archive directly.
+4.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
+5.  Either click on the __Settings__ link, or go to __Dashboard -> Setting -> Privacy My Way__, to edit and save the options.
+
+#### Manual
+
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 2.  Copy the `privacy-my-way` directory into your WordPress plugin directory.  Remove the version number when doing so.
-3.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
-4.  Either click on the Settings link, or go to Dashboard->Setting->Privacy My Way, to edit and save the options.
+3.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
+4.  Either click on the __Settings__ link, or go to __Dashboard -> Setting -> Privacy My Way__, to edit and save the options.
 
 Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
 Support for [GitHub Updater](https://github.com/afragen/github-updater) is also present.
@@ -59,17 +69,20 @@ This is beta code.  Use at your own risk.  I do not expect it to break your site
 
 If you are running multisite, please let me know if you have any issues.
 
+## FAQ
+
+See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).
+
 ## Changelog
 
 ### 1.2.1
-* Enhancement:  added pot file.
+* Enhancement:  added pot file, with en_US.po file.
 
 ### 1.2.0
 * Enhancement:  expanded prefix use to prevent possible function/file name conflicts.  Thanks [nacin](https://nacin.com/2010/05/11/in-wordpress-prefix-everything/)
 * Enhancement:  added color to plugin/theme filter lists for active/inactive status.
 * Enhancement:  updated Trait classes.
 * Logging:  added use of flag file to give better logging control.
-* Minor:  better integration with my personal theme option framework.
 
 ### 1.1.1
 * Enhancement:  updated Plugin and Trait classes.
