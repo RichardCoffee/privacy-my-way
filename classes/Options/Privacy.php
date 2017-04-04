@@ -31,7 +31,6 @@ class PMW_Options_Privacy {
 	}
 
 	public function add_form_layout( $form ) {
-		$this->initialize();
 		#	Add form to theme options screen
 		$form[ $this->base ] = $this->default_form_layout();
 		return $form;
@@ -51,6 +50,7 @@ class PMW_Options_Privacy {
 	}
 
 	public function options_layout( $all = false ) {
+		$this->initialize();
 		$layout  = array( 'default' => true );
 		$warning = _x( '*** Turning off reporting a %1$s means you will not be notified of upgrades for that %1$s! ***', 'noun - singular', 'tcc-privacy' );
 		$extra_html = array( 'yes' => ' <span class="red"> ' . __( ' ( Recommended ) ', 'tcc-privacy' ) . '</span>' );
