@@ -1,7 +1,4 @@
-This is beta code.  Not guaranteed to do anything more than take up space on your computer.  If you do download it, get the
-[the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).  The multisite code _should_ work, but
-needs more testing.  _Please_ [contact me](https://github.com/RichardCoffee/privacy-my-way/issues/1) if you are interested in
-being a multi-site beta tester, or if you are interested in being a beta tester and are running a multilingual site.
+This is beta code.  Not guaranteed to do anything more than take up space on your computer.
 
 
 # Privacy My Way
@@ -49,8 +46,8 @@ Support for [GitHub Updater](https://github.com/afragen/github-updater) is also 
 1.  SSH onto your site.
 2.  'cd' to your plugin directory.
 3.  Clone this repository.
-4.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
-5.  Either click on the Settings link, or go to Dashboard->Setting->Privacy My Way, to edit and save the options.
+4.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
+5.  Either click on the Settings link, or go to __Dashboard -> Setting -> Privacy My Way__, to edit and save the options.
 6.  Open an issue on github about what went wrong.
 
 #### FTP
@@ -58,16 +55,14 @@ Support for [GitHub Updater](https://github.com/afragen/github-updater) is also 
 1.  Clone the repository to your computer.
 2.  FTP to your site.
 3.  Using your FTP client copy the repository into your server's WordPress plugin directory.  You can delete the .git folder on the server, if you need the space...
-4.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
-5.  Either click on the Settings link, or go to Dashboard->Settings->Privacy My Way, to edit and save the options.
+4.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
+5.  Either click on the Settings link, or go to __Dashboard -> Settings -> Privacy My Way__, to edit and save the options.
 6.  Open an issue on github about what went wrong.
 
 
 ### Warning
 
 This is beta code.  Use at your own risk.  I do not expect it to break your site, but if it does, then you get to keep the pieces.  Please do not email them to me.
-
-If you are running multisite, please let me know if you have any issues.
 
 ## FAQ
 
@@ -79,9 +74,9 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ## Changelog
 
-### 1.3.0
+### 1.3.0 - not yet released
 * Enhancement:  added pot file, with en_US.po file.
-* Enhancement:  added data deletion option.
+* Enhancement:  added data deletion option.6
 * Bugfix:  added check for multisite when deactivating/uninstalling
 
 ### 1.2.0
