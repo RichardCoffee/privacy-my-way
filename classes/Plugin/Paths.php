@@ -21,7 +21,7 @@ class PMW_Plugin_Paths {
 	/**  Template functions  **/
 
 	public function add_plugin_template( $slug, $text ) {
-		$file = $this->dir . 'assets/pagetemplater.php';
+		$file = $this->dir . 'vendors/pagetemplater.php';
 		if ( file_exists( $file ) ) {
 			require_once( $file );
 			$pager = PageTemplater::get_instance();
