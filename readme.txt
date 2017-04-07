@@ -39,9 +39,12 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).
 
 == Changelog ==
 
-= 1.2.1 =
+= 1.3.0 =
 * Enhancement:  added pot file, with en_US.po file.
-* Enhancement:  added data deletion option.
+* Enhancement:  added data deletion option for deactivating/uninstalling plugin.
+* Upgrade:  moved files in assets/ to more correct vendors/ directory.
+* Upgrade:  upgraded to version 4.1 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
+* Bugfix:  added check for multisite when deactivating/uninstalling.
 
 = 1.2.0 =
 * Enhancement:  expanded prefix use to prevent possible function/file name conflicts.  Thanks [nacin](https://nacin.com/2010/05/11/in-wordpress-prefix-everything/)

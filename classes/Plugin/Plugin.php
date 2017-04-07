@@ -8,7 +8,7 @@ abstract class PMW_Plugin_Plugin {
 	public    $paths    = null;  #  PMW_Plugin_Paths object
 	public    $plugin   = '';
 	protected $puc      = null;
-	private   $puc_vers = '4.0.3';
+	private   $puc_vers = '4.1';
 	protected $setting  = '';    #  settings link
 	protected $state    = '';
 	protected $tab      = 'about';
