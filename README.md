@@ -76,9 +76,9 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ### 1.3.0 - not yet released
 * Enhancement:  added pot file, with en_US.po file.
-* Enhancement:  added data deletion option.6
+* Enhancement:  added data deletion option.
 * Upgrade:  moved files in assets/ to more correct vendors/
-* Bugfix:  added check for multisite when deactivating/uninstalling
+* Bugfix:  added check for multisite when deactivating/uninstalling.
 
 ### 1.2.0
 * Enhancement:  expanded prefix use to prevent possible function/file name conflicts.  Thanks [nacin](https://nacin.com/2010/05/11/in-wordpress-prefix-everything/)
