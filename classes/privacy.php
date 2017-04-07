@@ -8,7 +8,7 @@
  *  Multisite code is untested
  *  Translation code is ... well, there isn't any
  *
- *  Note:  if $this->debug is set to true, then it may fill up your log file... ;-)
+ *  Note:  if $this->logging_debug is set to true, then it may fill up your log file... ;-)
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -25,7 +25,7 @@ class Privacy_My_Way {
 
 
 	protected function __construct( $args = array() ) {
-		$this->debug = file_exists( WP_CONTENT_DIR . '/privacy.flg' );
+		$this->logging_debug = file_exists( WP_CONTENT_DIR . '/privacy.flg' );
 		$this->get_options();
 		if ( $this->options ) {  #  opt-in only
 			#	These first two filters are multisite only
@@ -113,6 +113,7 @@ class Privacy_My_Way {
 		$args = $this->strip_site_url( $args );
 		$args = $this->filter_plugins( $args, $url );
 		$args = $this->filter_themes(  $args, $url );
+		$this->logging( $url, $args );
 		return $args;
 	}
 
@@ -207,12 +208,17 @@ class Privacy_My_Way {
 			if ( ! isset( $args['_pmw_privacy_filter_plugins'] ) || ( ! $args['_pmw_privacy_filter_plugins'] ) ) {
 				if ( ! empty( $args['body']['plugins'] ) ) {
 					$plugins = json_decode( $args['body']['plugins'], true );
-					if ( $this->options['plugins'] === 'none' ) {
-						$plugins = array();
-					} else if ( $this->options['plugins'] === 'active' ) {
-						$plugins = $this->plugins_option_active( $plugins );
-					} else if ( $this->options['plugins'] === 'filter' ) {
-						$plugins = $this->plugins_option_filter( $plugins );
+					switch ( $this->options['plugins'] ) {
+						case 'none':
+							$plugins = array();
+							break;
+						case 'active':
+							$plugins = $this->plugins_option_active( $plugins );
+							break;
+						case 'filter':
+							$plugins = $this->plugins_option_filter( $plugins );
+							break;
+						default:
 					}
 					$this->logging( 'plugins option:  ' . $this->options['plugins'], $plugins );
 					$args['body']['plugins'] = wp_json_encode( $plugins );
@@ -274,18 +280,20 @@ class Privacy_My_Way {
 				if ( ! empty( $args['body']['themes'] ) ) {
 					$themes = json_decode( $args['body']['themes'], true );
 					$this->logging( $url, $themes );
-					#	Report no themes installed
-					if ( $this->options['themes'] === 'none' ) {
-						$themes = array(
-							'active' => '',
-							'themes' => array(),
-						);
-					#	Report only active theme, plus parent if active is child
-					} else if ( $this->options['themes'] === 'active' ) {
-						$themes['themes'] = $this->themes_option_active( $themes );
-					#	Filter themes
-					} else if ( $this->options['themes'] === 'filter' ) {
-						$themes = $this->themes_option_filter( $themes );
+					switch ( $this->options['themes'] ) {
+						case 'none':
+							$themes = array(
+								'active' => '',
+								'themes' => array(),
+							);
+							break;
+						case 'active':
+							$themes['themes'] = $this->themes_option_active( $themes );
+							break;
+						case 'filter':
+							$themes = $this->themes_option_filter( $themes );
+							break;
+						default:
 					}
 					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
