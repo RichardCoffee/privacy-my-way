@@ -31,6 +31,7 @@ class Privacy_My_Way {
 			#	These first two filters are multisite only
 			add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
 			add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
+			add_filter( 'http_headers_useragent',     array( $this, 'http_headers_useragent' ),     10, 2 );
 			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
 			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
 		}
@@ -97,6 +98,13 @@ class Privacy_My_Way {
 		return $count;
 	}
 
+	public function http_headers_useragent( $string ) {
+		if ( $this->options['blog'] === 'no' ) {
+			$string = 'WordPress/' . get_bloginfo( 'version' );
+		}
+		return $string;
+	}
+
 	public function http_request_args( $args, $url ) {
 		#	only act on requests to api.wordpress.org
 		if ( stripos( $url, '://api.wordpress.org/' ) === false ) {
@@ -159,16 +167,16 @@ class Privacy_My_Way {
 					unset( $args['headers']['wp_blog'] );
 				}
 				if ( isset( $args['user-agent'] ) ) {
-					$args['user-agent'] = sprintf( 'WordPress/%s', $GLOBALS['wp_version'] );
+					$args['user-agent'] = 'WordPress/' . get_bloginfo( 'version' );
 				}
 				#	Next three checks taken from resources.  I have not seen these in testing...
 				if ( isset( $args['headers']['user-agent'] ) ) {
-					$args['headers']['user-agent'] = sprintf( 'WordPress/%s', $GLOBALS['wp_version'] );
+					$args['headers']['user-agent'] = 'WordPress/' . get_bloginfo( 'version' );
 					$this->logging( 'header:user-agent has been seen.' );
 				}
 				#	Anybody seen this?
 				if ( isset( $args['headers']['User-Agent'] ) ) {
-					$args['headers']['User-Agent'] = sprintf( 'WordPress/%s', $GLOBALS['wp_version'] );
+					$args['headers']['User-Agent'] = 'WordPress/' . get_bloginfo( 'version' );
 					$this->logging( 'header:User-Agent has been seen.' );
 				}
 				#	I have not seen it...
@@ -181,7 +189,7 @@ class Privacy_My_Way {
 				if ( isset( $args['headers']['wp_install'] ) ) {
 					if ( $this->options['blog'] === 'no' ) {
 						unset( $args['headers']['wp_install'] );
-					} else { // FIXME:  not sure this is a good idea, need more data
+					} else if ( isset( $args['headers']['wp_blog'] ) ) {
 						$args['headers']['wp_install'] = $args['headers']['wp_blog'];
 					}
 				}
