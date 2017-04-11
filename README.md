@@ -76,7 +76,8 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ### 1.3.0 - not yet released
 * Enhancement:  added pot file, with en_US.po file.
-* Enhancement:  added data deletion option for deactivating/uninstalling plugin.
+* Enhancement:  added option for data deletion when deactivating/uninstalling plugin.
+* Enhancement:  added option for logging, removed use of flag file.
 * Upgrade:  moved files in assets/ to more correct vendors/ directory.
 * Upgrade:  upgraded to version 4.1 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
 * Bugfix:  added check for multisite when deactivating/uninstalling.

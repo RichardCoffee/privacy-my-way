@@ -19,15 +19,9 @@ class PMW_Options_Privacy {
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
-		if ( empty( $this->plugins ) ) {
-			$this->plugins = get_plugins();
-		}
-		if ( empty( $this->active  ) ) {
-			$this->active  = get_option( 'active_plugins', array() );
-		}
-		if ( empty( $this->themes  ) ) {
-			$this->themes  = wp_get_themes();
-		}
+		$this->plugins = ( $this->plugins ) ? $this->plugins : get_plugins();
+		$this->active  = ( $this->active  ) ? $this->active  : get_option( 'active_plugins', array() );
+		$this->themes  = ( $this->themes  ) ? $this->themes  : wp_get_themes();
 	}
 
 	public function add_form_layout( $form ) {
@@ -152,7 +146,7 @@ class PMW_Options_Privacy {
 			'divcss'  => 'privacy-theme-active',
 		); //*/
 		$layout['theme_list'] = array(
-			'default' => $this->get_theme_defaults( ),
+			'default' => $this->get_theme_defaults(),
 			'preset'  => 'yes',
 			'label'   => __( 'Theme List', 'tcc-privacy' ),
 			'text'    => sprintf( $warning, __( 'theme', 'tcc-privacy' ) ),
@@ -170,12 +164,25 @@ class PMW_Options_Privacy {
 		); //*/
 		$layout['plugindata'] = array(
 			'label'   => __( 'Plugin Data', 'tcc-privacy' ),
-			'text'    => __( 'Control when plugin data is removed.', 'tcc-privacy' ),
+			'text'    => __( 'Control what the plugin does.', 'tcc-privacy' ),
 			'render'  => 'title',
 		);
+		if ( WP_DEBUG ) {
+			$layout['logging'] = array(
+				'default' => 'off',
+				'label'   => __( 'Logging', 'tcc-privacy' ),
+				'text'    => __( 'Logging Status.', 'tcc-privacy' ),
+				'render'  => 'radio',
+				'source'  => array(
+					'off' => __( 'Do not log anything.', 'tcc-privacy' ),
+					'on'  => __( 'Log everything.', 'tcc-privacy' ),
+				),
+			);
+		}
 		$layout['deledata'] = array(
 			'default' => 'uninstall',
 			'label'   => __( 'Data Deletion', 'tcc-privacy' ),
+			'text'    => __( 'Control when plugin data is removed.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
 				'deactive'  => __( 'Delete plugin data upon plugin deactivation.', 'tcc-privacy' ),
@@ -183,7 +190,7 @@ class PMW_Options_Privacy {
 				'nodelete'  => __( 'Do not delete plugin data.', 'tcc-privacy' ),
 			),
 		);
-		$layout = apply_filters( "tcc_{$this->base}_options_layout", $layout );
+		$layout = apply_filters( "tcc_options_layout_{$this->base}", $layout );
 		return $layout;
 	}
 

@@ -25,8 +25,9 @@ class Privacy_My_Way {
 
 
 	protected function __construct( $args = array() ) {
-		$this->logging_debug = file_exists( WP_CONTENT_DIR . '/privacy.flg' );
+#		$this->logging_debug = file_exists( WP_CONTENT_DIR . '/privacy.flg' );
 		$this->get_options();
+		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
 		if ( $this->options ) {  #  opt-in only
 			#	These first two filters are multisite only
 			add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
@@ -46,6 +47,7 @@ class Privacy_My_Way {
 			update_option( 'tcc_options_privacy', $options );
 		}
 		$this->options = $options;
+		add_filter( 'logging_debug_privacy', function( $debug ) { return ( $this->options['logging'] === 'on' ); } );
 	}
 
 	#	Filter triggered on multisite installs, called internally for single site
