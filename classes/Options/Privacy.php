@@ -164,7 +164,7 @@ class PMW_Options_Privacy {
 		); //*/
 		$layout['plugindata'] = array(
 			'label'   => __( 'Plugin Data', 'tcc-privacy' ),
-			'text'    => __( 'Control what the plugin does.', 'tcc-privacy' ),
+			'text'    => __( 'Plugin Settings.', 'tcc-privacy' ),
 			'render'  => 'title',
 		);
 		if ( WP_DEBUG ) {
