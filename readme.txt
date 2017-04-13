@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 4.7.3
-Stable Tag: 1.1.1
+Stable Tag: 1.3.0
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org

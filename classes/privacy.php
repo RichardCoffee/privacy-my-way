@@ -25,7 +25,7 @@ class Privacy_My_Way {
 
 
 	protected function __construct( $args = array() ) {
-#		$this->logging_debug = file_exists( WP_CONTENT_DIR . '/privacy.flg' );
+//		$this->logging_debug = file_exists( WP_CONTENT_DIR . '/privacy.flg' );
 		$this->get_options();
 		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
 		if ( $this->options ) {  #  opt-in only
