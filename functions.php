@@ -12,16 +12,3 @@ function pmw_privacy_class_loader( $class ) {
 	}
 }
 spl_autoload_register( 'pmw_privacy_class_loader' ); //*/
-
-if ( ! function_exists( 'pmw_privacy' ) ) {
-	function pmw_privacy( $option, $value = '' ) {
-		static $data;
-		if ( empty( $data ) ) {
-			$data = get_option( 'tcc_options_privacy', array() );
-		}
-		if ( isset( $data[ $option ] ) ) {
-			$value = $data[ $option ];
-		}
-		return $value;
-	}
-}

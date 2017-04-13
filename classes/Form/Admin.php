@@ -61,6 +61,7 @@ abstract class PMW_Form_Admin {
 			$this->get_form_options();
 			$func = $this->register;
 			$this->$func();
+			do_action( 'tcc_load_form_page' );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		}
 	}
@@ -636,16 +637,16 @@ abstract class PMW_Form_Admin {
     echo $html;
   }
 
-  private function render_text_color($data) {
-    $this->render_text($data);
-    $basic = explode('[',$data['name']);
-    $index = substr($basic[1],0,-1).'_color';
-    $data['name']  = "{$basic[0]}[{$index}]";
-    $data['value'] = (isset($this->form_opts[$index])) ? $this->form_opts[$index] : $data['layout']['color'];
-    $data['layout']['default'] = $data['layout']['color'];
-    $data['layout']['text']    = '';
-    $this->render_colorpicker($data);
-  }
+	private function render_text_color( $data ) {
+		$this->render_text( $data );
+		$basic = explode( '[', $data['name'] );
+		$index = substr( $basic[1], 0, -1 ) . '_color';
+		$data['name']  = $basic[0] . '[' . $index . ']';
+		$data['value'] = ( isset( $this->form_opts[ $index ] ) ) ? $this->form_opts[ $index ] : $data['layout']['color'];
+		$data['layout']['default'] = $data['layout']['color'];
+		$data['layout']['text']    = '';
+		$this->render_colorpicker( $data );
+	}
 
   private function render_title($data) {
     extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)

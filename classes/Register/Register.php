@@ -47,9 +47,9 @@ class PMW_Register_Register {
 	}
 
 	public static function unsupported_php_version() {
-		$short = __( '&#151; You are running an unsupported version of PHP.', 'tcc-privacy' );
+		$short = __( 'You are running an unsupported version of PHP.', 'tcc-privacy' );
 		$long  = static::php_bad_version_text();
-		self::display_admin_notice( $short, $long );
+		self::display_admin_notice( '&#151; ' . $short, $long );
 	}
 
 	protected static function php_bad_version_text() {
@@ -81,9 +81,9 @@ class PMW_Register_Register {
 	}
 
 	public static function unsupported_wp_version() {
-		$short = __( '&#151; You are running an unsupported version of WordPress.', 'tcc-privacy' );
+		$short = __( 'You are running an unsupported version of WordPress.', 'tcc-privacy' );
 		$long  = static::wp_bad_version_text();
-		self::display_admin_notice( $short, $long );
+		self::display_admin_notice( '&#151; ' . $short, $long );
 	}
 
 	protected static function wp_bad_version_text() {
@@ -197,8 +197,9 @@ class PMW_Register_Register {
 			$option = self::verify_option( $option );
 			if ( $option ) {
 				self::delete_blog_options( 'deactive', $option );
-				// FIXME: this needs testing, or something
-#				self::delete_site_options( 'deactive', $option );
+				if ( is_multisite() && is_main_site() ) {
+#					self::delete_site_options( 'deactive', $option );
+				}
 				flush_rewrite_rules();
 			}
 		}
@@ -209,8 +210,9 @@ class PMW_Register_Register {
 			$option = self::verify_option( $option );
 			if ( $option ) {
 				self::delete_blog_options( 'uninstall', $option );
-				//  FIXME  see above note
-#				self::delete_site_options( 'uninstall', $option );
+				if ( is_multisite() && is_main_site() ) {
+#					self::delete_site_options( 'uninstall', $option );
+				}
 			}
 		}
 	}
@@ -218,35 +220,33 @@ class PMW_Register_Register {
 	private static function verify_option( $option ) {
 		$option = ( $option )
 			? $option
-			: ( ( ! empty( self::$option ) )
-				? self::$option
+			: ( ( ! empty( static::$option ) )
+				? static::$option
 				: $option );
 		return $option;
 	}
 
 	protected static function delete_blog_options( $action, $option ) {
-		$log_id   = get_current_blog_id();
+		$blog_id  = get_current_blog_id();
 		$opt_slug = self::$prefix . $option;
-		$options  = get_blog_option( $blog_id, $opt_slug );
+		$options  = ( is_multisite() ) ? get_blog_option( $blog_id, $opt_slug, array() ) : get_option( $opt_slug, array() );
 		if ( $options ) {
-			#	Is there an $action option?  What is it?
-			if ( isset( $options[ $action] ) && ( $options[ $action ] === 'no' ) ) {
-				#	No option or 'no' option, don't do anything
-			} else {
-				delete_blog_option( $blog_id, $opt_slug );
+			if ( isset( $options['deledata'] ) && ( $options['deledata'] === $action ) ) {
+				if ( is_multisite() ) {
+					delete_blog_option( $blog_id, $opt_slug );
+				} else {
+					delete_option( $opt_slug );
+				}
 			}
 		}
 	}
 
 	protected static function delete_site_options( $action, $option ) {
 		$opt_slug = self::$prefix . $option;
-		$options  = get_site_option( $blog_id, "tcc_options_$option" );
+		$options  = get_site_option( $opt_slug, array() );
 		if ( $options ) {
-			#| Is there an $action option?  What is it?
-			if ( isset( $options[ $action] ) && ( $options[ $action ] === 'no' ) ) {
-				#| No option or 'no' option, don't do anything
-			} else {
-				delete_site_option( $blog_id, "tcc_options_$option" );
+			if ( isset( $options['deledata'] ) && ( $options['deledata'] === $action ) ) {
+				delete_site_option( $opt_slug );
 			}
 		}
 	}

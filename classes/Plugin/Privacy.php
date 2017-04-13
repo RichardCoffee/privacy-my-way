@@ -51,7 +51,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		if ( ! $this->privacy ) {
 			if ( ! function_exists( 'random_int' ) ) {
 				# PHP 7.0 compatibility
-				require_once( $this->paths->dir . 'assets/random_compat/lib/random.php' );
+				require_once( $this->paths->dir . 'vendor/random_compat/lib/random.php' );
 			}
 			include_once( $this->paths->dir . 'classes/privacy.php' );
 			$this->privacy = Privacy_My_Way::instance();

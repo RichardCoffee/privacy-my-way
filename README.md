@@ -1,7 +1,4 @@
-This is beta code.  Not guaranteed to do anything more than take up space on your computer.  If you do download it, get the
-[the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).  The multisite code _should_ work, but
-needs more testing.  _Please_ [contact me](https://github.com/RichardCoffee/privacy-my-way/issues/1) if you are interested in
-being a multi-site beta tester, or if you are interested in being a beta tester and are running a multilingual site.
+This is beta code.  Not guaranteed to do anything more than take up space on your computer.
 
 
 # Privacy My Way
@@ -19,15 +16,25 @@ the number of users you have, what plugins are installed and active, and what th
 
 ## Installation
 
-Please use [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).  The zip file downloadable on the github code page
-is the development version, which is almost guaranteed to contain bugs.
+Please use [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).  Contributions are welcome - fork, fix and send pull
+requests against the `development` branch please.
 
 ### Releases
 
+#### Upload
+
+1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
+2.  Go to __Plugins -> Add New__ screen and click the __Upload__ tab.
+3.  Upload the zipped archive directly.
+4.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
+5.  Either click on the __Settings__ link, or go to __Dashboard -> Setting -> Privacy My Way__, to edit and save the options.
+
+#### Manual
+
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 2.  Copy the `privacy-my-way` directory into your WordPress plugin directory.  Remove the version number when doing so.
-3.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
-4.  Either click on the Settings link, or go to Dashboard->Setting->Privacy My Way, to edit and save the options.
+3.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
+4.  Either click on the __Settings__ link, or go to __Dashboard -> Setting -> Privacy My Way__, to edit and save the options.
 
 Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
 Support for [GitHub Updater](https://github.com/afragen/github-updater) is also present.
@@ -39,8 +46,8 @@ Support for [GitHub Updater](https://github.com/afragen/github-updater) is also 
 1.  SSH onto your site.
 2.  'cd' to your plugin directory.
 3.  Clone this repository.
-4.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
-5.  Either click on the Settings link, or go to Dashboard->Setting->Privacy My Way, to edit and save the options.
+4.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
+5.  Either click on the Settings link, or go to __Dashboard -> Setting -> Privacy My Way__, to edit and save the options.
 6.  Open an issue on github about what went wrong.
 
 #### FTP
@@ -48,8 +55,8 @@ Support for [GitHub Updater](https://github.com/afragen/github-updater) is also 
 1.  Clone the repository to your computer.
 2.  FTP to your site.
 3.  Using your FTP client copy the repository into your server's WordPress plugin directory.  You can delete the .git folder on the server, if you need the space...
-4.  Go to your WordPress Dashboard->Plugins screen and activate the plugin.
-5.  Either click on the Settings link, or go to Dashboard->Settings->Privacy My Way, to edit and save the options.
+4.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
+5.  Either click on the Settings link, or go to __Dashboard -> Settings -> Privacy My Way__, to edit and save the options.
 6.  Open an issue on github about what went wrong.
 
 
@@ -57,16 +64,29 @@ Support for [GitHub Updater](https://github.com/afragen/github-updater) is also 
 
 This is beta code.  Use at your own risk.  I do not expect it to break your site, but if it does, then you get to keep the pieces.  Please do not email them to me.
 
-If you are running multisite, please let me know if you have any issues.
+## FAQ
+
+See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).
+
+### Contributions
+
+Contributions are welcome - fork, fix and send pull requests against the `development` branch please.
 
 ## Changelog
+
+### 1.3.0 - not yet released
+* Enhancement:  added pot file, along with en_US.po file.
+* Enhancement:  added option for data deletion when deactivating/uninstalling plugin.
+* Enhancement:  added option for logging, removed use of flag file.
+* Upgrade:  moved files in assets/ to more correct vendor/ directory.
+* Upgrade:  upgraded to version 4.1 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
+* Upgrade:  updated base plugin classes.
 
 ### 1.2.0
 * Enhancement:  expanded prefix use to prevent possible function/file name conflicts.  Thanks [nacin](https://nacin.com/2010/05/11/in-wordpress-prefix-everything/)
 * Enhancement:  added color to plugin/theme filter lists for active/inactive status.
 * Enhancement:  updated Trait classes.
 * Logging:  added use of flag file to give better logging control.
-* Minor:  better integration with my personal theme option framework
 
 ### 1.1.1
 * Enhancement:  updated Plugin and Trait classes.

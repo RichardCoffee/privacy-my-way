@@ -6,9 +6,9 @@ abstract class PMW_Plugin_Plugin {
 	public    $dbvers   = '0';
 	protected $github   = '';    #  'https://github.com/MyGithubName/my-plugin-name/';
 	public    $paths    = null;  #  PMW_Plugin_Paths object
-	public    $plugin   = '';
+	public    $plugin   = 'plugin-slug';
 	protected $puc      = null;
-	private   $puc_vers = '4.0.3';
+	private   $puc_vers = '4.1';
 	protected $setting  = '';    #  settings link
 	protected $state    = '';
 	protected $tab      = 'about';
@@ -33,10 +33,10 @@ abstract class PMW_Plugin_Plugin {
 			$this->paths = PMW_Plugin_Paths::get_instance( $args );
 			$this->state = $this->state_check();
 			$this->schedule_initialize();
-			$this->load_text_domain();
+			$this->load_textdomain();
 			$this->load_update_checker();
 		} else {
-			static::$abort_construct = true;
+			static::$abort__construct = true;
 		}
 	}
 
@@ -56,8 +56,7 @@ abstract class PMW_Plugin_Plugin {
 		}
 		if ( is_plugin_active( 'tcc-theme-options/tcc-theme-options.php' ) ) {
 			$state = 'plugin';
-		}
-		if ( file_exists( get_template_directory() . '/classes/Form/Admin.php' ) ) {
+		} else if ( file_exists( get_template_directory() . '/classes/Form/Admin.php' ) ) {
 			$state = 'theme';
 		}
 		return $state;
@@ -75,13 +74,36 @@ abstract class PMW_Plugin_Plugin {
 		}
 	}
 
-	private function load_text_domain() {
+	private function load_textdomain() {
 		$args = array(
 			'text_domain' => 'Text Domain',
 			'lang_dir'    => 'Domain Path',
 		);
 		$data = get_file_data( $this->paths->file, $args );
-		load_plugin_textdomain( $data['text_domain'], false, $this->paths->dir . $data['lang_dir'] );
+		if ( $data && ( ! empty( $data['text_domain'] ) ) ) {
+			list( $lang_dir, $mofile_local, $mofile_global ) = $this->determine_textdomain_filenames( $data );
+			if ( is_readable( $mofile_global ) ) {
+				load_textdomain( $data['text_domain'], $mofile_global );
+			} else if ( is_readable( $mofile_local ) ) {
+				load_textdomain( $data['text_domain'], $mofile_local );
+			} else {
+				load_plugin_textdomain( $data['text_domain'], false, $lang_dir );
+			}
+		}
+	}
+
+	private function determine_textdomain_filenames( $data ) {
+		$lang_def = ( empty( $data['lang_dir'] ) ) ? '/languages' : $data['lang_dir'];
+		#	list - $lang_dir
+		$files[]  = $this->paths->dir . $lang_def;
+		$locale   = apply_filters( 'plugin_locale',  get_locale(), $data['text_domain'] );
+		$mofile   = sprintf( '%1$s-%2$s.mo', $data['text_domain'], $locale );
+		#	list - $mofile_local
+		$files[]  = $files[0] . '/' . $mofile;
+		#	list - $mofile_global
+		$files[]  = WP_LANG_DIR . '/' . $data['text_domain'] . '/' . $mofile;
+		$this->logging( $files );
+		return $files;
 	}
 
 	/**  Template functions **/
@@ -110,8 +132,8 @@ abstract class PMW_Plugin_Plugin {
 	/**  Updates  **/
 
 	private function load_update_checker() {
-		$puc_file = $this->paths->dir . 'assets/plugin-update-checker-' . $this->puc_vers . '/plugin-update-checker.php';
-		if ( file_exists( $puc_file ) && ! empty( $this->github ) ) {
+		$puc_file = $this->paths->dir . 'vendor/plugin-update-checker-' . $this->puc_vers . '/plugin-update-checker.php';
+		if ( is_readable( $puc_file ) && ! empty( $this->github ) ) {
 			require_once( $puc_file );
 			$this->puc = Puc_v4_Factory::buildUpdateChecker( $this->github, $this->paths->file, $this->plugin );
 		}

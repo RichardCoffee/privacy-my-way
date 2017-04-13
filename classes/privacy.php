@@ -8,7 +8,7 @@
  *  Multisite code is untested
  *  Translation code is ... well, there isn't any
  *
- *  Note:  if $this->debug is set to true, then it may fill up your log file... ;-)
+ *  Note:  if $this->logging_debug is set to true, then it may fill up your log file... ;-)
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -16,19 +16,23 @@ defined( 'ABSPATH' ) || exit;
 
 class Privacy_My_Way {
 
+
 	protected $form = null;  #  object -- PMW_Form_Privacy, child of PMW_Form_Admin
 	protected $options;      #  array --- privacy options
 
 	use PMW_Trait_Logging;
 	use PMW_Trait_Singleton;
 
+
 	protected function __construct( $args = array() ) {
-		$this->debug = file_exists( WP_CONTENT_DIR . '/privacy.flg' );
+#		$this->logging_debug = file_exists( WP_CONTENT_DIR . '/privacy.flg' );
 		$this->get_options();
+		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
 		if ( $this->options ) {  #  opt-in only
 			#	These first two filters are multisite only
 			add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
 			add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
+			add_filter( 'http_headers_useragent',     array( $this, 'http_headers_useragent' ),     10, 2 );
 			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
 			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
 		}
@@ -43,6 +47,7 @@ class Privacy_My_Way {
 			update_option( 'tcc_options_privacy', $options );
 		}
 		$this->options = $options;
+		add_filter( 'logging_debug_privacy', function( $debug ) { return ( $this->options['logging'] === 'on' ); } );
 	}
 
 	#	Filter triggered on multisite installs, called internally for single site
@@ -95,6 +100,13 @@ class Privacy_My_Way {
 		return $count;
 	}
 
+	public function http_headers_useragent( $string ) {
+		if ( $this->options['blog'] === 'no' ) {
+			$string = 'WordPress/' . get_bloginfo( 'version' );
+		}
+		return $string;
+	}
+
 	public function http_request_args( $args, $url ) {
 		#	only act on requests to api.wordpress.org
 		if ( stripos( $url, '://api.wordpress.org/' ) === false ) {
@@ -103,6 +115,7 @@ class Privacy_My_Way {
 		$args = $this->strip_site_url( $args );
 		$args = $this->filter_plugins( $args, $url );
 		$args = $this->filter_themes(  $args, $url );
+		$this->logging( $url, $args );
 		return $args;
 	}
 
@@ -157,16 +170,16 @@ class Privacy_My_Way {
 					unset( $args['headers']['wp_blog'] );
 				}
 				if ( isset( $args['user-agent'] ) ) {
-					$args['user-agent'] = sprintf( 'WordPress/%s', $GLOBALS['wp_version'] );
+					$args['user-agent'] = 'WordPress/' . get_bloginfo( 'version' );
 				}
 				#	Next three checks taken from resources.  I have not seen these in testing...
 				if ( isset( $args['headers']['user-agent'] ) ) {
-					$args['headers']['user-agent'] = sprintf( 'WordPress/%s', $GLOBALS['wp_version'] );
+					$args['headers']['user-agent'] = 'WordPress/' . get_bloginfo( 'version' );
 					$this->logging( 'header:user-agent has been seen.' );
 				}
 				#	Anybody seen this?
 				if ( isset( $args['headers']['User-Agent'] ) ) {
-					$args['headers']['User-Agent'] = sprintf( 'WordPress/%s', $GLOBALS['wp_version'] );
+					$args['headers']['User-Agent'] = 'WordPress/' . get_bloginfo( 'version' );
 					$this->logging( 'header:User-Agent has been seen.' );
 				}
 				#	I have not seen it...
@@ -179,7 +192,7 @@ class Privacy_My_Way {
 				if ( isset( $args['headers']['wp_install'] ) ) {
 					if ( $this->options['blog'] === 'no' ) {
 						unset( $args['headers']['wp_install'] );
-					} else { // FIXME:  not sure this is a good idea, need more data
+					} else if ( isset( $args['headers']['wp_blog'] ) ) {
 						$args['headers']['wp_install'] = $args['headers']['wp_blog'];
 					}
 				}
@@ -189,61 +202,79 @@ class Privacy_My_Way {
 		return $args;
 	}
 
+
+	/** Plugins  **/
+
 	protected function filter_plugins( $args, $url ) {
 		if ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) !== false ) {
 			if ( ! isset( $args['_pmw_privacy_filter_plugins'] ) || ( ! $args['_pmw_privacy_filter_plugins'] ) ) {
 				if ( ! empty( $args['body']['plugins'] ) ) {
 					$plugins = json_decode( $args['body']['plugins'], true );
-#					$this->logging( $url, $plugins );
-					$new_set = array();
-					if ( $this->options['plugins'] === 'none' ) {
-						$plugins = $new_set;
-					} else if ( $this->options['plugins'] === 'active' ) {
-						foreach( $plugins['plugins'] as $plugin => $info ) {
-							if ( in_array( $plugin, (array)$plugins['active'] ) ) {
-								$new_set[ $plugin ] = $info;
-							}
-						}
-						$plugins['plugins'] = $new_set;
-					} else if ( $this->options['plugins'] === 'filter' ) {
-						$filter    = $this->options['plugin_list'];
-						$installed = get_plugins();
-						foreach ( $filter as $plugin => $status ) {
-							if ( ( $status === 'no' ) ) { # || ( $plugin === 'privacy-my-way' ) ) {
-								if ( isset( $plugins['plugins'][ $plugin ] ) ) {
-									unset( $plugins['plugins'][ $plugin ] );
-								}
-							}
-							if ( ( $this->options['install_default'] === 'no' ) && isset( $installed[ $plugin ] ) ) {
-								unset( $installed[ $plugin ] );
-							}
-						}
-						#	Check for newly installed plugins
-						if ( ( $this->options['install_default'] === 'no' ) && $installed ) {
-							foreach( $installed as $key => $plugin ) {
-								if ( isset( $plugins['plugins'][ $key ] ) ) {
-									unset( $plugins['plugins'] [ $plugin ] );
-								}
-							}
-						}
-						#	Rebuild active plugins object
-						$count = 1;
-						foreach( (array)$plugins['active'] as $key => $plugin ) {
-							if ( isset( $plugins['plugins'][ $plugin ] ) ) {
-								$new_set[$count] = $plugin;
-								$count++;
-							}
-						}
-						$plugins['active'] = $new_set;
+					switch ( $this->options['plugins'] ) {
+						case 'none':
+							$plugins = array();
+							break;
+						case 'active':
+							$plugins = $this->plugins_option_active( $plugins );
+							break;
+						case 'filter':
+							$plugins = $this->plugins_option_filter( $plugins );
+							break;
+						default:
 					}
 					$this->logging( 'plugins option:  ' . $this->options['plugins'], $plugins );
 					$args['body']['plugins'] = wp_json_encode( $plugins );
 					$args['_pmw_privacy_filter_plugins'] = true;
 				}
-			} #else { $this->logging( 'already been here', $args ); }
+			}
 		}
 		return $args;
 	}
+
+	protected function plugins_option_active( $plugins ) {
+		$active = array();
+		foreach( $plugins['plugins'] as $plugin => $info ) {
+			if ( in_array( $plugin, $plugins['active'] ) ) {
+				$active[ $plugin ] = $info;
+			}
+		}
+		return $active;
+	}
+
+	protected function plugins_option_filter( $plugins ) {
+		$installed = get_plugins();
+		foreach ( $this->options['plugin_list'] as $plugin => $status ) {
+			if ( ( $status === 'no' ) ) {
+				if ( isset( $plugins['plugins'][ $plugin ] ) ) {
+					unset( $plugins['plugins'][ $plugin ] );
+				}
+			}
+			if ( isset( $installed[ $plugin ] ) ) {
+				unset( $installed[ $plugin ] );
+			}
+		}
+		#	Check for newly installed plugins
+		if ( $installed && ( $this->options['install_default'] === 'no' ) ) {
+			foreach( $installed as $key => $plugin ) {
+				if ( isset( $plugins['plugins'][ $key ] ) ) {
+					unset( $plugins['plugins'][ $key ] );
+				}
+			}
+		}
+		#	Rebuild active plugins list
+		$count  = 1;
+		$active = array();
+		foreach( $plugins['active'] as $key => $plugin ) {
+			if ( isset( $plugins['plugins'][ $plugin ] ) ) {
+				$active[ $count++ ] = $plugin;
+			}
+		}
+		$plugins['active'] = $active;
+		return $plugins;
+	}
+
+
+	/**  Themes  **/
 
 	protected function filter_themes( $args, $url ) {
 		if ( stripos( $url, '://api.wordpress.org/themes/update-check/' ) !== false ) {
@@ -251,52 +282,20 @@ class Privacy_My_Way {
 				if ( ! empty( $args['body']['themes'] ) ) {
 					$themes = json_decode( $args['body']['themes'], true );
 					$this->logging( $url, $themes );
-					#	Report no themes installed
-					if ( $this->options['themes'] === 'none' ) {
-						$themes = array(
-							'active' => '',
-							'themes' => array(),
-						);
-					#	Report only active theme, plus parent if active is child
-					} else if ( $this->options['themes'] === 'active' ) {
-						$installed = array();
-						$active    = $themes['active'];
-						$installed[ $active ] = $themes['themes'][ $active ];
-						#	Check for child theme
-						if ( $installed[ $active ]['Template'] !== $installed[ $active ]['Stylesheet'] ) {
-							$parent = $installed[ $active ]['Template'];
-							$installed[ $parent ] = $themes['themes'][ $parent ];
-						}
-						$themes['themes'] = $installed;
-					#	Filter themes
-					} else if ( $this->options['themes'] === 'filter' ) {
-						$filter = $this->options['theme_list'];
-						#	Store site active theme
-						$active = $themes['active'];
-						#	Loop through our filter list
-						foreach ( $filter as $theme => $status ) {
-							#	Is theme still installed?
-							if ( isset( $themes['themes'][ $theme ] ) ) {
-								#	Is the theme being filtered?
-								if ( ( $status === 'no' ) ) {
-									unset( $themes['themes'][ $theme ] );
-									#	Is this the active theme?
-									$active = ( $active === $theme ) ? '' : $active;
-								} else {
-									#	Do we need to set a new active theme?
-									$active = ( $active ) ? $active : $theme;
-								}
-							} else {  #  Theme has been deleted
-								#	Is this the active theme?
-								$active = ( $active === $theme ) ? '' : $active;
-							}
-						}
-						#	Do we need to set a new active theme?
-						if ( empty( $active ) ) {
-							$keys   = array_keys( $themes['themes'] );
-							$active = $keys[0];
-						}
-						$themes['active'] = $active;
+					switch ( $this->options['themes'] ) {
+						case 'none':
+							$themes = array(
+								'active' => '',
+								'themes' => array(),
+							);
+							break;
+						case 'active':
+							$themes['themes'] = $this->themes_option_active( $themes );
+							break;
+						case 'filter':
+							$themes = $this->themes_option_filter( $themes );
+							break;
+						default:
 					}
 					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
@@ -305,6 +304,49 @@ class Privacy_My_Way {
 			} #else { $this->logging( 'already been here', $args ); }
 		}
 		return $args;
+	}
+
+	protected function themes_option_active( $themes ) {
+		$installed = array();
+		$active    = $themes['active'];
+		$installed[ $active ] = $themes['themes'][ $active ];
+		#	Check for child theme
+		if ( $installed[ $active ]['Template'] !== $installed[ $active ]['Stylesheet'] ) {
+			$parent = $installed[ $active ]['Template'];
+			$installed[ $parent ] = $themes['themes'][ $parent ];
+		}
+		return $installed;
+	}
+
+	protected function themes_option_filter( $themes ) {
+		$filter = $this->options['theme_list'];
+		#	Store site active theme
+		$active = $themes['active'];
+		#	Loop through our filter list
+		foreach ( $filter as $theme => $status ) {
+			#	Is theme still installed?
+			if ( isset( $themes['themes'][ $theme ] ) ) {
+				#	Is the theme being filtered?
+				if ( ( $status === 'no' ) ) {
+					unset( $themes['themes'][ $theme ] );
+					#	Is this the active theme?
+					$active = ( $active === $theme ) ? '' : $active;
+				} else {
+					#	Do we need to set a new active theme?
+					$active = ( $active ) ? $active : $theme;
+				}
+			} else {  #  Theme has been deleted
+				#	Is this the active theme?
+				$active = ( $active === $theme ) ? '' : $active;
+			}
+		}
+		#	Do we need to set a new active theme?
+		if ( empty( $active ) ) {
+			$keys   = array_keys( $themes['themes'] );
+			$active = $keys[0];
+		}
+		$themes['active'] = $active;
+		return $themes;
 	}
 
 	protected function filter_url( $url ) {

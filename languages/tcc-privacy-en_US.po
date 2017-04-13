@@ -1,0 +1,373 @@
+# Copyright (C) 2017 Privacy My Way
+# This file is distributed under the same license as the Privacy My Way package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Privacy My Way 1.2.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/privacy-my-way\n"
+"POT-Creation-Date: 2017-04-13 09:32:04+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-04-13 09:32:04+00:00\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: classes/Form/Admin.php:83
+msgctxt "string - a function name"
+msgid "ERROR: Unable to locate function %s"
+msgstr "ERROR: Unable to locate function %s"
+
+#: classes/Form/Admin.php:84
+msgctxt "placeholder will be an ASCII character string"
+msgid "ERROR: Not able to locate form data subscript:  %s"
+msgstr "ERROR: Not able to locate form data subscript:  %s"
+
+#: classes/Form/Admin.php:87
+msgid "Save Changes"
+msgstr "Save Changes"
+
+#: classes/Form/Admin.php:88 classes/Form/Admin.php:90
+msgid "Form"
+msgstr "Form"
+
+#: classes/Form/Admin.php:89
+msgctxt "placeholder is a noun, may be plural"
+msgid "Reset %s"
+msgstr "Reset %s"
+
+#: classes/Form/Admin.php:91
+msgctxt "placeholder is a noun, probably singular"
+msgid "Default %s options restored."
+msgstr "Default %s options restored."
+
+#: classes/Form/Admin.php:94
+msgid "Assign/Upload Image"
+msgstr "Assign/Upload Image"
+
+#: classes/Form/Admin.php:95
+msgid "Assign Image"
+msgstr "Assign Image"
+
+#: classes/Form/Admin.php:96
+msgid "Unassign Image"
+msgstr "Unassign Image"
+
+#: classes/Form/Admin.php:541
+msgid "Yes"
+msgstr "Yes"
+
+#: classes/Form/Admin.php:542
+msgid "No"
+msgstr "No"
+
+#. #-#-#-#-#  privacy-my-way.pot (Privacy My Way 1.2.0)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: classes/Form/Privacy.php:18 classes/Form/Privacy.php:19
+#: classes/Form/Privacy.php:42 classes/Register/Privacy.php:21
+msgid "Privacy My Way"
+msgstr "Privacy My Way"
+
+#: classes/Form/Privacy.php:47 classes/Form/Privacy.php:48
+#: classes/Options/Privacy.php:36
+msgid "Privacy"
+msgstr "Privacy"
+
+#: classes/Options/Privacy.php:43
+msgid ""
+"Control the information that WordPress collects from your site.  The default "
+"settings, marked by a (*), duplicate what WordPress currently collects."
+msgstr ""
+"Control the information that WordPress collects from your site.  The default "
+"settings, marked by a (*), duplicate what WordPress currently collects."
+
+#: classes/Options/Privacy.php:49
+msgctxt "noun - singular"
+msgid ""
+"*** Turning off reporting a %1$s means you will not be notified of upgrades "
+"for that %1$s! ***"
+msgstr ""
+"*** Turning off reporting a %1$s means you will not be notified of upgrades "
+"for that %1$s! ***"
+
+#: classes/Options/Privacy.php:50
+msgid " ( Recommended ) "
+msgstr " ( Recommended ) "
+
+#: classes/Options/Privacy.php:53
+msgid "Blog URL"
+msgstr "Blog URL"
+
+#: classes/Options/Privacy.php:54
+msgid "I would suggest that you not change this setting."
+msgstr "I would suggest that you not change this setting."
+
+#: classes/Options/Privacy.php:57
+msgid "Let WordPress know your site's url. (*)"
+msgstr "Let WordPress know your site's url. (*)"
+
+#: classes/Options/Privacy.php:58
+msgid "Do not let them know where you are."
+msgstr "Do not let them know where you are."
+
+#: classes/Options/Privacy.php:67
+msgid "Multi-Site"
+msgstr "Multi-Site"
+
+#: classes/Options/Privacy.php:70
+msgid "Yes - Let WordPress know if you are running a multi-site blog. (*)"
+msgstr "Yes - Let WordPress know if you are running a multi-site blog. (*)"
+
+#: classes/Options/Privacy.php:71
+msgid "No -- Tell WordPress you are running just a single blog."
+msgstr "No -- Tell WordPress you are running just a single blog."
+
+#: classes/Options/Privacy.php:79
+msgid "Install URL"
+msgstr "Install URL"
+
+#: classes/Options/Privacy.php:82
+msgid "Let WordPress know the url you installed WordPress to. (*)"
+msgstr "Let WordPress know the url you installed WordPress to. (*)"
+
+#: classes/Options/Privacy.php:83
+msgid "Do not give WordPress this information."
+msgstr "Do not give WordPress this information."
+
+#: classes/Options/Privacy.php:91
+msgid "Users"
+msgstr "Users"
+
+#: classes/Options/Privacy.php:94
+msgid "Accurately report to WordPress how many users you have. (*)"
+msgstr "Accurately report to WordPress how many users you have. (*)"
+
+#: classes/Options/Privacy.php:95
+msgid "Only let WordPress know that you have some users."
+msgstr "Only let WordPress know that you have some users."
+
+#: classes/Options/Privacy.php:96
+msgid "Tell WordPress that you are the only user."
+msgstr "Tell WordPress that you are the only user."
+
+#: classes/Options/Privacy.php:97
+msgid "Just generate some random number to give WordPress."
+msgstr "Just generate some random number to give WordPress."
+
+#: classes/Options/Privacy.php:102
+msgid "Plugins"
+msgstr "Plugins"
+
+#: classes/Options/Privacy.php:105
+msgid "Let WordPress know what plugins you have installed. (*)"
+msgstr "Let WordPress know what plugins you have installed. (*)"
+
+#: classes/Options/Privacy.php:106
+msgid "Only report active plugins."
+msgstr "Only report active plugins."
+
+#: classes/Options/Privacy.php:107
+msgid "Filter the plugin list that gets sent to WordPress."
+msgstr "Filter the plugin list that gets sent to WordPress."
+
+#: classes/Options/Privacy.php:108
+msgid "Do not let them know about your plugins."
+msgstr "Do not let them know about your plugins."
+
+#: classes/Options/Privacy.php:115
+msgid "Default"
+msgstr "Default"
+
+#: classes/Options/Privacy.php:116
+msgid "Default setting for newly installed plugins/themes."
+msgstr "Default setting for newly installed plugins/themes."
+
+#: classes/Options/Privacy.php:119
+msgid "Allow wordpress report on new installs. (*)"
+msgstr "Allow wordpress report on new installs. (*)"
+
+#: classes/Options/Privacy.php:120
+msgid "Block reports on new installs."
+msgstr "Block reports on new installs."
+
+#: classes/Options/Privacy.php:128
+msgid "Plugin List"
+msgstr "Plugin List"
+
+#: classes/Options/Privacy.php:129
+msgid "plugin"
+msgstr "plugin"
+
+#: classes/Options/Privacy.php:137
+msgid "Themes"
+msgstr "Themes"
+
+#: classes/Options/Privacy.php:140
+msgid "Let WordPress know what themes you have installed. (*)"
+msgstr "Let WordPress know what themes you have installed. (*)"
+
+#: classes/Options/Privacy.php:141
+msgid "Only let them know about your active theme."
+msgstr "Only let them know about your active theme."
+
+#: classes/Options/Privacy.php:142
+msgid "Filter the theme list that gets sent to WordPress."
+msgstr "Filter the theme list that gets sent to WordPress."
+
+#: classes/Options/Privacy.php:143
+msgid "Do not let them know about your themes."
+msgstr "Do not let them know about your themes."
+
+#: classes/Options/Privacy.php:151
+msgid "Theme List"
+msgstr "Theme List"
+
+#: classes/Options/Privacy.php:152
+msgid "theme"
+msgstr "theme"
+
+#: classes/Options/Privacy.php:154
+msgid ""
+"The WordPress twenty* themes that are installed will always be reported."
+msgstr ""
+"The WordPress twenty* themes that are installed will always be reported."
+
+#: classes/Options/Privacy.php:155
+msgid "This plugin does not filter default WordPress themes."
+msgstr "This plugin does not filter default WordPress themes."
+
+#: classes/Options/Privacy.php:166
+msgid "Plugin Data"
+msgstr "Plugin Data"
+
+#: classes/Options/Privacy.php:167
+msgid "Plugin Settings."
+msgstr "Plugin Settings."
+
+#: classes/Options/Privacy.php:173
+msgid "Logging"
+msgstr "Logging"
+
+#: classes/Options/Privacy.php:174
+msgid "Logging Status."
+msgstr "Logging Status."
+
+#: classes/Options/Privacy.php:177
+msgid "Do not log anything."
+msgstr "Do not log anything."
+
+#: classes/Options/Privacy.php:178
+msgid "Log everything."
+msgstr "Log everything."
+
+#: classes/Options/Privacy.php:184
+msgid "Data Deletion"
+msgstr "Data Deletion"
+
+#: classes/Options/Privacy.php:185
+msgid "Control when plugin data is removed."
+msgstr "Control when plugin data is removed."
+
+#: classes/Options/Privacy.php:188
+msgid "Delete plugin data upon plugin deactivation."
+msgstr "Delete plugin data upon plugin deactivation."
+
+#: classes/Options/Privacy.php:189
+msgid "Delete plugin data upon plugin deletion."
+msgstr "Delete plugin data upon plugin deletion."
+
+#: classes/Options/Privacy.php:190
+msgid "Do not delete plugin data."
+msgstr "Do not delete plugin data."
+
+#: classes/Options/Privacy.php:246
+msgid "active"
+msgstr "active"
+
+#: classes/Options/Privacy.php:248
+msgid "inactive"
+msgstr "inactive"
+
+#: classes/Options/Privacy.php:252
+msgctxt ""
+"1: plugin title, 2: plugin active/inactive status, 3: plugin author name"
+msgid "%1$s %2$s by %3$s"
+msgstr "%1$s %2$s by %3$s"
+
+#: classes/Options/Privacy.php:293
+msgctxt "1: Theme title, 2: Author name"
+msgid "%1$s by %2$s"
+msgstr "%1$s by %2$s"
+
+#: classes/Plugin/Plugin.php:126
+msgid "Settings"
+msgstr "Settings"
+
+#: classes/Register/Register.php:50
+msgid "You are running an unsupported version of PHP."
+msgstr "You are running an unsupported version of PHP."
+
+#: classes/Register/Register.php:57
+msgctxt "1: Plugin name   2: php version required  3: php version detected"
+msgid ""
+"%1$s requires PHP version %2$s, version %3$s detected.  Please upgrade your "
+"PHP before attempting to use this plugin. "
+msgstr ""
+"%1$s requires PHP version %2$s, version %3$s detected.  Please upgrade your "
+"PHP before attempting to use this plugin. "
+
+#: classes/Register/Register.php:84
+msgid "You are running an unsupported version of WordPress."
+msgstr "You are running an unsupported version of WordPress."
+
+#: classes/Register/Register.php:91
+msgctxt ""
+"1: Plugin name  2: Required version of WordPress  3: Current version of "
+"WordPress"
+msgid ""
+"%1$s requires WordPress %2$s or later and has detected you are running %3$s. "
+"Upgrade your WordPress install before using this plugin."
+msgstr ""
+"%1$s requires WordPress %2$s or later and has detected you are running %3$s. "
+"Upgrade your WordPress install before using this plugin."
+
+#: classes/Register/Register.php:109
+msgctxt "Plugin title"
+msgid "%s can not be activated."
+msgstr "%s can not be activated."
+
+#: classes/Trait/Singleton.php:34
+msgid "This class can not be cloned."
+msgstr "This class can not be cloned."
+
+#: classes/Trait/Singleton.php:40
+msgid "This class can not be serialized."
+msgstr "This class can not be serialized."
+
+#: classes/Trait/Singleton.php:46
+msgid "This class can not be unserialized."
+msgstr "This class can not be unserialized."
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/RichardCoffee/privacy-my-way"
+msgstr "https://github.com/RichardCoffee/privacy-my-way"
+
+#. Description of the plugin/theme
+msgid ""
+"Control what your WordPress site phones home about.  Does WordPress.org "
+"=really= need to know how many users you have?"
+msgstr ""
+"Control what your WordPress site phones home about.  Does WordPress.org "
+"=really= need to know how many users you have?"
+
+#. Author of the plugin/theme
+msgid "Richard Coffee"
+msgstr "Richard Coffee"
+
+#. Author URI of the plugin/theme
+msgid "http://rtcenterprises.net"
+msgstr "http://rtcenterprises.net"
+
+#. Tags of the plugin/theme
+msgid "privacy, updates, plugins, themes, core, translations"
+msgstr "privacy, updates, plugins, themes, core, translations"
