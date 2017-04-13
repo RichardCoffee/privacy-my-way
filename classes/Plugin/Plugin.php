@@ -132,8 +132,8 @@ abstract class PMW_Plugin_Plugin {
 	/**  Updates  **/
 
 	private function load_update_checker() {
-		$puc_file = $this->paths->dir . 'vendors/plugin-update-checker-' . $this->puc_vers . '/plugin-update-checker.php';
-		if ( file_exists( $puc_file ) && ! empty( $this->github ) ) {
+		$puc_file = $this->paths->dir . 'vendor/plugin-update-checker-' . $this->puc_vers . '/plugin-update-checker.php';
+		if ( is_readable( $puc_file ) && ! empty( $this->github ) ) {
 			require_once( $puc_file );
 			$this->puc = Puc_v4_Factory::buildUpdateChecker( $this->github, $this->paths->file, $this->plugin );
 		}

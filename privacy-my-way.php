@@ -4,10 +4,10 @@
  * Privacy My Way
  *
  * @package   Privacy_My_Way
- * @author    Richard Coffee
- * @license   MIT
- * @link      https://github.com/RichardCoffee/privacy-my-way
+ * @author    Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright 2017 Richard Coffee
+ * @license   MIT https://opensource.org/licenses/MIT
+ * @link      https://github.com/RichardCoffee/privacy-my-way
  *
  * @wordpress-plugin
  * Plugin Name:       Privacy My Way

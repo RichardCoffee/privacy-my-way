@@ -43,7 +43,7 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).
 * Enhancement:  added pot file, along with en_US.po file.
 * Enhancement:  added option for data deletion when deactivating/uninstalling plugin.
 * Enhancement:  added option for logging, removed use of flag file.
-* Upgrade:  moved files in assets/ to more correct vendors/ directory.
+* Upgrade:  moved files in assets/ to more correct vendor/ directory.
 * Upgrade:  upgraded to version 4.1 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
 * Upgrade:  updated base plugin classes.
 
