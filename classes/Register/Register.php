@@ -197,6 +197,9 @@ class PMW_Register_Register {
 			$option = self::verify_option( $option );
 			if ( $option ) {
 				self::delete_blog_options( 'deactive', $option );
+				if ( is_multisite() && is_main_site() ) {
+#					self::delete_site_options( 'deactive', $option );
+				}
 				flush_rewrite_rules();
 			}
 		}
@@ -207,7 +210,7 @@ class PMW_Register_Register {
 			$option = self::verify_option( $option );
 			if ( $option ) {
 				self::delete_blog_options( 'uninstall', $option );
-				if ( is_multisite() ) {
+				if ( is_multisite() && is_main_site() ) {
 #					self::delete_site_options( 'uninstall', $option );
 				}
 			}
@@ -219,16 +222,15 @@ class PMW_Register_Register {
 			? $option
 			: ( ( ! empty( static::$option ) )
 				? static::$option
-				: '' );
+				: $option );
 		return $option;
 	}
 
 	protected static function delete_blog_options( $action, $option ) {
-		$log_id   = get_current_blog_id();
+		$blog_id  = get_current_blog_id();
 		$opt_slug = self::$prefix . $option;
 		$options  = ( is_multisite() ) ? get_blog_option( $blog_id, $opt_slug, array() ) : get_option( $opt_slug, array() );
 		if ( $options ) {
-			#	Is there an $action option?  What is it?
 			if ( isset( $options['deledata'] ) && ( $options['deledata'] === $action ) ) {
 				if ( is_multisite() ) {
 					delete_blog_option( $blog_id, $opt_slug );
@@ -243,11 +245,8 @@ class PMW_Register_Register {
 		$opt_slug = self::$prefix . $option;
 		$options  = get_site_option( $opt_slug, array() );
 		if ( $options ) {
-			#| Is there an $action option?  What is it?
 			if ( isset( $options['deledata'] ) && ( $options['deledata'] === $action ) ) {
-				#| No option or not this option, don't do anything
-			} else {
-				delete_site_option( $blog_id, "tcc_options_$option" );
+				delete_site_option( $opt_slug );
 			}
 		}
 	}

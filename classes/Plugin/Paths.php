@@ -1,5 +1,11 @@
 <?php
 
+if ( ! function_exists( 'pmw_plugin_paths' ) ) {
+	function pmw_plugin_paths() {
+		return PMW_Plugin_Paths::instance();
+	}
+}
+
 class PMW_Plugin_Paths {
 
 	protected $file;
