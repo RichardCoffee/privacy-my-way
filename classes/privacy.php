@@ -37,6 +37,7 @@ class Privacy_My_Way {
 			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
 		}
 		$this->logging( $this );
+		$this->check_transients();
 	}
 
 	protected function get_options() {
@@ -381,6 +382,20 @@ class Privacy_My_Way {
 
 
 	/*  Debugging  */
+
+	private function check_transients() {
+		$checks = array(
+			'_site_transient_update_core',
+			'_site_transient_update_plugins',
+			'_site_transient_update_themes',
+		);
+		foreach( $checks as $check ) {
+			if ( $trans = get_transient( $check ) ) {
+				$this->logging_force = true;
+				$this->logging( $trans );
+			}
+		}
+	}
 
 	public function run_tests( $args ) {
 		if ( isset( $args['plugins'] ) ) {
