@@ -72,13 +72,13 @@ class Privacy_My_Way {
 					$count = false;
 					break;
 				case 'some':
-					$count = random_int( 1, $users );
+					$count = wp_rand( 1, $users );
 					break;
 				case 'one':
 					$count = 1;
 					break;
 				case 'many':
-					$count = random_int( 1, ( $users * 10 ) );
+					$count = wp_rand( 1, ( $users * 10 ) );
 					break;
 				default:
 			}

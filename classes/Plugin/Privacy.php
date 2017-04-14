@@ -6,6 +6,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	private   $checker  = null;
 	protected $github   = 'https://github.com/RichardCoffee/privacy-my-way/';
 	protected $privacy  = null;
+	protected $random   = '2.0.9';
 	protected $setting  = 'options-general.php?page=privacy';
 	protected $slug     = 'privacy-my-way';
 	protected $tab      = 'privacy';
@@ -47,17 +48,6 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		parent::add_filters();
 	}
 
-	private function privacy_setup() {
-		if ( ! $this->privacy ) {
-			if ( ! function_exists( 'random_int' ) ) {
-				# PHP 7.0 compatibility
-				require_once( $this->paths->dir . 'vendor/random_compat/lib/random.php' );
-			}
-			include_once( $this->paths->dir . 'classes/privacy.php' );
-			$this->privacy = Privacy_My_Way::instance();
-		}
-	}
-
 	public function add_privacy_filters( $locale = '' ) {
 		$this->privacy_setup();
 		return $locale;
@@ -67,6 +57,17 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		$this->setting = 'admin.php?page=fluidity_options&tab=privacy';
 		$options['Privacy'] = new PMW_Options_Privacy;
 		return $options;
+	}
+
+	private function privacy_setup() {
+		if ( ! $this->privacy ) { /*
+			if ( ! function_exists( 'random_int' ) ) {
+				# PHP 7.0 compatibility
+				require_once( $this->paths->dir . 'vendor/random_compat-' . $this->random . '/lib/random.php' );
+			} //*/
+			include_once( $this->paths->dir . 'classes/privacy.php' );
+			$this->privacy = Privacy_My_Way::instance();
+		}
 	}
 
 
