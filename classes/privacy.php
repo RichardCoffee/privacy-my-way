@@ -47,7 +47,9 @@ class Privacy_My_Way {
 			update_option( 'tcc_options_privacy', $options );
 		}
 		$this->options = $options;
-		add_filter( 'logging_debug_privacy', function( $debug ) { return ( $this->options['logging'] === 'on' ); } );
+		add_filter( 'logging_debug_privacy', function( $debug ) {
+			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) );
+		} );
 	}
 
 	#	Filter triggered on multisite installs, called internally for single site
