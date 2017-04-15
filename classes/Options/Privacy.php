@@ -6,7 +6,7 @@ class PMW_Options_Privacy extends PMW_Options_Options {
 	private   $active   = array();
 	protected $base     = 'privacy';
 	private   $options  = array();
-	private   $priority = 550;  #  internal theme option
+	protected $priority = 550;  #  internal theme option
 	private   $plugins  = array();
 	private   $themes   = array();
 
