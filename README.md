@@ -74,7 +74,10 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ## Changelog
 
-### 1.3.0 - not yet released
+### 1.3.1
+* Bugfix: fixed missing index error.
+
+### 1.3.0
 * Enhancement:  added pot file, along with en_US.po file.
 * Enhancement:  added option for data deletion when deactivating/uninstalling plugin.
 * Enhancement:  added option for logging, removed use of flag file.
