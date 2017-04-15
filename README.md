@@ -74,6 +74,9 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ## Changelog
 
+### 1.3.2
+* Bugfix:  fixed new installation crashes.
+
 ### 1.3.1
 * Bugfix: fixed missing index error.
 
