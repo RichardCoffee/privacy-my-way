@@ -388,12 +388,12 @@ class Privacy_My_Way {
 
 	private function check_transients() {
 		$checks = array(
-			'_site_transient_update_core',
-			'_site_transient_update_plugins',
-			'_site_transient_update_themes',
+			'update_core',
+			'update_plugins',
+			'update_themes',
 		);
 		foreach( $checks as $check ) {
-			if ( $trans = get_transient( $check ) ) {
+			if ( $trans = get_site_transient( $check ) ) {
 				$this->logging_force = true;
 				$this->logging( $trans );
 			}
