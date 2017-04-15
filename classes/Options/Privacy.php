@@ -1,7 +1,7 @@
 <?php
 
 
-class PMW_Options_Privacy {
+class PMW_Options_Privacy extends PMW_Options_Options {
 
 	private $active   = array();
 	private $base     = 'privacy';
@@ -9,10 +9,6 @@ class PMW_Options_Privacy {
 	private $priority = 550;  #  internal theme option
 	private $plugins  = array();
 	private $themes   = array();
-
-	public function __construct() {
-		add_filter( 'fluidity_options_form_layout', array( $this, 'add_form_layout' ), $this->priority );
-	}
 
 	private function initialize() {
 		#	https://codex.wordpress.org/Function_Reference/get_plugins
@@ -24,26 +20,15 @@ class PMW_Options_Privacy {
 		$this->themes  = ( $this->themes  ) ? $this->themes  : wp_get_themes();
 	}
 
-	public function add_form_layout( $form ) {
-		#	Add form to theme options screen
-		$form[ $this->base ] = $this->default_form_layout();
-		return $form;
+	protected function form_title() {
+		return __( 'Privacy', 'tcc-privacy' );
 	}
 
-	public function default_form_layout() {
-		return array(
-			'describe' => array( $this, 'title_description' ),
-			'title'    => __( 'Privacy', 'tcc-privacy' ),
-			'option'   => 'tcc_options_' . $this->base,
-			'layout'   => $this->options_layout()
-		);
-	}
-
-	public function title_description() {
+	public function describe_options() {
 		esc_html_e( 'Control the information that WordPress collects from your site.  The default settings, marked by a (*), duplicate what WordPress currently collects.', 'tcc-privacy' );
 	}
 
-	public function options_layout( $all = false ) {
+	protected function options_layout( $all = false ) {
 		$this->initialize();
 		$layout  = array( 'default' => true );
 		$warning = _x( '*** Turning off reporting a %1$s means you will not be notified of upgrades for that %1$s! ***', 'noun - singular', 'tcc-privacy' );
@@ -167,7 +152,7 @@ class PMW_Options_Privacy {
 			'text'    => __( 'Plugin Settings.', 'tcc-privacy' ),
 			'render'  => 'title',
 		);
-		if ( WP_DEBUG ) {
+		if ( WP_DEBUG || $all ) {
 			$layout['logging'] = array(
 				'default' => 'off',
 				'label'   => __( 'Logging', 'tcc-privacy' ),
@@ -192,17 +177,6 @@ class PMW_Options_Privacy {
 		);
 		$layout = apply_filters( "tcc_options_layout_{$this->base}", $layout );
 		return $layout;
-	}
-
-	public function get_privacy_defaults() {
-		$form = $this->options_layout( true );
-		$defs = array();
-		foreach( $form as $key => $option ) {
-			if ( isset( $option['default'] ) ) {
-				$defs[ $key ] = $option['default'];
-			}
-		}
-		return $defs;
 	}
 
 

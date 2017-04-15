@@ -44,7 +44,7 @@ class Privacy_My_Way {
 		$options = get_option( 'tcc_options_privacy', array() );
 		if ( ! $options ) {
 			$privacy = new PMW_Options_Privacy;
-			$options = $privacy->get_privacy_defaults();
+			$options = $privacy->get_default_options();
 			update_option( 'tcc_options_privacy', $options );
 		}
 		$this->options = $options;
