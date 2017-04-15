@@ -83,6 +83,7 @@ if ( ! function_exists( 'pmw_log_entry' ) ) {
 	}
 }
 
+/*
 if ( WP_DEBUG && ! function_exists( 'pmw_log_deprecated' ) ) {
 	function pmw_log_deprecated() {
 		$args = func_get_args();
@@ -94,4 +95,4 @@ if ( WP_DEBUG && ! function_exists( 'pmw_log_deprecated' ) ) {
 	add_action( 'deprecated_argument_run',    'pmw_log_deprecated', 10, 3 );
 	add_action( 'deprecated_hook_run',        'pmw_log_deprecated', 10, 4 );
 	add_action( 'doing_it_wrong_run',         'pmw_log_deprecated', 10, 3 );
-}
+} //*/

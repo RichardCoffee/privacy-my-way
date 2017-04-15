@@ -51,7 +51,7 @@ class PMW_Options_Privacy {
 		$layout['blog'] = array(
 			'default' => 'yes',
 			'label'   => __( 'Blog URL', 'tcc-privacy' ),
-			'text'    => __( 'I would suggest that you not change this setting.', 'tcc-privacy' ),
+#			'text'    => __( 'I would suggest that you not change this setting.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
 				'yes'  => __( "Let WordPress know your site's url. (*)", 'tcc-privacy' ),

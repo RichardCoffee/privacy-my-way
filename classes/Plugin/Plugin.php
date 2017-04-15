@@ -119,14 +119,16 @@ abstract class PMW_Plugin_Plugin {
 	 *  sources:  http://code.tutsplus.com/tutorials/integrating-with-wordpress-ui-the-basics--wp-26713
 	 */
 	public function settings_link( $links, $file ) {
-		if ( strpos( $file, $this->plugin ) > -1 ) {
-			unset( $links['edit'] );
-			if ( is_plugin_active( $file ) ) { // NOTE:  how would this ever get run if the plugin is not active?  why do we need this check?
-				$url   = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
-				$links['settings'] = sprintf( '<a href="%1$s"> %2$s </a>', $url, esc_html__( 'Settings', 'tcc-privacy' ) );
-			}
+		if ( strpos( $file, $this->plugin ) === false ) {
+			return $links;
 		}
-		return $links;
+		unset( $links['edit'] );
+		$new = array();
+		if ( current_user_can( 'edit_plugins' ) ) { // maybe edit_theme_options
+			$url = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
+			$new['settings'] = sprintf( '<a href="%1$s"> %2$s </a>', $url, esc_html__( 'Settings', 'tcc-privacy' ) );
+		}
+		return array_merge( $new, $links );
 	}
 
 	/**  Updates  **/

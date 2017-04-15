@@ -62,11 +62,11 @@ abstract class PMW_Form_Admin {
 			$func = $this->register;
 			$this->$func();
 			do_action( 'tcc_load_form_page' );
-			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		}
 	}
 
-	public function enqueue_scripts() {
+	public function admin_enqueue_scripts() {
 		wp_register_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), array( 'wp-color-picker' ) );
 		wp_register_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js' ), array( 'jquery', 'wp-color-picker' ), false, true );
 		wp_enqueue_media();
