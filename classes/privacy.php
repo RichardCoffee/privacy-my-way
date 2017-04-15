@@ -17,7 +17,6 @@ defined( 'ABSPATH' ) || exit;
 class Privacy_My_Way {
 
 
-	protected $form = null;  #  object -- PMW_Form_Privacy, child of PMW_Form_Admin
 	protected $options;      #  array --- privacy options
 
 	use PMW_Trait_Logging;
@@ -44,7 +43,7 @@ class Privacy_My_Way {
 	protected function get_options() {
 		$options = get_option( 'tcc_options_privacy', array() );
 		if ( ! $options ) {
-			$this->form = new PMW_Options_Privacy;
+			$privacy = new PMW_Options_Privacy;
 			$options = $privacy->get_privacy_defaults();
 			update_option( 'tcc_options_privacy', $options );
 		}
