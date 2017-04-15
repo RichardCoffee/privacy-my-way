@@ -3,12 +3,12 @@
 
 class PMW_Options_Privacy extends PMW_Options_Options {
 
-	private $active   = array();
-	private $base     = 'privacy';
-	private $options  = array();
-	private $priority = 550;  #  internal theme option
-	private $plugins  = array();
-	private $themes   = array();
+	private   $active   = array();
+	protected $base     = 'privacy';
+	private   $options  = array();
+	private   $priority = 550;  #  internal theme option
+	private   $plugins  = array();
+	private   $themes   = array();
 
 	private function initialize() {
 		#	https://codex.wordpress.org/Function_Reference/get_plugins
