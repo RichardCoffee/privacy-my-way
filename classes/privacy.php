@@ -300,6 +300,7 @@ class Privacy_My_Way {
 							break;
 						default:
 					}
+					$this->logging_force = true;
 					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
 					$args['_pmw_privacy_filter_themes'] = true;
