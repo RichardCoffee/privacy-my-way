@@ -32,7 +32,19 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	}
 
 	public function add_actions() {
-		add_action( 'wp_version_check', array( $this, 'add_privacy_filters' ) );
+		$actions = array(
+			'admin_init',
+			'load-plugins.php',
+			'load-themes.php',
+			'load-update.php',
+			'load-update-core.php',
+			'wp_update_plugins',
+			'wp_update_themes',
+			'wp_version_check',
+		);
+		foreach( $actions as $action ) {
+			add_action( $action, array( $this, 'add_privacy_filters' ), 1 );
+		}
 		if ( is_admin() ) {
 			add_action( 'admin_menu', array( PMW_Form_Privacy::instance(), 'add_menu_option' ) );
 			add_action( 'tcc_load_form_page', function() {

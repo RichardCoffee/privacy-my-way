@@ -394,7 +394,8 @@ class Privacy_My_Way {
 		foreach( $checks as $check ) {
 			if ( $trans = get_site_transient( $check ) ) {
 				$this->logging_force = true;
-				$this->logging( $trans );
+				$this->logging( $check, $trans );
+				delete_site_transient( $check );
 			}
 		}
 	}
