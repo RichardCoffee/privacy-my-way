@@ -16,13 +16,18 @@ abstract class PMW_Options_Options {
 
 	public function form_layout( $form ) {
 		if ( ! isset( $form[ $this->base ] ) ) {
-			$form[ $this->base ] = array(
-				'describe' => array( $this, 'describe_options' ),
-				'title'    => $this->form_title(),
-				'option'   => 'tcc_options_'.$this->base,
-				'layout'   => $this->options_layout(),
-			);
+			$form[ $this->base ] = $this->default_form_layout();
 		}
+		return $form;
+	}
+
+	public function default_form_layout() {
+		$form = array(
+			'describe' => array( $this, 'describe_options' ),
+			'title'    => $this->form_title(),
+			'option'   => 'tcc_options_'.$this->base,
+			'layout'   => $this->options_layout(),
+		);
 		return $form;
 	}
 
