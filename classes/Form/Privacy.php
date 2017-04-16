@@ -38,7 +38,7 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 
 	protected function form_layout( $form = array() ) {
 		$options = new PMW_Options_Privacy;
-		$form    = $options->default_form_layout();
+		$form    = $options->form_layout();
 		$form['title'] = __( 'Privacy My Way', 'tcc-privacy' );
 		return $form;
 	}
