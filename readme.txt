@@ -39,6 +39,9 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).
 
 == Changelog ==
 
+= 1.3.2 =
+* Bugfix:  fixed new installation crashes.
+
 = 1.3.1 =
 * Bugfix:  fixed missing index error.
 
