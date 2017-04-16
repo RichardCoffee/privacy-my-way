@@ -39,6 +39,12 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).
 
 == Changelog ==
 
+= Next Release
+* Upgrade:  updated base plugin classes, added use of base Options class.
+
+= 1.3.2 =
+* Bugfix:  fixed new installation crashes.
+
 = 1.3.1 =
 * Bugfix:  fixed missing index error.
 
