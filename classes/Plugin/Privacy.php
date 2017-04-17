@@ -1,7 +1,7 @@
 <?php
 
-
 class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
+
 
 	private   $checker  = null;
 	protected $github   = 'https://github.com/RichardCoffee/privacy-my-way/';
@@ -26,8 +26,11 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		$this->add_actions();
 		$this->add_filters();
 
-		if ( WP_DEBUG && file_exists( WP_CONTENT_DIR . '/run-tests.flg' ) ) {
-			$this->run_tests();
+		if ( WP_DEBUG ) {
+			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'site_transient_stack' ), 10, 2 );
+			if ( file_exists( WP_CONTENT_DIR . '/run-tests.flg' ) ) {
+				$this->run_tests();
+			}
 		}
 	}
 
@@ -72,11 +75,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	}
 
 	private function privacy_setup() {
-		if ( ! $this->privacy ) { /*
-			if ( ! function_exists( 'random_int' ) ) {
-				# PHP 7.0 compatibility
-				require_once( $this->paths->dir . 'vendor/random_compat-' . $this->random . '/lib/random.php' );
-			} //*/
+		if ( ! $this->privacy ) {
 			include_once( $this->paths->dir . 'classes/privacy.php' );
 			$this->privacy = Privacy_My_Way::instance();
 		}
@@ -129,6 +128,11 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 			);
 		}
 		return compact( 'active', 'themes' );
+	}
+
+	public function site_transient_stack( $data, $transient ) {
+		pmw_log_entry( $transient, $data, 'stack' );
+		return $data;
 	}
 
 
