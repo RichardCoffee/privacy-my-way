@@ -5,7 +5,7 @@
  *
  */
 
-abstract class TCC_Form_Field_Field {
+abstract class PMW_Form_Field_Field {
 
 #	protected $echo       = true;       # echo html
 	protected $field_css  = '';         # field css
@@ -19,15 +19,17 @@ abstract class TCC_Form_Field_Field {
 	protected $field_value;             # field value
 	protected $label_css  = '';         # label css
 	protected $label_text = '';         # label text
+	protected $library;                 # plugin function library
 	protected $onchange = null;         # onchange attribute
-	protected $placeholder;             # placeholder text
-#	protected $post_id;                 # word press post id number
+	protected $placeholder = '';        # placeholder text
+#	protected $post_id;                 # wordpress post id number
 	protected $sanitize   = 'esc_attr'; # default sanitize method
 
 	use TCC_Trait_Magic;
 	use TCC_Trait_ParseArgs;
 
 	public function __construct( $args ) {
+		$this->library = new PMW_Plugin_Library;
 		$this->parse_args( $args );
 		if ( ( empty( $this->placeholder ) ) && ( ! empty( $this->label_text ) ) ) {
 			$this->placeholder = $this->label_text;
@@ -46,7 +48,7 @@ abstract class TCC_Form_Field_Field {
 			'value'       => $this->field_value,
 			'placeholder' => $this->placeholder,
 		); ?>
-		<input <?php apply_attrs( $attrs ); ?> /><?php
+		<input <?php $this->library->apply_attrs( $attrs ); ?> /><?php
 	}
 
 	protected function label() {
@@ -54,7 +56,7 @@ abstract class TCC_Form_Field_Field {
 			'class' => $this->label_css,
 			'for'   => $this->field_id,
 		);
-		$label  = '<label ' . apply_attrs( $attrs, false ) . '>';
+		$label  = '<label ' . $this->library->get_apply_attrs( $attrs ) . '>';
 		$label .= esc_html( $this->label_text );
 		$label .= '</label>';
 		return $label;

@@ -15,6 +15,7 @@ abstract class PMW_Form_Admin {
 	protected $form_opts =  array();
 	protected $form_text =  array();
 	protected $hook_suffix;
+	protected $library;
 	protected $options;
 	protected $prefix    = 'tcc_options_';
 	protected $register;
@@ -30,6 +31,7 @@ abstract class PMW_Form_Admin {
 	public function description() { return ''; }
 
 	protected function __construct() {
+		$this->library = new PMW_Plugin_Library;
 		$this->screen_type();
 		add_action( 'admin_init', array( $this, 'load_form_page' ) );
 	}
@@ -780,33 +782,6 @@ abstract class PMW_Form_Admin {
 
 }	#	end of PMW_Form_Admin class
 
-
-if ( ! function_exists( 'get_applied_attrs' ) ) {
-	function get_applied_attrs( $args ) {
-		return apply_attrs( $args, false );
-	}
-}
-
-if ( ! function_exists( 'apply_attrs' ) ) {
-	function apply_attrs( $args, $echo = true ) {
-		$attrs = ' ';
-		foreach( $args as $attr => $value ) {
-			if ( empty( $value ) ) {
-				continue;
-			}
-			// FIXME: use assoc array
-			$sanitize = ( $attr === 'href'  ) ? 'esc_url'  : 'esc_attr';
-			$sanitize = ( $attr === 'src'   ) ? 'esc_url'  : $sanitize;
-			$sanitize = ( $attr === 'value' ) ? 'esc_html' : $sanitize;
-			$attrs .= $attr . '="'. $sanitize( $value ) . '" ';
-		}
-		if ( $echo ) {
-			echo $attrs;
-		} else {
-			return $attrs;
-		}
-	}
-}
 
 if ( ! function_exists('e_esc_html') ) {
 	#   This is just a shorthand function
