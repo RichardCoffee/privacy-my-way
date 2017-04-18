@@ -35,7 +35,6 @@ class Privacy_My_Way {
 			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
 			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
 		}
-		$this->logging_force = true;
 		$this->logging( $this );
 		$this->check_transients();
 	}
