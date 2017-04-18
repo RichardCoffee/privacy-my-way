@@ -388,8 +388,8 @@ class Privacy_My_Way {
 
 	private function check_transients() {
 		$checks = array(
-			'update_core',
-			'update_plugins',
+#			'update_core',
+#			'update_plugins',
 			'update_themes',
 		);
 		foreach( $checks as $check ) {
