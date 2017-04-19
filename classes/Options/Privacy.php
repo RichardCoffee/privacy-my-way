@@ -147,6 +147,18 @@ class PMW_Options_Privacy extends PMW_Options_Options {
 			'source'  => $this->get_theme_list(),
 			'divcss'  => 'privacy-theme-filter',
 		); //*/
+		$layout['autoupdate'] = array(
+			'default' => 'yes',
+			'label'   => __( 'WP Updates', 'tcc-privacy' ),
+			'text'    => __( 'Allow/prevent WordPress automatic updates.', 'tcc-privacy' ),
+			'postext' => __( 'This will only stop automatic updates, it will not make them happen.', 'tcc-privacy' ),
+			'render'  => 'radio',
+			'source'  => array(
+				'yes' => __( 'Allow WordPress to perform automatic updates.', 'tcc-privacy' ),
+				'no'  => __( 'Prevent WordPress from doing automatic updates.', 'tcc-privacy' ),
+			),
+			'extra_html' => $extra_html,
+		);
 		$layout['plugindata'] = array(
 			'label'   => __( 'Plugin Data', 'tcc-privacy' ),
 			'text'    => __( 'Plugin Settings.', 'tcc-privacy' ),
