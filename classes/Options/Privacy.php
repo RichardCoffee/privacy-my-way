@@ -150,12 +150,14 @@ class PMW_Options_Privacy extends PMW_Options_Options {
 		$layout['autoupdate'] = array(
 			'default' => 'yes',
 			'label'   => __( 'WP Updates', 'tcc-privacy' ),
-			'text'    => __( 'Allow/prevent WordPress automatic updates.', 'tcc-privacy' ),
+			'text'    => __( 'Allow/prevent WordPress automatic updates.  You should not need to set this at all.', 'tcc-privacy' ),
 			'postext' => __( 'This will only stop automatic updates, it will not make them happen.', 'tcc-privacy' ),
+			'help'    => __( 'WordPress generally does the right thing here.  I recommend the default Allow.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
-				'yes' => __( 'Allow WordPress to perform automatic updates.', 'tcc-privacy' ),
-				'no'  => __( 'Prevent WordPress from doing automatic updates.', 'tcc-privacy' ),
+				'yes'  => __( 'Allow WordPress to perform automatic updates.', 'tcc-privacy' ),
+				'core' => __( 'Core automatic updates only.', 'tcc-privacy' ),
+				'no'   => __( 'Prevent WordPress from doing any automatic updates.', 'tcc-privacy' ),
 			),
 			'extra_html' => $extra_html,
 		);

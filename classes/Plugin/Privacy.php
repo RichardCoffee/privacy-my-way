@@ -60,8 +60,14 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		add_filter( 'core_version_check_locale',   array( $this, 'add_privacy_filters' ) );
 		add_filter( 'fluidity_initialize_options', array( $this, 'add_privacy_options' ) );
 		$options = get_option( 'tcc_options_privacy', array() );
-		if ( isset( $options['autoupdate'] ) && ( $options['autoupdate'] === 'no' ) ) {
-			add_filter( 'automatic_updater_disabled', '__return_true' );
+		if ( isset( $options['autoupdate'] ) ) {
+			if ( $options['autoupdate'] === 'no' ) {
+				add_filter( 'automatic_updater_disabled', '__return_true' );
+			} else if ( $options['autoupdate'] === 'core' ) {
+				add_filter( 'auto_update_plugin', '__return_false', 10, 2 );
+				add_filter( 'auto_update_theme', '__return_false', 10, 2 );
+				add_filter( 'auto_update_translation', '__return_false', 10, 2 );
+			}
 		}
 		parent::add_filters();
 	}
