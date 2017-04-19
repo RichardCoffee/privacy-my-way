@@ -1,10 +1,11 @@
 <?php
 
 
-class PMW_Options_Privacy extends PMW_Options_Options {
+final class PMW_Options_Privacy extends PMW_Options_Options {
 
 	private   $active   = array();
 	protected $base     = 'privacy';
+	private   $library;
 	private   $options  = array();
 	protected $priority = 550;  #  internal theme option
 	private   $plugins  = array();
@@ -18,6 +19,7 @@ class PMW_Options_Privacy extends PMW_Options_Options {
 		$this->plugins = ( $this->plugins ) ? $this->plugins : get_plugins();
 		$this->active  = ( $this->active  ) ? $this->active  : get_option( 'active_plugins', array() );
 		$this->themes  = ( $this->themes  ) ? $this->themes  : wp_get_themes();
+		$this->library = new PMW_Plugin_Library;
 	}
 
 	protected function form_title() {
@@ -147,20 +149,22 @@ class PMW_Options_Privacy extends PMW_Options_Options {
 			'source'  => $this->get_theme_list(),
 			'divcss'  => 'privacy-theme-filter',
 		); //*/
-		$layout['autoupdate'] = array(
-			'default' => 'yes',
-			'label'   => __( 'WP Updates', 'tcc-privacy' ),
-			'text'    => __( 'Allow/prevent WordPress automatic updates.  You should not need to set this at all.', 'tcc-privacy' ),
-			'postext' => __( 'This will only stop automatic updates, it will not make them happen.', 'tcc-privacy' ),
-			'help'    => __( 'WordPress generally does the right thing here.  I recommend the default Allow.', 'tcc-privacy' ),
-			'render'  => 'radio',
-			'source'  => array(
-				'yes'  => __( 'Allow WordPress to perform automatic updates.', 'tcc-privacy' ),
-				'core' => __( 'Core automatic updates only.', 'tcc-privacy' ),
-				'no'   => __( 'Prevent WordPress from doing any automatic updates.', 'tcc-privacy' ),
-			),
-			'extra_html' => $extra_html,
-		);
+		if ( WP_DEBUG || $all ) {
+			$layout['autoupdate'] = array(
+				'default' => 'yes',
+				'label'   => __( 'WP Updates', 'tcc-privacy' ),
+				'text'    => __( 'Allow/prevent WordPress automatic updates.  You should not need to set this at all.', 'tcc-privacy' ),
+				'postext' => __( 'This will only stop automatic updates, it will not make them happen.', 'tcc-privacy' ),
+				'help'    => __( 'WordPress generally does the right thing here.  I recommend the default Allow.', 'tcc-privacy' ),
+				'render'  => 'radio',
+				'source'  => array(
+					'yes'  => __( 'Allow WordPress to perform automatic updates.', 'tcc-privacy' ),
+					'core' => __( 'Core automatic updates only.', 'tcc-privacy' ),
+					'no'   => __( 'Prevent WordPress from doing any automatic updates.', 'tcc-privacy' ),
+				),
+				'extra_html' => $extra_html,
+			);
+		}
 		$layout['plugindata'] = array(
 			'label'   => __( 'Plugin Data', 'tcc-privacy' ),
 			'text'    => __( 'Plugin Settings.', 'tcc-privacy' ),
@@ -197,47 +201,44 @@ class PMW_Options_Privacy extends PMW_Options_Options {
 	/**  Plugin functions  **/
 
 	public function get_plugin_defaults( ) {
-		#	Start with a clean slate
-		$options = $this->clean_plugin_defaults();
-		#	Load missing items with the default value, with new actives getting an automatic 'yes'
-		$preset = $this->get_option( 'install_default', 'yes' );
-		foreach( $this->plugins as $path => $plugin ) {
-			if ( ! isset( $options[ $path ] ) || empty( $options[ $path ] ) ) {
-				$options[ $path ] = ( in_array( $path, $this->active ) ) ? 'yes' : $preset;
-				if ( $path === 'privacy-my-way/privacy-my-way.php' ) {
-					$options[ $path ] = 'no';  #  Set our own initial value
+		$options = $this->get_option( 'plugin_list', array() );
+		$preset  = $this->get_option( 'install_default', 'yes' );
+		foreach( $this->plugins as $key => $plugin ) {
+			if ( ! isset( $options[ $key ] ) || empty( $options[ $key ] ) ) {
+				#	Load missing items with the default value, with new actives getting an automatic 'yes'
+				$options[ $key ] = ( in_array( $key, $this->active ) ) ? 'yes' : $preset;
+				if ( strpos( $key, 'privacy-my-way' ) === 0 ) {
+					$options[ $key ] = 'no';  #  Set our own initial value
 				}
 			}
 		}
 		return $options;
 	}
 
-	#	Removes deleted plugins by generating a new list
-	private function clean_plugin_defaults() {
-		#	The beginning
-		$options = array();
-		$current = $this->get_option( 'plugin_list', array() );
-		foreach( $current as $key => $status ) {
-			if ( isset( $this->plugins[ $key ] ) ) {
-				$options[ $key ] = $status;
-			}
-		}
-		return $options;
-	}
-
 	private function get_plugin_list() {
-		$plugin_list = array();
-		foreach ( $this->plugins as $path => $plugin ) {
-			$title  = '<a href="' . esc_attr( $plugin['PluginURI'] ) . '" target="' . esc_attr( $path ) . '">';
-			$title .= esc_html( $plugin['Name'] ) . '</a>';
-			if ( in_array( $path, $this->active ) ) {
-				$status = sprintf( '<span class="pmw-plugin-active">(%s)</span>', esc_html__( 'active', 'tcc-privacy' ) );
-			} else {
-				$status = sprintf( '<span class="pmw-plugin-inactive">(%s)</span>', esc_html__( 'inactive', 'tcc-privacy' ) );
-			}
-			$author  = '<a href="' . esc_attr( $plugin['AuthorURI'] ) . '" target="' . sanitize_title( $plugin['Author'] ) . '">';
-			$author .= esc_html( $plugin['Author'] ) . '</a>';
-			$plugin_list[ $path ] = sprintf( esc_html_x( '%1$s %2$s by %3$s', '1: plugin title, 2: plugin active/inactive status, 3: plugin author name', 'tcc-privacy' ), $title, $status, $author );
+		$plugin_list  = array();
+		$title_label  = __( 'Plugin website', 'tcc-privacy' );
+		$author_label = __( 'Plugin author', 'tcc-privacy' );
+		$active   = sprintf( '<span class="pmw-plugin-active">(%s)</span>',   esc_html__( 'active',   'tcc-privacy' ) );
+		$inactive = sprintf( '<span class="pmw-plugin-inactive">(%s)</span>', esc_html__( 'inactive', 'tcc-privacy' ) );
+		$format   = esc_html_x( '%1$s %2$s by %3$s', '1: plugin title, 2: plugin active/inactive status, 3: plugin author name', 'tcc-privacy' );
+		foreach ( $this->plugins as $key => $plugin ) {
+			$title_attrs = array(
+				'href'   => $plugin['PluginURI'],
+				'target' => $key,
+				'title'  => $title_label,
+				'aria-label' => $title_label,
+			);
+			$title  = '<a ' . $this->library->get_apply_attrs( $title_attrs ) . '>' . esc_html( $plugin['Name'] ) . '</a>';
+			$status = ( in_array( $key, $this->active ) ) ? $active : $inactive;
+			$author_attrs = array(
+				'href'   => $plugin['AuthorURI'],
+				'target' => sanitize_title( $plugin['Author'] ),
+				'title'  => $author_label,
+				'aria-label' => $author_label,
+			);
+			$author = '<a ' . $this->library->get_apply_attrs( $author_attrs ) . '>' . esc_html( $plugin['Author'] ) . '</a>';
+			$plugin_list[ $key ] = sprintf( $format, $title, $status, $author );
 		}
 		return $plugin_list;
 	}
@@ -246,39 +247,40 @@ class PMW_Options_Privacy extends PMW_Options_Options {
 	/**  Theme functions  **/
 
 	private function get_theme_defaults() {
-		$options = $this->clean_theme_defaults();
+		$options = $this->get_option( 'theme_list', array() );
 		$preset  = $this->get_option( 'install_default', 'yes' );
-		foreach( $this->themes as $slug => $theme ) {
-			if ( ! isset( $options[ $slug ] ) || empty( $options[ $slug ] ) ) {
-				$options[ $slug ] = ( stripos( $slug, 'twenty' ) === false ) ? $preset : 'yes';
-			}
-		}
-		return $options;
-	}
-
-	#	removes deleted themes by generating a new list
-	private function clean_theme_defaults() {
-		$options = array();
-		$current = $this->get_option( 'theme_list', array() );
-		foreach( $current as $key => $status ) {
-			if ( isset( $this->plugins[ $key ] ) ) {
-				$options[ $key ] = $status;
+		foreach( $this->themes as $key => $theme ) {
+			if ( ! isset( $options[ $key ] ) || empty( $options[ $key ] ) ) {
+				$options[ $key ] = ( stripos( $key, 'twenty' ) === false ) ? $preset : 'yes';
 			}
 		}
 		return $options;
 	}
 
 	private function get_theme_list() {
-		$theme_list = array();
-		foreach( $this->themes as $slug => $theme ) {
-			if ( strpos( $slug, 'twenty' ) === 0 ) {
-				continue;  #  Do not allow filtering of wordpress themes
+		$theme_list   = array();
+		$theme_label  = __( 'Theme website', 'tcc-privacy' );
+		$author_label = __( 'Theme author', 'tcc-privacy' );
+		$format = esc_html_x( '%1$s by %2$s', '1: Theme title, 2: Author name', 'tcc-privacy' );
+		foreach( $this->themes as $key => $theme ) {
+			if ( strpos( $key, 'twenty' ) === 0 ) {
+				continue;  #  Do not filter wordpress themes
 			}
-			$title  = '<a href="' . esc_attr( $theme->get( 'ThemeURI' ) ) . '" target="' . esc_attr( $slug ) . '">';
-			$title .= esc_html( $theme->get( 'Name' ) ) . '</a>';
-			$author = '<a href="' . esc_attr( $theme->get( 'AuthorURI' ) ) . '" target="' . sanitize_title( $theme->get( 'Author' ) ) . '">';
-			$author.= esc_html( $theme->get( 'Author' ) ) . '</a>';
-			$theme_list[ $slug ] = sprintf( esc_html_x( '%1$s by %2$s', '1: Theme title, 2: Author name', 'tcc-privacy' ), $title, $author );
+			$title_attrs = array(
+				'href'   => $theme->get( 'ThemeURI' ),
+				'target' => $key,
+				'title'  => $theme_label,
+				'aria-label' => $theme_label,
+			);
+			$title  = '<a ' . $this->library->get_apply_attrs( $title_attrs ) . '>' . esc_html( $theme->get( 'Name' ) ) . '</a>';
+			$author_attrs = array(
+				'href'   => $theme->get( 'AuthorURI' ),
+				'target' => sanitize_title( $theme->get( 'Author' ) ),
+				'title'  => $author_label,
+				'aria-label' => $author_label,
+			);
+			$author = '<a ' . $this->library->get_apply_attrs( $author_attrs ) . '>' . esc_html( $theme->get( 'Author' ) ) . '</a>';
+			$theme_list[ $key ] = sprintf( $format, $title, $author );
 		}
 		return $theme_list;
 	}
