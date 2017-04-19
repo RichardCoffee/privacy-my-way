@@ -354,7 +354,7 @@ class Privacy_My_Way {
 	}
 
 	public function themes_site_transient( $value, $transient ) {
-		foreach( $this->theme_list as $theme => $state ) {
+		foreach( $this->options['theme_list'] as $theme => $state ) {
 			if ( $state === 'no' ) {
 				if ( isset( $value->checked[ $theme ] ) ) {
 					unset( $value->checked[ $theme ] );
