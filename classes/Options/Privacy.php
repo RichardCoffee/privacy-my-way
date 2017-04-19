@@ -183,7 +183,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			);
 		}
 		$layout['deledata'] = array(
-			'default' => 'uninstall',
+			'default' => ( WP_DEBUG ) ? 'nodelete' : 'uninstall',
 			'label'   => __( 'Data Deletion', 'tcc-privacy' ),
 			'text'    => __( 'Control when plugin data is removed.', 'tcc-privacy' ),
 			'render'  => 'radio',
