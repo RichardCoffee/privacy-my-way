@@ -49,7 +49,7 @@ class Privacy_My_Way {
 		}
 		$this->options = $options;
 		add_filter( 'logging_debug_privacy', function( $debug ) {
-			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) );
+			return ( $debug || ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) );
 		} );
 	}
 
@@ -128,11 +128,10 @@ class Privacy_My_Way {
 			return $preempt;
 		}
 		#	only act on requests to api.wordpress.org
-		if ( ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
+		if (  ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/themes/update-check/'  ) === false )
-			//  FIXME:  I have no way of testing this or knowing what the object looks like.
-			&& ( stripos( $url, '://api.wordpress.org/translations/'         ) === false )
+#			&& ( stripos( $url, '://api.wordpress.org/translations/'         ) === false )
 			) {
 			return $preempt;
 		}
@@ -151,7 +150,7 @@ class Privacy_My_Way {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$body = json_decode( $body, true );
 			$this->logging_force = true;
-			$this->logging( 'response body', $body );
+			$this->logging( $url, $args, 'response body', $body );
 		}
 		return $response;
 	}
