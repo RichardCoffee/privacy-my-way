@@ -23,7 +23,7 @@ requests against the `development` branch please.
 
 #### Upload
 
-1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
+1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest), get the .zip file.
 2.  Go to __Plugins -> Add New__ screen and click the __Upload__ tab.
 3.  Upload the zipped archive directly.
 4.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
@@ -38,26 +38,6 @@ requests against the `development` branch please.
 
 Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
 Support for [GitHub Updater](https://github.com/afragen/github-updater) is also present.
-
-### Development
-
-#### SSH
-
-1.  SSH onto your site.
-2.  'cd' to your plugin directory.
-3.  Clone this repository.
-4.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
-5.  Either click on the Settings link, or go to __Dashboard -> Setting -> Privacy My Way__, to edit and save the options.
-6.  Open an issue on github about what went wrong.
-
-#### FTP
-
-1.  Clone the repository to your computer.
-2.  FTP to your site.
-3.  Using your FTP client copy the repository into your server's WordPress plugin directory.  You can delete the .git folder on the server, if you need the space...
-4.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
-5.  Either click on the Settings link, or go to __Dashboard -> Settings -> Privacy My Way__, to edit and save the options.
-6.  Open an issue on github about what went wrong.
 
 
 ### Warning
@@ -75,6 +55,7 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ## Changelog
 
 ### Next Release
+* Enhancement:  added an option to stop WordPress automatic updates, for developers.
 * Upgrade:  updated base plugin classes, added use of base Options class.
 
 ### 1.3.2
