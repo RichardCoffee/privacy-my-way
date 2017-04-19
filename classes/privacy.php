@@ -34,6 +34,7 @@ class Privacy_My_Way {
 			add_filter( 'http_headers_useragent',     array( $this, 'http_headers_useragent' ),     10, 2 );
 			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
 			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
+			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'themes_site_transient' ), 10, 2 );
 		}
 		$this->logging( $this );
 		$this->check_transients();
@@ -149,6 +150,7 @@ class Privacy_My_Way {
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$body = json_decode( $body, true );
+			$this->logging_force = true;
 			$this->logging( 'response body', $body );
 		}
 		return $response;
@@ -350,6 +352,17 @@ class Privacy_My_Way {
 		}
 		$themes['active'] = $active;
 		return $themes;
+	}
+
+	public function themes_site_transient( $value, $transient ) {
+		foreach( $this->theme_list as $theme => $state ) {
+			if ( $state === 'no' ) {
+				if ( isset( $value->checked[ $theme ] ) ) {
+					unset( $value->checked[ $theme ] );
+				}
+			}
+		}
+		return $value;
 	}
 
 	protected function filter_url( $url ) {
