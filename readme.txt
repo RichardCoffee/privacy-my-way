@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 4.7.3
-Stable Tag: 1.3.2
+Stable tag: 1.3.2
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org
@@ -33,7 +33,7 @@ active.
 
 Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
 
-== FAQ ==
+== Frequently Asked Questions ==
 
 See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).
 
