@@ -6,6 +6,21 @@ class PMW_Register_Privacy extends PMW_Register_Register {
 	private   static $versions    =  array();
 	protected static $plugin_file = 'privacy-my-way/privacy-my-way.php';
 
+	protected static function activate_tasks() {
+		self::initialize_options();
+#		self::remove_update_transients();
+	}
+
+	private static function initialize_options() {
+		$options = get_option( 'tcc_options_privacy', array() );
+		if ( empty( $options ) ) {
+			$privacy = new PMW_Options_Privacy;
+			$options = $privacy->get_default_options();
+			$options['plugin_list']['privacy-my-way/privacy-my-way.php'] = 'no';
+			update_option( 'tcc_options_privacy', $options );
+		}
+	}
+
 	protected static function php_version_required() {
 		$php = self::get_required_version( 'PHP' );
 		return ( $php ) ? $php : parent::php_version_required();
@@ -30,6 +45,19 @@ class PMW_Register_Privacy extends PMW_Register_Register {
 			return self::$versions[ $request ];
 		}
 		return false;
+	}
+
+	private static function remove_update_transients() {
+		$transients = array(
+			'update_core',
+			'update_plugins',
+			'update_themes',
+		);
+		foreach( $transients as $transient ) {
+			if ( $check = get_site_transient( $transient ) ) {
+				delete_site_transient( $transient );
+			}
+		}
 	}
 
 	#	No theme dependencies

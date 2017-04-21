@@ -23,7 +23,10 @@ class PMW_Register_Register {
 		if ( ! static::wp_version_check() ) {
 			wp_die( esc_html( static::wp_bad_version_text() ) );
 		}
+		static::activate_tasks();
 	}
+
+	protected static function activate_tasks() { }
 
 
 	/**  Dependency Checking - Will It Work?  **/

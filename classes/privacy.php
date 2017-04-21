@@ -24,7 +24,7 @@ class Privacy_My_Way {
 
 
 	protected function __construct( $args = array() ) {
-#		$this->logging_debug = file_exists( WP_CONTENT_DIR . '/privacy.flg' );
+//		$this->logging_debug = file_exists( WP_CONTENT_DIR . '/privacy.flg' );
 		$this->get_options();
 		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
 		if ( $this->options ) {  #  opt-in only
@@ -34,20 +34,22 @@ class Privacy_My_Way {
 			add_filter( 'http_headers_useragent',     array( $this, 'http_headers_useragent' ),     10, 2 );
 			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
 			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
+			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'themes_site_transient' ), 10, 2 );
 		}
 		$this->logging( $this );
+		$this->check_transients();
 	}
 
 	protected function get_options() {
 		$options = get_option( 'tcc_options_privacy', array() );
 		if ( ! $options ) {
 			$privacy = new PMW_Options_Privacy;
-			$options = $privacy->get_privacy_defaults();
+			$options = $privacy->get_default_options();
 			update_option( 'tcc_options_privacy', $options );
 		}
 		$this->options = $options;
 		add_filter( 'logging_debug_privacy', function( $debug ) {
-			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) );
+			return ( $debug || ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) );
 		} );
 	}
 
@@ -71,13 +73,13 @@ class Privacy_My_Way {
 					$count = false;
 					break;
 				case 'some':
-					$count = random_int( 1, $users );
+					$count = wp_rand( 1, $users );
 					break;
 				case 'one':
 					$count = 1;
 					break;
 				case 'many':
-					$count = random_int( 1, ( $users * 10 ) );
+					$count = wp_rand( 1, ( $users * 10 ) );
 					break;
 				default:
 			}
@@ -126,11 +128,10 @@ class Privacy_My_Way {
 			return $preempt;
 		}
 		#	only act on requests to api.wordpress.org
-		if ( ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
+		if (  ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/themes/update-check/'  ) === false )
-			//  FIXME:  I have no way of testing this or knowing what the object looks like.
-			&& ( stripos( $url, '://api.wordpress.org/translations/'         ) === false )
+#			&& ( stripos( $url, '://api.wordpress.org/translations/'         ) === false )
 			) {
 			return $preempt;
 		}
@@ -148,7 +149,8 @@ class Privacy_My_Way {
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$body = json_decode( $body, true );
-			$this->logging( 'response body', $body );
+			$this->logging_force = true;
+			$this->logging( $url, $args, 'response body', $body );
 		}
 		return $response;
 	}
@@ -298,6 +300,7 @@ class Privacy_My_Way {
 							break;
 						default:
 					}
+					$this->logging_force = true;
 					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
 					$args['_pmw_privacy_filter_themes'] = true;
@@ -350,6 +353,17 @@ class Privacy_My_Way {
 		return $themes;
 	}
 
+	public function themes_site_transient( $value, $transient ) {
+		foreach( $this->options['theme_list'] as $theme => $state ) {
+			if ( $state === 'no' ) {
+				if ( isset( $value->checked[ $theme ] ) ) {
+					unset( $value->checked[ $theme ] );
+				}
+			}
+		}
+		return $value;
+	}
+
 	protected function filter_url( $url ) {
 		$original = $url;
 		#$keys = array( 'php', 'locale', 'mysql', 'local_package', 'blogs', 'users', 'multisite_enabled', 'initial_db_version',);
@@ -382,6 +396,21 @@ class Privacy_My_Way {
 
 
 	/*  Debugging  */
+
+	private function check_transients() {
+		$checks = array(
+#			'update_core',
+#			'update_plugins',
+			'update_themes',
+		);
+		foreach( $checks as $check ) {
+			if ( $trans = get_site_transient( $check ) ) {
+				$this->logging_force = true;
+				$this->logging( $check, $trans );
+#				delete_site_transient( $check );
+			}
+		}
+	}
 
 	public function run_tests( $args ) {
 		if ( isset( $args['plugins'] ) ) {

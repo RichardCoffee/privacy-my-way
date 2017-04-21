@@ -1,6 +1,6 @@
 <?php
 
-class TCC_Form_Field_Radio extends TCC_Form_Field_Field {
+class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 
 	protected $field_radio = array();
 	protected $sanitize    = 'sanitize_title';
@@ -27,7 +27,7 @@ class TCC_Form_Field_Radio extends TCC_Form_Field_Field {
 					$attrs['value'] = $key; ?>
 					<div>
 						<label>
-							<input <?php apply_attrs( $attrs ); ?> <?php checked( $this->field_value, $key ); ?>><?php
+							<input <?php $this->library->apply_attrs( $attrs ); ?> <?php checked( $this->field_value, $key ); ?>><?php
 							echo esc_html( $text ); ?>
 						</label>
 					</div><?php
