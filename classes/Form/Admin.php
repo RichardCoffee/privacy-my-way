@@ -40,25 +40,19 @@ abstract class PMW_Form_Admin {
 		global $plugin_page;
 		if ( ( $plugin_page === $this->slug ) || ( ( $refer = wp_get_referer() ) && ( strpos( $refer, $this->slug ) ) ) ) {
 			if ( $this->type === 'tabbed' ) {
-				if ( defined( 'PMW_TAB' ) ) {
-					$this->tab = PMW_TAB;
-				}
-				if ( $trans = get_transient( 'PMW_TAB' ) ) {
-					$this->tab = $trans;
-				}
-				if ( isset( $_GET['tab'] ) )  {
-					$this->tab = sanitize_key( $_GET['tab'] );
-				}
 				if ( isset( $_POST['tab'] ) ) {
 					$this->tab = sanitize_key( $_POST['tab'] );
+				} else if ( isset( $_GET['tab'] ) )  {
+					$this->tab = sanitize_key( $_GET['tab'] );
+				} else if ( $trans = get_transient( 'PMW_TAB' ) ) {
+					$this->tab = $trans;
+				} else if ( defined( 'PMW_TAB' ) ) {
+					$this->tab = PMW_TAB;
 				}
 				set_transient( 'PMW_TAB', $this->tab, ( DAY_IN_SECONDS * 5 ) );
 			}
 			$this->form_text();
 			$this->form = $this->form_layout();
-			if ( ( $this->type === 'tabbed' ) && ! isset( $this->form[ $this->tab ] ) ) {
-				$this->tab = 'about';
-			}
 			$this->determine_option();
 			$this->get_form_options();
 			$func = $this->register;
@@ -493,26 +487,28 @@ abstract class PMW_Form_Admin {
 	}
 
 	private function render_radio($data) {
+		$library = $this->library;
 		extract( $data );	#	associative array: keys are 'ID', 'value', 'layout', 'name'
 		if ( empty( $layout['source'] ) ) return;
 		$uniq = uniqid();
 		$tooltip     = ( isset( $layout['help'] ) )    ? $layout['help']    : '';
 		$before_text = ( isset( $layout['text'] ) )    ? $layout['text']    : '';
 		$after_text  = ( isset( $layout['postext'] ) ) ? $layout['postext'] : '';
-		$onchange    = ( isset( $layout['change'] ) )  ? $layout['change']  : ''; ?>
+		$radio_attrs = array(
+			'type' => 'radio',
+			'name' => $name,
+			'onchange' => ( isset( $layout['change'] ) )  ? $layout['change']  : '',
+			'aria-describedby' => $uniq,
+		); ?>
 		<div title="<?php echo esc_attr( $tooltip ); ?>">
 			<div id="<?php echo $uniq; ?>">
 				<?php echo esc_html( $before_text ); ?>
 			</div><?php
-			foreach( $layout['source'] as $key => $text ) { ?>
+			foreach( $layout['source'] as $key => $text ) {
+				$radio_attrs['value'] = $key; ?>
 				<div>
 					<label>
-						<input type="radio"
-						       name="<?php echo esc_attr( $name ) ; ?>"
-						       value="<?php echo esc_html( $key ); ?>"
-						       <?php checked( $value, $key ); ?>
-						       onchange="<?php echo esc_attr( $onchange ); ?>"
-						       aria-describedby="<?php echo $uniq; ?>"><?php
+						<input <?php $library->apply_attrs( $radio_attrs ); ?> <?php checked( $value, $key ); ?>><?php
 						echo esc_html( $text );
 						if ( isset( $layout['extra_html'][ $key ] ) ) {
 							echo $layout['extra_html'][ $key ];
