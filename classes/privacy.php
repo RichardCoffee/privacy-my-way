@@ -148,7 +148,9 @@ class Privacy_My_Way {
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$body = json_decode( $body, true );
-			$this->logging_force = true;
+if ( isset( $args['_pmw_privacy_filter_plugins'] ) {
+	$this->logging_force = true;
+}
 			$this->logging( $url, $args, 'response body', $body );
 		}
 		return $response;
@@ -399,14 +401,13 @@ class Privacy_My_Way {
 	private function check_transients() {
 		$checks = array(
 #			'update_core',
-#			'update_plugins',
-			'update_themes',
+			'update_plugins',
+#			'update_themes',
 		);
 		foreach( $checks as $check ) {
 			if ( $trans = get_site_transient( $check ) ) {
 				$this->logging_force = true;
 				$this->logging( $check, $trans );
-#				delete_site_transient( $check );
 			}
 		}
 	}
