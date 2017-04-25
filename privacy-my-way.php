@@ -24,7 +24,7 @@
  * License:           MIT
  * Text Domain:       tcc-privacy
  * Domain Path:       /languages
- * Tags:              privacy, updates, plugins, themes, core, translations
+ * Tags:              privacy, updates, plugins, themes, core, translations, law, eu
  */
 
 defined( 'ABSPATH' ) || exit;
