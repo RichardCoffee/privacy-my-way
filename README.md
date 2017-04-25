@@ -20,11 +20,10 @@ the number of users you have, what plugins are installed and active, and what th
 
 Please use [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 
-
-### Manual Installation
-
 Do not use the Wordpress Upload option because Github includes the version number as part of the directory name inside the zip file.  This does not
 play well with Wordpress.  Once you have the plugin actually installed, then upgrades via the admin dashboard will work just fine.
+
+### Manual Installation
 
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 2.  Copy the `privacy-my-way` directory into your WordPress plugin directory.  Remove the version number when doing so.
@@ -52,6 +51,7 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ### Next Release
 * Enhancement:  added options to prevent WordPress automatic updates, intended for developers.
 * Upgrade:  updated base plugin classes, added use of base Options class.
+* Upgrade:  added filter for site transients.
 
 ### 1.3.2
 * Bugfix:  fixed new installation crashes.
