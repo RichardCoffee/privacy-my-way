@@ -148,7 +148,7 @@ class Privacy_My_Way {
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$body = json_decode( $body, true );
-if ( isset( $args['_pmw_privacy_filter_plugins'] ) {
+if ( isset( $args['_pmw_privacy_filter_plugins'] ) ) {
 	$this->logging_force = true;
 }
 			$this->logging( $url, $args, 'response body', $body );
