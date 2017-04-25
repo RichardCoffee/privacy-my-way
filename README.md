@@ -1,13 +1,15 @@
 This is beta code.  Not guaranteed to do anything more than take up space on your computer.
 
 
-# Privacy My Way
+# Privacy My Way #
+**Contributors:** richard.coffee
+**Tags:** privacy, updates, plugins, themes, core, translations, law, eu
+**Requires at least:** 4.7
+**Tested up to:** 4.7.4
+**Stable tag:** 1.3.2
+**License:** MIT
 
 Control the information that your wordpress site is sending to wordpress.org
-
-Requires at least: WordPress 4.7 and PHP 5.3.6
-
-Tested up to: WordPress 4.7.3
 
 ## Description
 
