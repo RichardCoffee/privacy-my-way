@@ -33,7 +33,8 @@ class Privacy_My_Way {
 			add_filter( 'http_headers_useragent',     array( $this, 'http_headers_useragent' ),     10, 2 );
 			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
 			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
-			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'themes_site_transient' ), 10, 2 );
+			add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'plugins_site_transient' ), 10, 2 );
+			add_filter( 'pre_set_site_transient_update_themes',  array( $this, 'themes_site_transient' ),  10, 2 );
 		}
 		$this->logging( $this );
 		$this->check_transients();
@@ -275,6 +276,21 @@ if ( isset( $args['_pmw_privacy_filter_plugins'] ) ) {
 		}
 		$plugins['active'] = $active;
 		return $plugins;
+	}
+
+	public function plugins_site_transient( $value, $transient ) {
+$this->logging_force = true;
+$this->logging( $value );
+		foreach( $this->options['plugin_list'] as $plugin => $state ) {
+			if ( $state === 'no' ) {
+				if ( isset( $value->checked[ $plugin ] ) ) {
+					unset( $value->checked[ $plugin ] );
+				}
+			}
+		}
+$this->logging_force = true;
+$this->logging( $value );
+		return $value;
 	}
 
 
