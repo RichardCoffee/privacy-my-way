@@ -26,7 +26,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		$this->add_filters();
 
 		if ( WP_DEBUG ) {
-			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'site_transient_stack' ), 10, 2 );
+#			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'site_transient_stack' ), 10, 2 );
 			if ( file_exists( WP_CONTENT_DIR . '/run-tests.flg' ) ) {
 				$this->run_tests();
 			}

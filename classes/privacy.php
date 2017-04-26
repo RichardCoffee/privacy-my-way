@@ -422,7 +422,7 @@ $this->logging( $value );
 		);
 		foreach( $checks as $check ) {
 			if ( $trans = get_site_transient( $check ) ) {
-				$this->logging_force = true;
+#				$this->logging_force = true;
 				$this->logging( $check, $trans );
 			}
 		}
