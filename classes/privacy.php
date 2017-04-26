@@ -25,7 +25,7 @@ class Privacy_My_Way {
 
 	protected function __construct( $args = array() ) {
 		$this->get_options();
-		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
+#		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
 		if ( $this->options ) {  #  opt-in only
 			#	These first two filters are multisite only
 			add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
