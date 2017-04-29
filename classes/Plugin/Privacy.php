@@ -14,28 +14,21 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 
 	public function initialize() {
-
 		if ( ( ! PMW_Register_Privacy::php_version_check() ) || ( ! PMW_Register_Privacy::wp_version_check() ) ) {
 			return;
 		}
-
+		register_deactivation_hook( $this->paths->file, array( 'PMW_Register_Privacy', 'deactivate' ) );
+		register_uninstall_hook(    $this->paths->file, array( 'PMW_Register_Privacy', 'uninstall'  ) );
 		if ( ! is_multisite() || is_main_site() ) {
-
-			register_deactivation_hook( $this->paths->file, array( 'PMW_Register_Privacy', 'deactivate' ) );
-			register_uninstall_hook(    $this->paths->file, array( 'PMW_Register_Privacy', 'uninstall'  ) );
-
 			$this->add_actions();
 			$this->add_filters();
-
 			if ( WP_DEBUG ) {
 #				add_filter( 'pre_set_site_transient_update_themes', array( $this, 'site_transient_stack' ), 10, 2 );
 				if ( file_exists( WP_CONTENT_DIR . '/run-tests.flg' ) ) {
 					$this->run_tests();
 				}
 			}
-
 		}
-
 	}
 
 	public function add_actions() {
