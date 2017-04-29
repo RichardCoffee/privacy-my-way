@@ -127,6 +127,8 @@ class Privacy_My_Way {
 		if ( $preempt || isset( $args['_pmw_privacy_filter'] ) ) {
 			return $preempt;
 		}
+$this->logging_force = true;
+		$this->logging( 0, 'url: ' . $url;
 		#	only act on requests to api.wordpress.org
 		if (  ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) === false )
@@ -141,10 +143,9 @@ class Privacy_My_Way {
 		$args = $this->filter_themes( $args, $url );
 		#	make request
 		$args['_pmw_privacy_filter'] = true;
-		$response = wp_remote_request( $url, $args );
-		//	response really seems to have a lot of duplicated data in it.
+		$response = wp_remote_request( $url, $args );	//	response really seems to have a lot of duplicated data in it.
 		if ( is_wp_error( $response ) ) {
-			$this->force = true;  #  Log it.
+			$this->logging_force = true;  #  Log it.
 			$this->logging( 'response error', $url, $response );
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
@@ -289,7 +290,7 @@ $this->logging( $value );
 			}
 		}
 $this->logging_force = true;
-$this->logging( $value );
+$this->logging( 0, $value );
 		return $value;
 	}
 
