@@ -280,17 +280,18 @@ if ( isset( $args['_pmw_privacy_filter_plugins'] ) ) {
 	}
 
 	public function plugins_site_transient( $value, $transient ) {
-$this->logging_force = true;
-$this->logging( $value );
+		$initial = $value;
 		foreach( $this->options['plugin_list'] as $plugin => $state ) {
 			if ( $state === 'no' ) {
 				if ( isset( $value->checked[ $plugin ] ) ) {
 					unset( $value->checked[ $plugin ] );
+$this->logging_force = true;
 				}
 			}
 		}
-$this->logging_force = true;
-$this->logging( 0, $value );
+if ( $this->logging_force ) {
+$this->logging( $initial, $value );
+}
 		return $value;
 	}
 
