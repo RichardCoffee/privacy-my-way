@@ -418,11 +418,11 @@ $this->logging( $value );
 		$checks = array(
 #			'update_core',
 			'update_plugins',
-#			'update_themes',
+			'update_themes',
 		);
 		foreach( $checks as $check ) {
 			if ( $trans = get_site_transient( $check ) ) {
-#				$this->logging_force = true;
+				$this->logging_force = true;
 				$this->logging( $check, $trans );
 			}
 		}
