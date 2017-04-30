@@ -127,7 +127,7 @@ class Privacy_My_Way {
 		if ( $preempt || isset( $args['_pmw_privacy_filter'] ) ) {
 			return $preempt;
 		}
-$this->logging_force = true;
+#$this->logging_force = true;
 		$this->logging( 0, 'url: ' . $url );
 		#	only act on requests to api.wordpress.org
 		if (  ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
@@ -424,7 +424,7 @@ $this->logging( $initial, $value );
 		);
 		foreach( $checks as $check ) {
 			if ( $trans = get_site_transient( $check ) ) {
-				$this->logging_force = true;
+#				$this->logging_force = true;
 				$this->logging( $check, $trans );
 			}
 		}
