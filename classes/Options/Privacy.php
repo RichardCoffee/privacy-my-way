@@ -49,6 +49,11 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		); //*/
 		if ( ( is_multisite() && is_main_site() ) || $all ) {
 			$layout['blog']['change'] = 'showhidePosi( this, ".privacy-blog-option", "yes" );';
+			$layout['blog']['showhide'] = array(
+				'origin' => 'privacy-blog-active',
+				'target' => 'privacy-blog-option',
+				'show'   => 'yes',
+			);
 			$layout['blogs'] = array(
 				'default' => 'yes',
 				'label'   => __( 'Multi-Site', 'tcc-privacy' ),
@@ -58,6 +63,11 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 					'no'   => __( 'No -- Tell WordPress you are running just a single blog.', 'tcc-privacy' ),
 				),
 				'extra_html' => $extra_html,
+				'showhide' => array(
+					'origin' => 'privacy-multi-active',
+					'target' => 'privacy-multi-option',
+					'show'   => 'yes',
+				),
 				'change'  => 'showhidePosi( this, ".privacy-multi-option", "yes" );',
 				'divcss'  => 'privacy-multi-active privacy-blog-option',
 			); //*/

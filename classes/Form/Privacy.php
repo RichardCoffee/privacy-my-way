@@ -7,6 +7,8 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 
 
 	public function __construct() {
+		$this->library      = new PMW_Plugin_Library;
+		$this->logging_func = 'pmw_log_entry';
 		add_action( 'admin_menu',              array( $this, 'add_menu_option'    ) );
 		add_action( 'tcc_load_form_page',      array( $this, 'tcc_load_form_page' ) );
 		add_filter( "form_text_{$this->slug}", array( $this, 'form_trans_text' ), 10, 2 );

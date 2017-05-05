@@ -31,7 +31,9 @@ abstract class PMW_Form_Admin {
 	public function description() { return ''; }
 
 	protected function __construct() {
-		$this->library = new PMW_Plugin_Library;
+		if ( empty( $this->library ) && function_exists( 'library' ) ) {
+			$this->library = library();
+		}
 		$this->screen_type();
 		add_action( 'admin_init', array( $this, 'load_form_page' ) );
 	}
@@ -53,6 +55,9 @@ abstract class PMW_Form_Admin {
 			}
 			$this->form_text();
 			$this->form = $this->form_layout();
+			if ( ( $this->type === 'tabbed' ) && ! isset( $this->form[ $this->tab ] ) ) {
+				$this->tab = 'about';
+			}
 			$this->determine_option();
 			$this->get_form_options();
 			$func = $this->register;
@@ -62,12 +67,27 @@ abstract class PMW_Form_Admin {
 		}
 	}
 
-	public function admin_enqueue_scripts( $hook ) {
+	public function admin_enqueue_scripts() {
 		wp_register_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), array( 'wp-color-picker' ) );
 		wp_register_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js' ), array( 'jquery', 'wp-color-picker' ), false, true );
 		wp_enqueue_media();
 		wp_enqueue_style(  'admin-form.css' );
 		wp_enqueue_script( 'admin-form.js'  );
+		$options = apply_filters( 'tcc_form_admin_options_localization', array() );
+		if ( $options ) {
+			$options = array_map( array( $this, 'normalize_options' ), $options );
+			wp_localize_script( 'admin-form.js', 'tcc_admin_options', $options );
+		}
+	}
+
+	public function normalize_options( $item ) {
+		$default = array(
+			'origin' => null,
+			'target' => null,
+			'show'   => null,
+			'hide'   => null,
+		);
+		return array_merge( $default, $item );
 	}
 
 
@@ -310,7 +330,7 @@ abstract class PMW_Form_Admin {
 		extract( $args );  #  array( 'key'=>$key, 'item'=>$item, 'num'=>$i);
 		$data   = $this->form_opts;
 		$layout = $this->form['layout'];
-		echo '<div ' . $this->render_attributes( $layout[ $item ] ) . '>';
+		echo '<div ' . $this->library->get_apply_attrs( $this->render_attributes( $layout[ $item ] ) ) . '>';
 		if ( empty( $layout[ $item ]['render'] ) ) {
 			echo $data[ $item ];
 		} else {
@@ -344,7 +364,7 @@ abstract class PMW_Form_Admin {
     extract($args);  #  $args = array( 'key' => {group-slug}, 'item' => {item-slug})
     $data   = $this->form_opts;
     $layout = $this->form[$key]['layout'];
-    $attr   = $this->render_attributes($layout[$item]);
+    $attr   = $this->library->get_apply_attrs( $this->render_attributes( $layout[ $item ] ) );
     echo "<div $attr>";
     if (empty($layout[$item]['render'])) {
       echo $data[$item];
@@ -367,14 +387,15 @@ abstract class PMW_Form_Admin {
   public function render_multi_options($args) {
   }
 
-	private function render_attributes($layout) {
-		$attr = ( ! empty( $layout['divcss'] ) )  ? ' class="' . esc_attr( $layout['divcss'] ).'"'   : '';
-		$attr.= ( isset( $layout['help'] ) )      ? ' title="' . esc_attr( $layout['help']   ).'"'   : '';
+	private function render_attributes( $layout ) {
+		$attrs = array();
+		$attrs['class'] = ( ! empty( $layout['divcss'] ) ) ? $layout['divcss'] : '';
+		$attrs['title'] = ( isset( $layout['help'] ) )     ? $layout['help']   : '';
 		if ( ! empty( $layout['showhide'] ) ) {
-			$attr.= ' data-item="' . esc_attr( $layout['showhide']['item'] ) . '"';
-			$attr.= ' data-show="' . esc_attr( $layout['showhide']['show'] ) . '"';
+			$attrs['data-item'] = ( isset( $layout['showhide']['item'] ) ) ? $layout['showhide']['item'] : $layout['showhide']['target'];
+			$attrs['data-show'] = $layout['showhide']['show'];
 		}
-		return $attr;
+		return $attrs;
 	}
 
 
@@ -414,15 +435,25 @@ abstract class PMW_Form_Admin {
 
 	private function render_checkbox_multiple( $data ) {
 		extract( $data );	#	associative array: keys are 'ID', 'value', 'layout', 'name'
-		if ( empty( $layout['source'] ) ) return;
+		if ( empty( $layout['source'] ) ) {
+			return;
+		}
+		if ( ! empty( $layout['text'] ) ) { ?>
+			<div>
+				<?php e_esc_html( $layout['text'] ); ?>
+			</div><?php
+		}
 		foreach( $layout['source'] as $key => $text ) {
-			$check = isset( $value[ $key ] ) ? true : false; ?>
+			$check = isset( $value[ $key ] ) ? true : false;
+			$attrs = array(
+				'type'  => 'checkbox',
+				'id'    => $ID . '-' . $key,
+				'name'  => $name . '[' . $key . ']',
+				'value' => $key,
+			); ?>
 			<div>
 				<label>
-					<input type="checkbox"
-					       id="<?php echo esc_attr( $ID.'-'.$key ); ?>"
-					       name="<?php echo esc_attr( $name.'['.$key.']' ); ?>"
-					       value="yes" <?php checked( $check ); ?> />&nbsp;
+					<input <?php $this->library->apply_attrs( $attrs ); ?> <?php checked( $check ); ?> />&nbsp;
 					<span>
 						<?php echo esc_html( $text ); ?>
 					</span>
@@ -487,17 +518,16 @@ abstract class PMW_Form_Admin {
 	}
 
 	private function render_radio($data) {
-		$library = $this->library;
 		extract( $data );	#	associative array: keys are 'ID', 'value', 'layout', 'name'
 		if ( empty( $layout['source'] ) ) return;
-		$uniq = uniqid();
+		$uniq        = uniqid();
 		$tooltip     = ( isset( $layout['help'] ) )    ? $layout['help']    : '';
 		$before_text = ( isset( $layout['text'] ) )    ? $layout['text']    : '';
 		$after_text  = ( isset( $layout['postext'] ) ) ? $layout['postext'] : '';
 		$radio_attrs = array(
 			'type' => 'radio',
 			'name' => $name,
-			'onchange' => ( isset( $layout['change'] ) )  ? $layout['change']  : '',
+			'onchange' => ( isset( $layout['change'] ) ) ? $layout['change']  : '',
 			'aria-describedby' => $uniq,
 		); ?>
 		<div title="<?php echo esc_attr( $tooltip ); ?>">
@@ -508,8 +538,13 @@ abstract class PMW_Form_Admin {
 				$radio_attrs['value'] = $key; ?>
 				<div>
 					<label>
-						<input <?php $library->apply_attrs( $radio_attrs ); ?> <?php checked( $value, $key ); ?>><?php
-						echo esc_html( $text );
+						<input <?php $this->library->apply_attrs( $radio_attrs ); ?> <?php checked( $value, $key ); ?>><?php
+						if ( isset( $layout['src-html'] ) ) {
+							// FIXME:  this is here so I can display font awesome icons - it needs to be done differently
+							echo $text;
+						} else {
+							echo esc_html( $text );
+						}
 						if ( isset( $layout['extra_html'][ $key ] ) ) {
 							echo $layout['extra_html'][ $key ];
 						} ?>

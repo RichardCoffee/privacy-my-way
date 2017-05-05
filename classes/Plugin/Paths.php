@@ -1,7 +1,7 @@
 <?php
 
-if ( ! function_exists( 'pmw_plugin_paths' ) ) {
-	function pmw_plugin_paths() {
+if ( ! function_exists( 'tcc_plugin_paths' ) ) {
+	function tcc_plugin_paths() {
 		return PMW_Plugin_Paths::instance();
 	}
 }
@@ -10,8 +10,8 @@ class PMW_Plugin_Paths {
 
 	protected $file;
 	protected $dir;
-	protected $pages = '/page-templates/';
-	protected $parts = '/template-parts/';
+	protected $pages = 'page-templates/';
+	protected $parts = 'template-parts/';
 	protected $url;
 	protected $version;
 
@@ -19,9 +19,13 @@ class PMW_Plugin_Paths {
 	use PMW_Trait_ParseArgs;
 	use PMW_Trait_Singleton;
 
-	protected function __construct( $args ) {
-		$this->parse_args( $args );
-		$this->dir = trailingslashit( $this->dir );
+	protected function __construct( $args = array() ) {
+		if ( ! empty( $args['file'] ) ) {
+			$this->parse_args( $args );
+			$this->dir = trailingslashit( $this->dir );
+		} else {
+			static::$abort__construct = true;
+		}
 	}
 
 	/**  Template functions  **/
@@ -38,9 +42,9 @@ class PMW_Plugin_Paths {
 	public function get_plugin_file_path( $file ) {
 		$file_path   = false;
 		$theme_check = get_theme_file_path( $file );
-		if ( $theme_check && file_exists( $theme_check ) ) {
+		if ( $theme_check && is_readable( $theme_check ) ) {
 			$file_path = $theme_check;
-		} else if ( file_exists( $this->dir . $file ) ) {
+		} else if ( is_readable( $this->dir . $file ) ) {
 			$file_path = $this->dir . $file;
 		}
 		return $file_path;
@@ -49,9 +53,9 @@ class PMW_Plugin_Paths {
 	public function get_plugin_file_uri( $file ) {
 		$file_uri    = false;
 		$theme_check = get_theme_file_path( $file );
-		if ( $theme_check && file_exists( $theme_check ) ) {
+		if ( $theme_check && is_readable( $theme_check ) ) {
 			$file_uri = get_theme_file_uri( $file );
-		} else {
+		} else if ( is_readable( $this->dir . $file ) ) {
 			$file_uri = plugins_url( $file, $this->file );
 		}
 		return $file_uri;
