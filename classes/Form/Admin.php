@@ -67,7 +67,7 @@ abstract class PMW_Form_Admin {
 		}
 	}
 
-	public function admin_enqueue_scripts() {
+	public function admin_enqueue_scripts( $hook_suffix ) {
 		wp_register_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), array( 'wp-color-picker' ) );
 		wp_register_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js' ), array( 'jquery', 'wp-color-picker' ), false, true );
 		wp_enqueue_media();
