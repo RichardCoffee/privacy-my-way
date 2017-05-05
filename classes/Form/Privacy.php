@@ -1,13 +1,14 @@
 <?php
 
-
 class PMW_Form_Privacy extends PMW_Form_Admin {
+
 
 	protected $slug = 'privacy';
 
-	use PMW_Trait_Singleton;
 
 	protected function __construct() {
+		add_action( 'admin_menu',              array( $this, 'add_menu_option'    ) );
+		add_action( 'tcc_load_form_page',      array( $this, 'tcc_load_form_page' ) );
 		add_filter( "form_text_{$this->slug}", array( $this, 'form_trans_text' ), 10, 2 );
 		parent::__construct();
 	}
@@ -20,6 +21,10 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 			$func = array( $this, $this->render );
 			$this->hook_suffix = add_options_page( $page, $menu, $cap, $this->slug, $func );
 		}
+	}
+
+	public function tcc_load_form_page() {
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_theme_scripts' ) );
 	}
 
 	public function admin_enqueue_scripts( $hook ) {

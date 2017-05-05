@@ -193,8 +193,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 				'nodelete'  => __( 'Do not delete plugin data.', 'tcc-privacy' ),
 			),
 		);
-		$layout = apply_filters( "tcc_options_layout_{$this->base}", $layout );
-		return $layout;
+		return apply_filters( "tcc_options_layout_{$this->base}", $layout );
 	}
 
 
