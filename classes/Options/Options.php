@@ -35,9 +35,12 @@ abstract class PMW_Options_Options {
 	}
 
 	public function options_localization( $data = array() ) {
-		foreach( $this->screen as $key => $item ) {
+		if ( ! isset( $data['showhide'] ) ) {
+			$data['showhide'] = array();
+		}
+		foreach( $this->screen['layout'] as $key => $item ) {
 			if ( isset( $item['showhide'] ) ) {
-				$data[] = $item['showhide'];
+				$data['showhide'][] = $item['showhide'];
 			}
 		}
 		return $data;
