@@ -195,12 +195,12 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$layout['deledata'] = array(
 			'default' => ( WP_DEBUG ) ? 'nodelete' : 'uninstall',
 			'label'   => __( 'Data Deletion', 'tcc-privacy' ),
-			'text'    => __( 'Control when plugin data is removed.', 'tcc-privacy' ),
+			'text'    => __( 'Control when plugin data is deleted.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
-				'deactive'  => __( 'Delete plugin data upon plugin deactivation.', 'tcc-privacy' ),
-				'uninstall' => __( 'Delete plugin data upon plugin deletion.', 'tcc-privacy' ),
-				'nodelete'  => __( 'Do not delete plugin data.', 'tcc-privacy' ),
+				'deactive'  => __( 'Deactivation of the plugin.', 'tcc-privacy' ),
+				'uninstall' => __( 'Deletion of the plugin.', 'tcc-privacy' ),
+				'nodelete'  => __( 'Always retain the plugin data.', 'tcc-privacy' ),
 			),
 		);
 		return apply_filters( "tcc_options_layout_{$this->base}", $layout );
