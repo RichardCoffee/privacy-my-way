@@ -15,7 +15,6 @@ abstract class PMW_Form_Admin {
 	protected $form_opts =  array();
 	protected $form_text =  array();
 	protected $hook_suffix;
-	protected $library;
 	protected $options;
 	protected $prefix    = 'tcc_options_';
 	protected $register;
@@ -25,15 +24,13 @@ abstract class PMW_Form_Admin {
 	protected $type      = 'single'; # two values: single, tabbed
 	protected $validate;
 
+	use PMW_Trait_Attributes;
 	use PMW_Trait_Logging;
 
 	abstract protected function form_layout( $option );
 	public function description() { return ''; }
 
 	protected function __construct() {
-		if ( empty( $this->library ) && function_exists( 'library' ) ) {
-			$this->library = library();
-		}
 		$this->screen_type();
 		add_action( 'admin_init', array( $this, 'load_form_page' ) );
 	}
@@ -75,12 +72,19 @@ abstract class PMW_Form_Admin {
 		wp_enqueue_script( 'admin-form.js'  );
 		$options = apply_filters( 'tcc_form_admin_options_localization', array() );
 		if ( $options ) {
-			$options = array_map( array( $this, 'normalize_options' ), $options );
+			$options = $this->normalize_options( $options, $options );
 			wp_localize_script( 'admin-form.js', 'tcc_admin_options', $options );
 		}
 	}
 
-	public function normalize_options( $item ) {
+	protected function normalize_options( $new, $old ) {
+		if ( isset( $old['showhide'] ) ) {
+			$new['showhide'] = array_map( array( $this, 'normalize_showhide' ), $old['showhide'] );
+		}
+		return $new;
+	}
+
+	public function normalize_showhide( $item ) {
 		$default = array(
 			'origin' => null,
 			'target' => null,
@@ -330,7 +334,7 @@ abstract class PMW_Form_Admin {
 		extract( $args );  #  array( 'key'=>$key, 'item'=>$item, 'num'=>$i);
 		$data   = $this->form_opts;
 		$layout = $this->form['layout'];
-		echo '<div ' . $this->library->get_apply_attrs( $this->render_attributes( $layout[ $item ] ) ) . '>';
+		echo '<div ' . $this->get_apply_attrs( $this->render_attributes( $layout[ $item ] ) ) . '>';
 		if ( empty( $layout[ $item ]['render'] ) ) {
 			echo $data[ $item ];
 		} else {
@@ -364,7 +368,7 @@ abstract class PMW_Form_Admin {
     extract($args);  #  $args = array( 'key' => {group-slug}, 'item' => {item-slug})
     $data   = $this->form_opts;
     $layout = $this->form[$key]['layout'];
-    $attr   = $this->library->get_apply_attrs( $this->render_attributes( $layout[ $item ] ) );
+    $attr   = $this->get_apply_attrs( $this->render_attributes( $layout[ $item ] ) );
     echo "<div $attr>";
     if (empty($layout[$item]['render'])) {
       echo $data[$item];
@@ -453,7 +457,7 @@ abstract class PMW_Form_Admin {
 			); ?>
 			<div>
 				<label>
-					<input <?php $this->library->apply_attrs( $attrs ); ?> <?php checked( $check ); ?> />&nbsp;
+					<input <?php $this->apply_attrs( $attrs ); ?> <?php checked( $check ); ?> />&nbsp;
 					<span>
 						<?php echo esc_html( $text ); ?>
 					</span>
@@ -521,7 +525,6 @@ abstract class PMW_Form_Admin {
 		extract( $data );	#	associative array: keys are 'ID', 'value', 'layout', 'name'
 		if ( empty( $layout['source'] ) ) return;
 		$uniq        = uniqid();
-		$tooltip     = ( isset( $layout['help'] ) )    ? $layout['help']    : '';
 		$before_text = ( isset( $layout['text'] ) )    ? $layout['text']    : '';
 		$after_text  = ( isset( $layout['postext'] ) ) ? $layout['postext'] : '';
 		$radio_attrs = array(
@@ -530,7 +533,7 @@ abstract class PMW_Form_Admin {
 			'onchange' => ( isset( $layout['change'] ) ) ? $layout['change']  : '',
 			'aria-describedby' => $uniq,
 		); ?>
-		<div title="<?php echo esc_attr( $tooltip ); ?>">
+		<div>
 			<div id="<?php echo $uniq; ?>">
 				<?php echo esc_html( $before_text ); ?>
 			</div><?php
@@ -538,7 +541,7 @@ abstract class PMW_Form_Admin {
 				$radio_attrs['value'] = $key; ?>
 				<div>
 					<label>
-						<input <?php $this->library->apply_attrs( $radio_attrs ); ?> <?php checked( $value, $key ); ?>><?php
+						<input <?php $this->apply_attrs( $radio_attrs ); ?> <?php checked( $value, $key ); ?>><?php
 						if ( isset( $layout['src-html'] ) ) {
 							// FIXME:  this is here so I can display font awesome icons - it needs to be done differently
 							echo $text;
@@ -561,12 +564,11 @@ abstract class PMW_Form_Admin {
 	private function render_radio_multiple( $data ) {
 		extract( $data );   #   associative array: keys are 'ID', 'value', 'layout', 'name'
 		if ( empty( $layout['source'] ) ) return;
-		$tooltip   = ( isset( $layout['help'] ) )    ? $layout['help']    : '';
 		$pre_css   = ( isset( $layout['textcss'] ) ) ? $layout['textcss'] : '';
 		$pre_text  = ( isset( $layout['text'] ) )    ? $layout['text']    : '';
 		$post_text = ( isset( $layout['postext'] ) ) ? $layout['postext'] : '';
 		$preset    = ( isset( $layout['preset'] ) )  ? $layout['preset']  : 'no'; ?>
-		<div class="radio-multiple-div" title="<?php echo esc_attr( $tooltip ); ?>">
+		<div class="radio-multiple-div">
 			<div class="<?php echo $pre_css; ?>">
 				<?php e_esc_html( $pre_text ); ?>
 			</div>
@@ -625,18 +627,15 @@ abstract class PMW_Form_Admin {
 
 	private function render_spinner( $data ) {
 		extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-		$tooltip = ( isset( $layout['help'] ) ) ? $layout['help'] : '';
 /*		$attrs = array(
 			'id'    => $ID,
 			'name'  => $name,
-			'title' => $tooltip,
 			'value' => $value, */
 
  ?>
 		<input type="number" class="small-text" min="1" step="1"
 		       id="<?php e_esc_attr( $ID ); ?>"
 		       name="<?php e_esc_attr( $name ); ?>"
-		       title="<?php e_esc_attr( $tooltip ); ?>"
 		       value="<?php e_esc_attr( sanitize_text_field( $value ) ); ?>" /> <?php
 		if ( ! empty( $layout['stext'] ) ) { e_esc_attr( $layout['stext'] ); }
 	}

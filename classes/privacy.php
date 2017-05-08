@@ -128,7 +128,6 @@ class Privacy_My_Way {
 		if ( $preempt || isset( $args['_pmw_privacy_filter'] ) ) {
 			return $preempt;
 		}
-#$this->logging_force = true;
 		$this->logging( 0, 'url: ' . $url );
 		#	only act on requests to api.wordpress.org
 		if (  ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
@@ -151,9 +150,6 @@ class Privacy_My_Way {
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$body = json_decode( $body, true );
-if ( isset( $args['_pmw_privacy_filter_plugins'] ) ) {
-	$this->logging_force = true;
-}
 			$this->logging( $url, $args, 'response body', $body );
 		}
 		return $response;
@@ -286,12 +282,12 @@ if ( isset( $args['_pmw_privacy_filter_plugins'] ) ) {
 			if ( $state === 'no' ) {
 				if ( isset( $value->checked[ $plugin ] ) ) {
 					unset( $value->checked[ $plugin ] );
-$this->logging_force = true;
+$this->logging_force = $plugin;
 				}
 			}
 		}
 if ( $this->logging_force ) {
-$this->logging( $initial, $value );
+$this->logging( $this->logging_force, $initial, $value );
 }
 		return $value;
 	}
@@ -320,7 +316,6 @@ $this->logging( $initial, $value );
 							break;
 						default:
 					}
-					$this->logging_force = true;
 					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
 					$args['_pmw_privacy_filter_themes'] = true;
@@ -419,13 +414,12 @@ $this->logging( $initial, $value );
 
 	private function check_transients() {
 		$checks = array(
-#			'update_core',
+			'update_core',
 			'update_plugins',
 			'update_themes',
 		);
 		foreach( $checks as $check ) {
 			if ( $trans = get_site_transient( $check ) ) {
-#				$this->logging_force = true;
 				$this->logging( $check, $trans );
 			}
 		}
