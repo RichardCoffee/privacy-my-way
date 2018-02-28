@@ -177,7 +177,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		}
 		$layout['plugindata'] = array(
 			'label'   => __( 'Plugin Data', 'tcc-privacy' ),
-			'text'    => __( 'Plugin Settings.', 'tcc-privacy' ),
+			'text'    => __( 'Settings for the Privacy My Way plugin.', 'tcc-privacy' ),
 			'render'  => 'title',
 		);
 		if ( WP_DEBUG || $all ) {
