@@ -33,6 +33,6 @@ define( 'PMW_PRIVACY_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once( 'functions.php' );
 
-$plugin = PMW_Plugin_Privacy::get_instance( array( 'file' => __FILE__ ) );
+$pmw_plugin = PMW_Plugin_Privacy::get_instance( array( 'file' => __FILE__ ) );
 
 register_activation_hook( __FILE__, array( 'PMW_Register_Privacy', 'activate' ) );
