@@ -283,7 +283,7 @@ class Privacy_My_Way {
 			if ( $state === 'no' ) {
 				if ( isset( $value->checked[ $plugin ] ) ) {
 					unset( $value->checked[ $plugin ] );
-$this->logging_force = $plugin;
+#$this->logging_force = $plugin;
 				}
 			}
 		}
