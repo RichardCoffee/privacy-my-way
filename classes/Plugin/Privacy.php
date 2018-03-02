@@ -52,8 +52,9 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	}
 
 	public function add_filters() {
-		add_filter( 'core_version_check_locale',   array( $this, 'add_privacy_filters' ) );
-		add_filter( 'fluidity_initialize_options', array( $this, 'add_privacy_options' ) );
+		add_filter( 'core_version_check_locale',    array( $this, 'add_privacy_filters' ) );
+		add_filter( 'core_version_check_query_args' array( $this, 'query_args' ) );
+		add_filter( 'fluidity_initialize_options',  array( $this, 'add_privacy_options' ) );
 		$options = get_option( 'tcc_options_privacy', array() );
 		if ( isset( $options['autoupdate'] ) ) {
 			if ( $options['autoupdate'] === 'no' ) {

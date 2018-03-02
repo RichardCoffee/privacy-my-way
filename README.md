@@ -50,8 +50,10 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ### Next Release
 * Enhancement:  added options to prevent WordPress automatic updates, intended for developers.
+* Enhancement:  added code for 'core_version_check_query_args' filter.
 * Upgrade:  updated base plugin classes, added use of base Options class.
 * Upgrade:  added filter for site transients.
+* Upgrade:  upgraded to version 4.4 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
 
 ### 1.3.2
 * Bugfix:  fixed new installation crashes.

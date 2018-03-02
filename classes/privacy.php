@@ -28,7 +28,8 @@ class Privacy_My_Way {
 		$this->get_options();
 		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
 		if ( $this->options ) {  #  opt-in only
-			#	These first two filters are multisite only
+			add_filter( 'core_version_check_query_args', array( $this, 'query_args' ) );
+			#	These next two filters are multisite only
 			add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
 			add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
 			add_filter( 'http_headers_useragent',     array( $this, 'http_headers_useragent' ),     10, 2 );
@@ -287,7 +288,7 @@ $this->logging_force = $plugin;
 			}
 		}
 if ( $this->logging_force ) {
-$this->logging( $this->logging_force, $initial, $value );
+	$this->logging( $this->logging_force, $initial, $value );
 }
 		return $value;
 	}
