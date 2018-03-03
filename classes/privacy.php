@@ -28,7 +28,7 @@ class Privacy_My_Way {
 		$this->get_options();
 		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
 		if ( $this->options ) {  #  opt-in only
-			add_filter( 'core_version_check_query_args', array( $this, 'query_args' ) );
+			add_filter( 'core_version_check_query_args', array( $this, 'core_version_check_query_args' ) );
 			#	These next two filters are multisite only
 			add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
 			add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
@@ -53,6 +53,10 @@ class Privacy_My_Way {
 		add_filter( 'logging_debug_privacy', function( $debug ) {
 			return ( $debug && isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) );
 		} );
+	}
+
+	public function core_version_check_query_args( $args ) {
+		return $args;
 	}
 
 	#	Filter triggered on multisite installs, called internally for single site
