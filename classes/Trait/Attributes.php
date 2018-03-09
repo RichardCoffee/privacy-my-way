@@ -27,13 +27,16 @@ trait PMW_Trait_Attributes {
 				case 'src':
 					$value = esc_url( $value );
 					break;
+				case 'class':
+					$value = $this->sanitize_html_class( $value );
+					break;
 				case 'value':
 					$value = esc_html( $value );
 					break;
 				case 'aria-label':
 				case 'placeholder':
 				case 'title':
-					$value = wp_strip_all_tags( $value );
+					$value = esc_attr( wp_strip_all_tags( $value ) );
 				default:
 					$value = esc_attr( $value );
 			}
@@ -51,6 +54,15 @@ trait PMW_Trait_Attributes {
 	private function is_self_closing( $tag ) {
 		$self_closing = array( 'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr' );
 		return in_array( $tag, $self_closing, true );
+	}
+
+	private function sanitize_html_class( $css ) {
+		$classes = explode( ' ', $css );
+		$result  = array();
+		foreach( $classes as $class ) {
+			$result[] = sanitize_html_class( $class );
+		}
+		return implode( ' ', $result );
 	}
 
 

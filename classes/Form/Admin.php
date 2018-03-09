@@ -755,14 +755,22 @@ abstract class PMW_Form_Admin {
 			$output = $func( $input );
 		} else { // FIXME:  test for data type?
 			$output = $this->validate_text( $input );
-			$this->logging( 'missing validation function: ' . $func, $item );
+			$this->logging( 'missing validation function: ' . $func, $item, $input );
 		}
 		return $output;
 	}
 
-  private function validate_colorpicker($input) {
-    return (preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|',$input)) ? $input : '';
-  }
+	private function validate_checkbox( $input ) {
+		return sanitize_key( $input );
+	}
+
+	private function validate_checkbox_multiple( $input ) {
+		return $this->validate_checkbox( $input );
+	}
+
+	private function validate_colorpicker( $input ) {
+		return ( preg_match( '|^#([A-Fa-f0-9]{3}){1,2}$|', $input ) ) ? $input : '';
+	}
 
 	private function validate_font( $input ) {
 		$this->logging( $input );
