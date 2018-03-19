@@ -2,9 +2,10 @@
 
 trait PMW_Trait_Logging {
 
-	protected $logging_debug =  WP_DEBUG;    #  boolean - enable/disable logging
-	protected $logging_force =  false;       #  boolean - for debugging, can be used to force a single log entry
-	protected $logging_func  = 'log_entry';  #  string/array - logging function: must be able to accept a variable number of parameters
+	protected $logging_debug  =  WP_DEBUG;       #  boolean - enable/disable logging
+	protected $logging_force  =  false;          #  boolean - for debugging, can be used to force a single log entry
+	protected $logging_func   = 'logging_entry'; #  string/array - logging function: must be able to accept a variable number of parameters
+	protected $logging_prefix = 'rtc_';          #  string - log file prefix
 
 
 	public function log() {
@@ -52,6 +53,7 @@ trait PMW_Trait_Logging {
 	}
 
 	protected function logging_entry() {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { return; }
 		if ( WP_DEBUG ) {
 			$args  = func_get_args();
 			if ( $args ) {
