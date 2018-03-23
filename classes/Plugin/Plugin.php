@@ -52,13 +52,6 @@ abstract class PMW_Plugin_Plugin {
 		$state = 'alone';
 		if ( is_readable( get_template_directory() . '/classes/Form/Admin.php' ) ) {
 			$state = 'theme';
-		} else {
-			if ( ! function_exists( 'is_plugin_active' ) ) {
-				include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-			}
-			if ( function_exists( 'is_plugin_active' ) && is_plugin_active( 'tcc-theme-options/tcc-theme-options.php' ) ) {
-				$state = 'plugin';
-			}
 		}
 		return $state;
 	}
@@ -135,7 +128,7 @@ abstract class PMW_Plugin_Plugin {
 
 	private function load_update_checker() {
 		if ( $this->github ) {
-			$puc_file = $this->paths->dir . 'vendor/plugin-update-checker/plugin-update-checker.php';
+			$puc_file = $this->paths->dir . $this->paths->vendor . 'plugin-update-checker/plugin-update-checker.php';
 			if ( is_readable( $puc_file ) ) {
 				require_once( $puc_file );
 				$puc = Puc_v4_Factory::buildUpdateChecker( $this->github, $this->paths->file, $this->plugin );

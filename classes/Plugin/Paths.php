@@ -1,8 +1,12 @@
 <?php
 
-if ( ! function_exists( 'tcc_plugin_paths' ) ) {
-	function tcc_plugin_paths() {
-		return PMW_Plugin_Paths::instance();
+if ( ! function_exists( 'plugin_paths' ) ) {
+	function plugin_paths() {
+		static $instance = null;
+		if ( empty( $instance ) ) {
+			$instance = PMW_Plugin_Paths::instance();
+		}
+		return $instance;
 	}
 }
 
@@ -10,9 +14,10 @@ class PMW_Plugin_Paths {
 
 	protected $file;
 	protected $dir;
-	protected $pages = 'page-templates/';
-	protected $parts = 'template-parts/';
+	protected $pages  = 'page-templates/';
+	protected $parts  = 'template-parts/';
 	protected $url;
+	protected $vendor = 'vendor/';
 	protected $version;
 
 	use PMW_Trait_Magic;
@@ -22,7 +27,10 @@ class PMW_Plugin_Paths {
 	protected function __construct( $args = array() ) {
 		if ( ! empty( $args['file'] ) ) {
 			$this->parse_args( $args );
-			$this->dir = trailingslashit( $this->dir );
+			$this->dir    = trailingslashit( $this->dir );
+			$this->pages  = trailingslashit( $this->pages );
+			$this->parts  = trailingslashit( $this->parts );
+			$this->vendor = trailingslashit( $this->vendor );
 		} else {
 			static::$abort__construct = true;
 		}
@@ -31,7 +39,7 @@ class PMW_Plugin_Paths {
 	/**  Template functions  **/
 
 	public function add_plugin_template( $slug, $text ) {
-		$file = $this->dir . 'vendor/pagetemplater.php';
+		$file = $this->dir . $this->vendor . 'pagetemplater.php';
 		if ( is_readable( $file ) ) {
 			require_once( $file );
 			$pager = PageTemplater::get_instance();
