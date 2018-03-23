@@ -180,7 +180,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			'text'    => __( 'Settings for the Privacy My Way plugin.', 'tcc-privacy' ),
 			'render'  => 'title',
 		);
-		if ( WP_DEBUG || $all ) {
+/*		if ( WP_DEBUG || $all ) {
 			$layout['logging'] = array(
 				'default' => 'off',
 				'label'   => __( 'Logging', 'tcc-privacy' ),
@@ -191,7 +191,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 					'on'  => __( 'Log everything.', 'tcc-privacy' ),
 				),
 			);
-		}
+		} //*/
 		$layout['deledata'] = array(
 			'default' => ( WP_DEBUG ) ? 'nodelete' : 'uninstall',
 			'label'   => __( 'Data Deletion', 'tcc-privacy' ),
