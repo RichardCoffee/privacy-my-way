@@ -14,21 +14,19 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 
 	public function initialize() {
-
 		if ( ( ! PMW_Register_Privacy::php_version_check() ) || ( ! PMW_Register_Privacy::wp_version_check() ) ) {
 			return;
 		}
-
 		register_deactivation_hook( $this->paths->file, array( 'PMW_Register_Privacy', 'deactivate' ) );
 		register_uninstall_hook(    $this->paths->file, array( 'PMW_Register_Privacy', 'uninstall'  ) );
-
-		$this->add_actions();
-		$this->add_filters();
-
-		if ( WP_DEBUG ) {
-			add_filter( 'pre_set_site_transient_update_themes', array( $this, 'site_transient_stack' ), 10, 2 );
-			if ( file_exists( WP_CONTENT_DIR . '/run-tests.flg' ) ) {
-				$this->run_tests();
+		if ( ! is_multisite() || is_main_site() ) {
+			$this->add_actions();
+			$this->add_filters();
+			if ( WP_DEBUG ) {
+#				add_filter( 'pre_set_site_transient_update_themes', array( $this, 'site_transient_stack' ), 10, 2 );
+				if ( file_exists( WP_CONTENT_DIR . '/pmw-run-tests.flg' ) ) {
+					$this->run_tests();
+				}
 			}
 		}
 	}
@@ -48,17 +46,14 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 			add_action( $action, array( $this, 'add_privacy_filters' ), 1 );
 		}
 		if ( is_admin() ) {
-			add_action( 'admin_menu', array( PMW_Form_Privacy::instance(), 'add_menu_option' ) );
-			add_action( 'tcc_load_form_page', function() {
-				add_action( 'admin_enqueue_scripts', array( PMW_Form_Privacy::instance(), 'enqueue_theme_scripts' ) );
-			});
+			new PMW_Form_Privacy;
 		}
 		parent::add_actions();
 	}
 
 	public function add_filters() {
-		add_filter( 'core_version_check_locale',   array( $this, 'add_privacy_filters' ) );
-		add_filter( 'fluidity_initialize_options', array( $this, 'add_privacy_options' ) );
+		add_filter( 'core_version_check_locale',     array( $this, 'add_privacy_filters' ) );
+		add_filter( 'fluidity_initialize_options',   array( $this, 'add_privacy_options' ) );
 		$options = get_option( 'tcc_options_privacy', array() );
 		if ( isset( $options['autoupdate'] ) ) {
 			if ( $options['autoupdate'] === 'no' ) {

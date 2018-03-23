@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 include_once( 'includes/debugging.php' );
 
 function pmw_privacy_class_loader( $class ) {
@@ -12,3 +14,11 @@ function pmw_privacy_class_loader( $class ) {
 	}
 }
 spl_autoload_register( 'pmw_privacy_class_loader' ); //*/
+
+function pmw_library() {
+	static $library;
+	if ( empty( $library ) ) {
+		$library = new PMW_Plugin_Library;
+	}
+	return $library;
+}

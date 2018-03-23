@@ -8,20 +8,20 @@ class PMW_Register_Register {
 	protected static $php_vers = '5.3.6';         #  trait feature added
 	protected static $prefix   = 'tcc_options_';  #  Option slug prefix
 	protected static $title    = 'This plugin';
-	protected static $wp_vers  = '4.7.0';         #  added get_theme_file_uri function
+	protected static $wp_vers  = '4.7.0';         #  get_theme_file_uri function added
 
-	private   static $our_site = '<a href="the-creative-collective.com" target="tcc">%s</a>';
-	private   static $rc_email = '<a href="mailto:richard.coffee@rtcenterprises.net">%s</a>';
-	private   static $jg_email = '<a href="mailto:cableman371@gmail.com">%s</a>';
-
+	private static $our_site = '<a href="the-creative-collective.com" target="tcc">%s</a>';
+	private static $rc_email = '<a href="mailto:richard.coffee@rtcenterprises.net">%s</a>';
+	private static $jg_email = '<a href="mailto:cableman371@gmail.com">%s</a>';
 	private static function our_email() { return ( ( mt_rand( 1, 10 ) > 5 ) ? self::$rc_email : self::$jg_email ); }
+
 
 	public static function activate() {
 		if ( ! static::php_version_check() ) {
-			wp_die( esc_html( static::php_bad_version_text() ) );
+			wp_die( esc_html( static::php_bad_version_text() ) . self::return_link() );
 		}
 		if ( ! static::wp_version_check() ) {
-			wp_die( esc_html( static::wp_bad_version_text() ) );
+			wp_die( esc_html( static::wp_bad_version_text() ) . self::return_link() );
 		}
 		static::activate_tasks();
 	}
@@ -109,13 +109,23 @@ class PMW_Register_Register {
 		} ?>
 		<div class="notice notice-error">
 			<p style="max-width:800px;">
-				<b><?php echo esc_html( sprintf( _x( '%s can not be activated.', 'Plugin title', 'tcc-privacy' ), self::$title ) );?></b>
+				<b><?php echo esc_html( sprintf( _x( '%s can not be activated.', 'Plugin title', 'tcc-privacy' ), static::$title ) );?></b>
 				<?php echo esc_html( $short ); ?>
 			</p>
 			<p style="max-width:800px;">
 				<?php echo esc_html( $long ); ?>
 			</p>
 		</div><?php
+	}
+
+	private static function return_link() {
+		ob_start(); ?>
+			<p>
+				<a href="<?php echo esc_url( get_site_url() . '/wp-admin/plugins.php' ); ?>">
+					<?php esc_html_e( 'Return to plugin page.' ); ?>
+				</a>
+			</p><?php
+		return ob_get_clean();
 	}
 
 
@@ -186,7 +196,7 @@ class PMW_Register_Register {
 	private static function dependency_string() {
 		$site_name = _x( 'The Creative Collective', 'noun - plugin site name', 'tcc-privacy' );
 		$comp_name = _x( 'The Creative Collective', 'noun - plugin company name', 'tcc-privacy');
-		$string    = _x( 'This plugin should only be used with %1$s themes by %2$s', 'nouns - 1 is the company, 2 is the website', 'tcc-privacy' );
+		$string    = _x( 'This plugin should only be used with %1$s themes by %2$s', '1: company name, 2: website title', 'tcc-privacy' );
 		$site      = sprintf( self::$our_site, $site_name );
 		$company   = sprintf( self::our_email(), $comp_name );
 		return sprintf( $string, $site, $company );
@@ -201,7 +211,7 @@ class PMW_Register_Register {
 			if ( $option ) {
 				self::delete_blog_options( 'deactive', $option );
 				if ( is_multisite() && is_main_site() ) {
-#					self::delete_site_options( 'deactive', $option );
+					self::delete_site_options( 'deactive', $option );
 				}
 				flush_rewrite_rules();
 			}
@@ -214,7 +224,7 @@ class PMW_Register_Register {
 			if ( $option ) {
 				self::delete_blog_options( 'uninstall', $option );
 				if ( is_multisite() && is_main_site() ) {
-#					self::delete_site_options( 'uninstall', $option );
+					self::delete_site_options( 'uninstall', $option );
 				}
 			}
 		}
@@ -225,13 +235,13 @@ class PMW_Register_Register {
 			? $option
 			: ( ( ! empty( static::$option ) )
 				? static::$option
-				: $option );
+				: null );
 		return $option;
 	}
 
 	protected static function delete_blog_options( $action, $option ) {
 		$blog_id  = get_current_blog_id();
-		$opt_slug = self::$prefix . $option;
+		$opt_slug = static::$prefix . $option;
 		$options  = ( is_multisite() ) ? get_blog_option( $blog_id, $opt_slug, array() ) : get_option( $opt_slug, array() );
 		if ( $options ) {
 			if ( isset( $options['deledata'] ) && ( $options['deledata'] === $action ) ) {
@@ -245,7 +255,7 @@ class PMW_Register_Register {
 	}
 
 	protected static function delete_site_options( $action, $option ) {
-		$opt_slug = self::$prefix . $option;
+		$opt_slug = static::$prefix . $option;
 		$options  = get_site_option( $opt_slug, array() );
 		if ( $options ) {
 			if ( isset( $options['deledata'] ) && ( $options['deledata'] === $action ) ) {

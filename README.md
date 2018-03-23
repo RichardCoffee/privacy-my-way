@@ -1,35 +1,32 @@
 This is beta code.  Not guaranteed to do anything more than take up space on your computer.
 
 
-# Privacy My Way
+# Privacy My Way #
+**Contributors:** richard.coffee
+**Tags:** privacy, updates, plugins, themes, core, translations, law, eu
+**Requires at least:** 4.7
+**Tested up to:** 4.7.4
+**Stable tag:** 1.4.0
+**License:** MIT
 
 Control the information that your wordpress site is sending to wordpress.org
 
-Requires at least: WordPress 4.7 and PHP 5.3.6
-
-Tested up to: WordPress 4.7.3
-
 ## Description
 
-This plugin will enable you to finely control all the information that the WordPress core code sends back to wordpress.org, including your site's url,
-the number of users you have, what plugins are installed and active, and what themes are installed and active.
+This plugin should enable you to control some of the information that the WordPress core code sends back to wordpress.org, such as
+the number of users you have and what plugins/themes are installed and active.  It does not filter what PHP and MySQL versions your
+server is running, nor the language files installed.
 
 ## Installation
 
-Please use [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).  Contributions are welcome - fork, fix and send pull
-requests against the `development` branch please.
+Please use [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 
-### Releases
+Do not use the Wordpress Upload option because Github includes the version number as part of the directory name inside the zip file.  This does not
+play well with Wordpress.  Once you have the plugin actually installed, then upgrades via the admin dashboard will work just fine.
 
-#### Upload
+### Manual Installation
 
-1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest), get the .zip file.
-2.  Go to __Plugins -> Add New__ screen and click the __Upload__ tab.
-3.  Upload the zipped archive directly.
-4.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
-5.  Either click on the __Settings__ link, or go to __Dashboard -> Setting -> Privacy My Way__, to edit and save the options.
-
-#### Manual
+This is your best option, although if you have gotten this far you probably don't need these instructions.
 
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 2.  Copy the `privacy-my-way` directory into your WordPress plugin directory.  Remove the version number when doing so.
@@ -46,7 +43,7 @@ This is beta code.  Use at your own risk.  I do not expect it to break your site
 
 ## FAQ
 
-See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).
+See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Open an issue if you can't find the info you need.
 
 ### Contributions
 
@@ -54,9 +51,12 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ## Changelog
 
-### Next Release
-* Enhancement:  added an option to stop WordPress automatic updates, for developers.
+### 1.4.0
+* Enhancement:  added options to prevent WordPress automatic updates, intended for developers.
+* Enhancement:  added code for 'core_version_check_query_args' filter.
 * Upgrade:  updated base plugin classes, added use of base Options class.
+* Upgrade:  added filter for site transients.
+* Upgrade:  upgraded to version 4.4 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
 
 ### 1.3.2
 * Bugfix:  fixed new installation crashes.

@@ -3,6 +3,8 @@
  *
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! function_exists( 'pmw_debug_calling_function' ) ) {
 	/**
 	*	Get the calling function.

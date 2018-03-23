@@ -15,7 +15,6 @@ abstract class PMW_Form_Admin {
 	protected $form_opts =  array();
 	protected $form_text =  array();
 	protected $hook_suffix;
-	protected $library;
 	protected $options;
 	protected $prefix    = 'tcc_options_';
 	protected $register;
@@ -25,13 +24,13 @@ abstract class PMW_Form_Admin {
 	protected $type      = 'single'; # two values: single, tabbed
 	protected $validate;
 
+	use PMW_Trait_Attributes;
 	use PMW_Trait_Logging;
 
 	abstract protected function form_layout( $option );
 	public function description() { return ''; }
 
 	protected function __construct() {
-		$this->library = new PMW_Plugin_Library;
 		$this->screen_type();
 		add_action( 'admin_init', array( $this, 'load_form_page' ) );
 	}
@@ -40,17 +39,14 @@ abstract class PMW_Form_Admin {
 		global $plugin_page;
 		if ( ( $plugin_page === $this->slug ) || ( ( $refer = wp_get_referer() ) && ( strpos( $refer, $this->slug ) ) ) ) {
 			if ( $this->type === 'tabbed' ) {
-				if ( defined( 'PMW_TAB' ) ) {
-					$this->tab = PMW_TAB;
-				}
-				if ( $trans = get_transient( 'PMW_TAB' ) ) {
-					$this->tab = $trans;
-				}
-				if ( isset( $_GET['tab'] ) )  {
-					$this->tab = sanitize_key( $_GET['tab'] );
-				}
 				if ( isset( $_POST['tab'] ) ) {
 					$this->tab = sanitize_key( $_POST['tab'] );
+				} else if ( isset( $_GET['tab'] ) )  {
+					$this->tab = sanitize_key( $_GET['tab'] );
+				} else if ( $trans = get_transient( 'PMW_TAB' ) ) {
+					$this->tab = $trans;
+				} else if ( defined( 'PMW_TAB' ) ) {
+					$this->tab = PMW_TAB;
 				}
 				set_transient( 'PMW_TAB', $this->tab, ( DAY_IN_SECONDS * 5 ) );
 			}
@@ -68,12 +64,34 @@ abstract class PMW_Form_Admin {
 		}
 	}
 
-	public function admin_enqueue_scripts( $hook ) {
+	public function admin_enqueue_scripts( $hook_suffix ) {
 		wp_register_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), array( 'wp-color-picker' ) );
 		wp_register_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js' ), array( 'jquery', 'wp-color-picker' ), false, true );
 		wp_enqueue_media();
 		wp_enqueue_style(  'admin-form.css' );
 		wp_enqueue_script( 'admin-form.js'  );
+		$options = apply_filters( 'tcc_form_admin_options_localization', array() );
+		if ( $options ) {
+			$options = $this->normalize_options( $options, $options );
+			wp_localize_script( 'admin-form.js', 'tcc_admin_options', $options );
+		}
+	}
+
+	protected function normalize_options( $new, $old ) {
+		if ( isset( $old['showhide'] ) ) {
+			$new['showhide'] = array_map( array( $this, 'normalize_showhide' ), $old['showhide'] );
+		}
+		return $new;
+	}
+
+	public function normalize_showhide( $item ) {
+		$default = array(
+			'origin' => null,
+			'target' => null,
+			'show'   => null,
+			'hide'   => null,
+		);
+		return array_merge( $default, $item );
 	}
 
 
@@ -316,7 +334,7 @@ abstract class PMW_Form_Admin {
 		extract( $args );  #  array( 'key'=>$key, 'item'=>$item, 'num'=>$i);
 		$data   = $this->form_opts;
 		$layout = $this->form['layout'];
-		echo '<div ' . $this->render_attributes( $layout[ $item ] ) . '>';
+		echo '<div ' . $this->get_apply_attrs( $this->render_attributes( $layout[ $item ] ) ) . '>';
 		if ( empty( $layout[ $item ]['render'] ) ) {
 			echo $data[ $item ];
 		} else {
@@ -350,7 +368,7 @@ abstract class PMW_Form_Admin {
     extract($args);  #  $args = array( 'key' => {group-slug}, 'item' => {item-slug})
     $data   = $this->form_opts;
     $layout = $this->form[$key]['layout'];
-    $attr   = $this->render_attributes($layout[$item]);
+    $attr   = $this->get_apply_attrs( $this->render_attributes( $layout[ $item ] ) );
     echo "<div $attr>";
     if (empty($layout[$item]['render'])) {
       echo $data[$item];
@@ -373,14 +391,15 @@ abstract class PMW_Form_Admin {
   public function render_multi_options($args) {
   }
 
-	private function render_attributes($layout) {
-		$attr = ( ! empty( $layout['divcss'] ) )  ? ' class="' . esc_attr( $layout['divcss'] ).'"'   : '';
-		$attr.= ( isset( $layout['help'] ) )      ? ' title="' . esc_attr( $layout['help']   ).'"'   : '';
+	private function render_attributes( $layout ) {
+		$attrs = array();
+		$attrs['class'] = ( ! empty( $layout['divcss'] ) ) ? $layout['divcss'] : '';
+		$attrs['title'] = ( isset( $layout['help'] ) )     ? $layout['help']   : '';
 		if ( ! empty( $layout['showhide'] ) ) {
-			$attr.= ' data-item="' . esc_attr( $layout['showhide']['item'] ) . '"';
-			$attr.= ' data-show="' . esc_attr( $layout['showhide']['show'] ) . '"';
+			$attrs['data-item'] = ( isset( $layout['showhide']['item'] ) ) ? $layout['showhide']['item'] : $layout['showhide']['target'];
+			$attrs['data-show'] = $layout['showhide']['show'];
 		}
-		return $attr;
+		return $attrs;
 	}
 
 
@@ -420,15 +439,25 @@ abstract class PMW_Form_Admin {
 
 	private function render_checkbox_multiple( $data ) {
 		extract( $data );	#	associative array: keys are 'ID', 'value', 'layout', 'name'
-		if ( empty( $layout['source'] ) ) return;
+		if ( empty( $layout['source'] ) ) {
+			return;
+		}
+		if ( ! empty( $layout['text'] ) ) { ?>
+			<div>
+				<?php e_esc_html( $layout['text'] ); ?>
+			</div><?php
+		}
 		foreach( $layout['source'] as $key => $text ) {
-			$check = isset( $value[ $key ] ) ? true : false; ?>
+			$check = isset( $value[ $key ] ) ? true : false;
+			$attrs = array(
+				'type'  => 'checkbox',
+				'id'    => $ID . '-' . $key,
+				'name'  => $name . '[' . $key . ']',
+				'value' => $key,
+			); ?>
 			<div>
 				<label>
-					<input type="checkbox"
-					       id="<?php echo esc_attr( $ID.'-'.$key ); ?>"
-					       name="<?php echo esc_attr( $name.'['.$key.']' ); ?>"
-					       value="yes" <?php checked( $check ); ?> />&nbsp;
+					<input <?php $this->apply_attrs( $attrs ); ?> <?php checked( $check ); ?> />&nbsp;
 					<span>
 						<?php echo esc_html( $text ); ?>
 					</span>
@@ -495,25 +524,30 @@ abstract class PMW_Form_Admin {
 	private function render_radio($data) {
 		extract( $data );	#	associative array: keys are 'ID', 'value', 'layout', 'name'
 		if ( empty( $layout['source'] ) ) return;
-		$uniq = uniqid();
-		$tooltip     = ( isset( $layout['help'] ) )    ? $layout['help']    : '';
+		$uniq        = uniqid();
 		$before_text = ( isset( $layout['text'] ) )    ? $layout['text']    : '';
 		$after_text  = ( isset( $layout['postext'] ) ) ? $layout['postext'] : '';
-		$onchange    = ( isset( $layout['change'] ) )  ? $layout['change']  : ''; ?>
-		<div title="<?php echo esc_attr( $tooltip ); ?>">
+		$radio_attrs = array(
+			'type' => 'radio',
+			'name' => $name,
+			'onchange' => ( isset( $layout['change'] ) ) ? $layout['change']  : '',
+			'aria-describedby' => $uniq,
+		); ?>
+		<div>
 			<div id="<?php echo $uniq; ?>">
 				<?php echo esc_html( $before_text ); ?>
 			</div><?php
-			foreach( $layout['source'] as $key => $text ) { ?>
+			foreach( $layout['source'] as $key => $text ) {
+				$radio_attrs['value'] = $key; ?>
 				<div>
 					<label>
-						<input type="radio"
-						       name="<?php echo esc_attr( $name ) ; ?>"
-						       value="<?php echo esc_html( $key ); ?>"
-						       <?php checked( $value, $key ); ?>
-						       onchange="<?php echo esc_attr( $onchange ); ?>"
-						       aria-describedby="<?php echo $uniq; ?>"><?php
-						echo esc_html( $text );
+						<input <?php $this->apply_attrs( $radio_attrs ); ?> <?php checked( $value, $key ); ?>><?php
+						if ( isset( $layout['src-html'] ) ) {
+							// FIXME:  this is here so I can display font awesome icons - it needs to be done differently
+							echo $text;
+						} else {
+							echo esc_html( $text );
+						}
 						if ( isset( $layout['extra_html'][ $key ] ) ) {
 							echo $layout['extra_html'][ $key ];
 						} ?>
@@ -530,12 +564,11 @@ abstract class PMW_Form_Admin {
 	private function render_radio_multiple( $data ) {
 		extract( $data );   #   associative array: keys are 'ID', 'value', 'layout', 'name'
 		if ( empty( $layout['source'] ) ) return;
-		$tooltip   = ( isset( $layout['help'] ) )    ? $layout['help']    : '';
 		$pre_css   = ( isset( $layout['textcss'] ) ) ? $layout['textcss'] : '';
 		$pre_text  = ( isset( $layout['text'] ) )    ? $layout['text']    : '';
 		$post_text = ( isset( $layout['postext'] ) ) ? $layout['postext'] : '';
 		$preset    = ( isset( $layout['preset'] ) )  ? $layout['preset']  : 'no'; ?>
-		<div class="radio-multiple-div" title="<?php echo esc_attr( $tooltip ); ?>">
+		<div class="radio-multiple-div">
 			<div class="<?php echo $pre_css; ?>">
 				<?php e_esc_html( $pre_text ); ?>
 			</div>
@@ -594,18 +627,15 @@ abstract class PMW_Form_Admin {
 
 	private function render_spinner( $data ) {
 		extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-		$tooltip = ( isset( $layout['help'] ) ) ? $layout['help'] : '';
 /*		$attrs = array(
 			'id'    => $ID,
 			'name'  => $name,
-			'title' => $tooltip,
 			'value' => $value, */
 
  ?>
 		<input type="number" class="small-text" min="1" step="1"
 		       id="<?php e_esc_attr( $ID ); ?>"
 		       name="<?php e_esc_attr( $name ); ?>"
-		       title="<?php e_esc_attr( $tooltip ); ?>"
 		       value="<?php e_esc_attr( sanitize_text_field( $value ) ); ?>" /> <?php
 		if ( ! empty( $layout['stext'] ) ) { e_esc_attr( $layout['stext'] ); }
 	}
@@ -725,14 +755,22 @@ abstract class PMW_Form_Admin {
 			$output = $func( $input );
 		} else { // FIXME:  test for data type?
 			$output = $this->validate_text( $input );
-			$this->logging( 'missing validation function: ' . $func );
+			$this->logging( 'missing validation function: ' . $func, $item, $input );
 		}
 		return $output;
 	}
 
-  private function validate_colorpicker($input) {
-    return (preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|',$input)) ? $input : '';
-  }
+	private function validate_checkbox( $input ) {
+		return sanitize_key( $input );
+	}
+
+	private function validate_checkbox_multiple( $input ) {
+		return $this->validate_checkbox( $input );
+	}
+
+	private function validate_colorpicker( $input ) {
+		return ( preg_match( '|^#([A-Fa-f0-9]{3}){1,2}$|', $input ) ) ? $input : '';
+	}
 
 	private function validate_font( $input ) {
 		$this->logging( $input );

@@ -8,7 +8,7 @@ class PMW_Register_Privacy extends PMW_Register_Register {
 
 	protected static function activate_tasks() {
 		self::initialize_options();
-#		self::remove_update_transients();
+		self::remove_update_transients();
 	}
 
 	private static function initialize_options() {

@@ -49,6 +49,11 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		); //*/
 		if ( ( is_multisite() && is_main_site() ) || $all ) {
 			$layout['blog']['change'] = 'showhidePosi( this, ".privacy-blog-option", "yes" );';
+			$layout['blog']['showhide'] = array(
+				'origin' => 'privacy-blog-active',
+				'target' => 'privacy-blog-option',
+				'show'   => 'yes',
+			);
 			$layout['blogs'] = array(
 				'default' => 'yes',
 				'label'   => __( 'Multi-Site', 'tcc-privacy' ),
@@ -58,6 +63,11 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 					'no'   => __( 'No -- Tell WordPress you are running just a single blog.', 'tcc-privacy' ),
 				),
 				'extra_html' => $extra_html,
+				'showhide' => array(
+					'origin' => 'privacy-multi-active',
+					'target' => 'privacy-multi-option',
+					'show'   => 'yes',
+				),
 				'change'  => 'showhidePosi( this, ".privacy-multi-option", "yes" );',
 				'divcss'  => 'privacy-multi-active privacy-blog-option',
 			); //*/
@@ -167,10 +177,10 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		}
 		$layout['plugindata'] = array(
 			'label'   => __( 'Plugin Data', 'tcc-privacy' ),
-			'text'    => __( 'Plugin Settings.', 'tcc-privacy' ),
+			'text'    => __( 'Settings for the Privacy My Way plugin.', 'tcc-privacy' ),
 			'render'  => 'title',
 		);
-		if ( WP_DEBUG || $all ) {
+/*		if ( WP_DEBUG || $all ) {
 			$layout['logging'] = array(
 				'default' => 'off',
 				'label'   => __( 'Logging', 'tcc-privacy' ),
@@ -181,20 +191,19 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 					'on'  => __( 'Log everything.', 'tcc-privacy' ),
 				),
 			);
-		}
+		} //*/
 		$layout['deledata'] = array(
 			'default' => ( WP_DEBUG ) ? 'nodelete' : 'uninstall',
 			'label'   => __( 'Data Deletion', 'tcc-privacy' ),
-			'text'    => __( 'Control when plugin data is removed.', 'tcc-privacy' ),
+			'text'    => __( 'Control when plugin data is deleted.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
-				'deactive'  => __( 'Delete plugin data upon plugin deactivation.', 'tcc-privacy' ),
-				'uninstall' => __( 'Delete plugin data upon plugin deletion.', 'tcc-privacy' ),
-				'nodelete'  => __( 'Do not delete plugin data.', 'tcc-privacy' ),
+				'deactive'  => __( 'Deactivation of the plugin.', 'tcc-privacy' ),
+				'uninstall' => __( 'Deletion of the plugin.', 'tcc-privacy' ),
+				'nodelete'  => __( 'Always retain the plugin data.', 'tcc-privacy' ),
 			),
 		);
-		$layout = apply_filters( "tcc_options_layout_{$this->base}", $layout );
-		return $layout;
+		return apply_filters( "tcc_options_layout_{$this->base}", $layout );
 	}
 
 

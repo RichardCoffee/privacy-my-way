@@ -7,8 +7,6 @@ abstract class PMW_Plugin_Plugin {
 	protected $github   = '';    #  'https://github.com/MyGithubName/my-plugin-name/';
 	public    $paths    = null;  #  PMW_Plugin_Paths object
 	public    $plugin   = 'plugin-slug';
-	protected $puc      = null;
-	private   $puc_vers = '4.1';
 	protected $setting  = '';    #  settings link
 	protected $state    = '';
 	protected $tab      = 'about';
@@ -20,7 +18,7 @@ abstract class PMW_Plugin_Plugin {
 	abstract public function initialize();
 
 	protected function __construct( $args = array() ) {
-		if ( isset( $args['file'] ) ) {
+		if ( ! empty( $args['file'] ) ) {
 			$data = get_file_data( $args['file'], array( 'ver' => 'Version' ) );
 			$defaults = array(
 				'dir'     => plugin_dir_path( $args['file'] ),
@@ -43,7 +41,8 @@ abstract class PMW_Plugin_Plugin {
 	public function add_actions() { }
 
 	public function add_filters() {
-		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 2 );
+		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 4 );
+		add_filter( 'network_admin_plugin_action_links', array( $this, 'settings_link' ), 10, 4 );
 	} //*/
 
 
@@ -51,12 +50,7 @@ abstract class PMW_Plugin_Plugin {
 
 	public function state_check() {
 		$state = 'alone';
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-		}
-		if ( is_plugin_active( 'tcc-theme-options/tcc-theme-options.php' ) ) {
-			$state = 'plugin';
-		} else if ( file_exists( get_template_directory() . '/classes/Form/Admin.php' ) ) {
+		if ( is_readable( get_template_directory() . '/classes/Form/Admin.php' ) ) {
 			$state = 'theme';
 		}
 		return $state;
@@ -64,7 +58,7 @@ abstract class PMW_Plugin_Plugin {
 
 	protected function schedule_initialize() {
 		switch ( $this->state ) {
-			case 'plugin': # Deprecated, theme options is no longer a plugin
+			case 'plugin':
 				add_action( 'tcc_theme_options_loaded', array( $this, 'initialize' ) );
 				break;
 			case 'alone':
@@ -74,6 +68,7 @@ abstract class PMW_Plugin_Plugin {
 		}
 	}
 
+	#	https://github.com/schemapress/Schema
 	private function load_textdomain() {
 		$args = array(
 			'text_domain' => 'Text Domain',
@@ -94,21 +89,18 @@ abstract class PMW_Plugin_Plugin {
 
 	private function determine_textdomain_filenames( $data ) {
 		$lang_def = ( empty( $data['lang_dir'] ) ) ? '/languages' : $data['lang_dir'];
-		#	list - $lang_dir
-		$files[]  = $this->paths->dir . $lang_def;
+		#	$lang_dir
+		$files[]  = untrailingslashit( $this->paths->dir ) . $lang_def;
 		$locale   = apply_filters( 'plugin_locale',  get_locale(), $data['text_domain'] );
 		$mofile   = sprintf( '%1$s-%2$s.mo', $data['text_domain'], $locale );
-		#	list - $mofile_local
+		#	$mofile_local
 		$files[]  = $files[0] . '/' . $mofile;
-		#	list - $mofile_global
-		$files[]  = WP_LANG_DIR . '/' . $data['text_domain'] . '/' . $mofile;
-		$this->logging( $files );
+		#	$mofile_global
+		$files[]  = WP_LANG_DIR . '/plugins/' . $data['text_domain'] . '/' . $mofile;
 		return $files;
 	}
 
-	/**  Template functions **/
-
-	public function get_stylesheet( $file = 'css/tcc-privacy.css' ) {
+	public function get_stylesheet( $file = 'css/tcc-plugin.css', $path = '/' ) {
 		return $this->paths->get_plugin_file_path( $file );
 	}
 
@@ -117,29 +109,58 @@ abstract class PMW_Plugin_Plugin {
 	 *  Adds 'Settings' option to plugin page entry
 	 *
 	 *  sources:  http://code.tutsplus.com/tutorials/integrating-with-wordpress-ui-the-basics--wp-26713
+	 *            https://hugh.blog/2012/07/27/wordpress-add-plugin-settings-link-to-plugins-page/
 	 */
-	public function settings_link( $links, $file ) {
-		if ( strpos( $file, $this->plugin ) === false ) {
-			return $links;
+	public function settings_link( $links, $file, $data, $context ) {
+		if ( strpos( $file, $this->plugin ) !== false ) {
+			unset( $links['edit'] );
+			if ( is_plugin_active( $file ) ) {
+				$url   = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
+				$links['settings'] = sprintf( '<a href="%s"> %s </a>', esc_url( $url ), esc_html__( 'Settings', 'tcc-privacy' ) );
+			}
 		}
-		unset( $links['edit'] );
-		$new = array();
-		if ( current_user_can( 'edit_plugins' ) ) { // maybe edit_theme_options
-			$url = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
-			$new['settings'] = sprintf( '<a href="%1$s"> %2$s </a>', $url, esc_html__( 'Settings', 'tcc-privacy' ) );
-		}
-		return array_merge( $new, $links );
+		return $links;
 	}
 
-	/**  Updates  **/
+
+  /** Update functions **/
+
 
 	private function load_update_checker() {
-		$puc_file = $this->paths->dir . 'vendor/plugin-update-checker-' . $this->puc_vers . '/plugin-update-checker.php';
-		if ( is_readable( $puc_file ) && ! empty( $this->github ) ) {
-			require_once( $puc_file );
-			$this->puc = Puc_v4_Factory::buildUpdateChecker( $this->github, $this->paths->file, $this->plugin );
+		if ( $this->github ) {
+			$puc_file = $this->paths->dir . $this->paths->vendor . 'plugin-update-checker/plugin-update-checker.php';
+			if ( is_readable( $puc_file ) ) {
+				require_once( $puc_file );
+				$puc = Puc_v4_Factory::buildUpdateChecker( $this->github, $this->paths->file, $this->plugin );
+			}
 		}
 	}
+
+/*
+  public function check_update() {
+    $addr = 'tcc_option_'.$this->tab;
+    $data = get_option($addr);
+    if (!isset($data['dbvers'])) return;
+    if (intval($data['dbvers'],10)>=intval($this->dbvers)) return;
+    $this->perform_update($addr);
+  }
+
+  private function perform_update($addr) {
+    $option = get_option($addr);
+    $dbvers = intval($option['dbvers'],10);
+    $target = intval($this->dbvers,10);
+    while($dbvers<$target) {
+      $dbvers++;
+      $update_func = "update_$dbvers";
+      if ( method_exists( get_called_class(), $update_func ) ) {
+        $this->$update_func();
+      }
+    }
+    $option = get_option($addr); // reload in case an update changes an array value
+    $option['dbvers']  = $dbvers;
+    $option['version'] = $this->paths->version;
+    update_option($addr,$option);
+  } //*/
 
 
 }

@@ -25,8 +25,8 @@ abstract class PMW_Form_Field_Field {
 #	protected $post_id;                 # wordpress post id number
 	protected $sanitize   = 'esc_attr'; # default sanitize method
 
-	use TCC_Trait_Magic;
-	use TCC_Trait_ParseArgs;
+	use PMW_Trait_Magic;
+	use PMW_Trait_ParseArgs;
 
 	public function __construct( $args ) {
 		$this->library = new PMW_Plugin_Library;

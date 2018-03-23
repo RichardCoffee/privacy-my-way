@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 4.7.3
-Stable tag: 1.3.2
+Stable tag: 1.4.0
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org
@@ -35,12 +35,16 @@ Release updates are handled using [Plugin Update Checker](https://github.com/Yah
 
 == Frequently Asked Questions ==
 
-See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).
+See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Open an issue if you can't find the info you need.
 
 == Changelog ==
 
-= Next Release
+= 1.4.0
+* Enhancement:  added options to prevent WordPress automatic updates, intended for developers.
+* Enhancement:  added code for 'core_version_check_query_args' filter.
 * Upgrade:  updated base plugin classes, added use of base Options class.
+* Upgrade:  added filter for site transients.
+* Upgrade:  upgraded to version 4.4 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
 
 = 1.3.2 =
 * Bugfix:  fixed new installation crashes.

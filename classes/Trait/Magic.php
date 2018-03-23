@@ -2,13 +2,17 @@
 
 /*
  *  https://secure.php.net/manual/en/language.oop5.magic.php
+ *  http://php.net/manual/en/language.oop5.overloading.php
  *  http://www.garfieldtech.com/blog/magical-php-call
  *  https://lornajane.net/posts/2012/9-magic-methods-in-php
  */
 
 trait PMW_Trait_Magic {
 
-	protected static $magic__call = array();
+
+	protected static $magic__call   = array();
+	protected static $set__callable = false;
+
 
 	public function __call( $string, $args ) {
 		$return = false;
@@ -42,12 +46,13 @@ trait PMW_Trait_Magic {
 	} //*/
 
 	public function set( $property, $value ) {
-		if ( ( ! empty( $property ) ) && ( ! empty( $value ) ) ) {
-			if ( property_exists( $this, $property ) ) {
-				$this->{$property} = $value;
+		if ( self::$set__callable ) {
+			if ( ( ! empty( $property ) ) && ( ! empty( $value ) ) ) {
+				if ( property_exists( $this, $property ) ) {
+					$this->{$property} = $value;
+				}
 			}
 		}
 	}
 
-
-}
+                                                                                                            }
