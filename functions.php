@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 include_once( 'includes/debugging.php' );
 
 function pmw_privacy_class_loader( $class ) {

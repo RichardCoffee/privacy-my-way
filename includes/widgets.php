@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! function_exists('pmw_remove_dashboard_events_widget' ) ) {
 	function pmw_remove_dashboard_events_widget() {
 		remove_meta_box( 'dashboard_primary', get_current_screen(), 'side' );
