@@ -14,5 +14,9 @@ function pmw_privacy_class_loader( $class ) {
 spl_autoload_register( 'pmw_privacy_class_loader' ); //*/
 
 function pmw_library() {
-	return new PMW_Plugin_Library;
+	static $library;
+	if ( empty( $library ) ) {
+		$library = new PMW_Plugin_Library;
+	}
+	return $library;
 }
