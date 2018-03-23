@@ -20,10 +20,9 @@ class Privacy_My_Way {
 	protected $options;      #  array --- privacy options
 
 	use PMW_Trait_Logging;
-	use PMW_Trait_Singleton;
 
 
-	protected function __construct( $args = array() ) {
+	public function __construct( $args = array() ) {
 		$this->logging_func = 'pmw_log_entry';
 		$this->get_options();
 		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
