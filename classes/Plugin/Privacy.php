@@ -72,6 +72,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		return $locale;
 	}
 
+	# intended only for use with https://github.com/RichardCoffee/fluidity-theme
 	public function add_privacy_options( $options ) {
 		$this->setting = 'admin.php?page=fluidity_options&tab=privacy';
 		$options['Privacy'] = new PMW_Options_Privacy;

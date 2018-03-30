@@ -5,7 +5,8 @@ Tested up to: 4.7.3
 Stable tag: 1.4.0
 License: MIT
 
-Control the information that your wordpress site is sending to wordpress.org
+Control the information that your wordpress site is sending to wordpress.org.  View our
+[repository](https://github.com/RichardCoffee/privacy-my-way) on github.
 
 == Description ==
 

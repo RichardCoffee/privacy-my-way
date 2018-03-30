@@ -2,14 +2,14 @@
 
 class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 
-	protected $field_radio = array();
-	protected $sanitize    = 'sanitize_title';
-	protected $field_type  = 'radio';
+	protected $options  = array();
+	protected $sanitize = 'sanitize_title';
+	protected $type     = 'radio';
 
 	public function radio() {
-		if ( $this->field_radio ) {
+		if ( $this->options ) {
 			$attrs = array(
-				'type'  => $this->field_type,
+				'type'  => $this->type,
 				'name'  => $this->field_name,
 			);
 			if ( $this->onchange ) {
@@ -23,11 +23,11 @@ class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 					</div><?php
 					$attrs['aria-describedby'] = $uniq;
 				}
-				foreach( $this->field_radio as $key => $text ) {
+				foreach( $this->options as $key => $text ) {
 					$attrs['value'] = $key; ?>
 					<div>
 						<label>
-							<input <?php $this->library->apply_attrs( $attrs ); ?> <?php checked( $this->field_value, $key ); ?>><?php
+							<input <?php fluid()->apply_attrs( $attrs ); ?> <?php checked( $this->field_value, $key ); ?>><?php
 							echo esc_html( $text ); ?>
 						</label>
 					</div><?php

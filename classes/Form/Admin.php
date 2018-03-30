@@ -656,8 +656,6 @@ abstract class PMW_Form_Admin {
 			'placeholder' => ( isset( $layout['place'] ) ) ? $layout['place'] : '';
 			'onchange' => ( isset( $layout['change'] ) ) ? $layout['change']  : '';
 
-
-
 //*/
 
     $html.= "<input type='text' id='$ID' class='";
@@ -767,7 +765,7 @@ abstract class PMW_Form_Admin {
 	}
 
 	private function validate_checkbox_multiple( $input ) {
-		return $this->validate_checkbox( $input );
+		return sanitize_key( $input );
 	}
 
 	private function validate_colorpicker( $input ) {
@@ -779,9 +777,9 @@ abstract class PMW_Form_Admin {
 		return $input; // FIXME NOW!
 	}
 
-  private function validate_image($input) {
-    return esc_url_raw(strip_tags(stripslashes($input)));
-  }
+	private function validate_image( $input ) {
+		return apply_filters( 'pre_link_image', $input );
+	}
 
   private function validate_post_content($input) {
     return wp_kses_post($input);
@@ -792,7 +790,7 @@ abstract class PMW_Form_Admin {
   }
 
 	private function validate_radio_multiple( $input ) {
-		return $this->validate_radio( $input );
+		return sanitize_key( $input );
 	}
 
   private function validate_select($input) {
@@ -808,16 +806,16 @@ abstract class PMW_Form_Admin {
 	}
 
 	protected function validate_text( $input ) {
-		return strip_tags( stripslashes( $input ) );
+		return wp_kses_data( $input );
 	}
 
   private function validate_text_color($input) {
     return $this->validate_text($input);
   }
 
-  private function validate_url($input) {
-    return esc_url_raw(strip_tags(stripslashes($input)));
-  }
+	private function validate_url( $input ) {
+		return apply_filters( 'pre_link_url', $input );
+	}
 
 
 }	#	end of PMW_Form_Admin class
