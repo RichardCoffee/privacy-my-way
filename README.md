@@ -55,6 +55,9 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ## Changelog
 
+### Next Release
+* Upgrade:  update base plugin classes.
+
 ### 1.4.0
 * Enhancement:  added options to prevent WordPress automatic updates, intended for developers.
 * Enhancement:  added code for 'core_version_check_query_args' filter.
@@ -67,7 +70,6 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ### 1.3.1
 * Bugfix:  fixed missing index error.
-
 
 ### 1.3.0
 * Enhancement:  added pot file, along with en_US.po file.
@@ -91,7 +93,6 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 * Fix:  active theme not being reset properly when filtering themes.
 * Fix:  corrected variable reference left over from old code.
 * Minor:  changed some comment text.
-
 
 ### 1.1.0
 * add use of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker)
