@@ -43,6 +43,9 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
+= Next Release =
+* Upgrade:  updated base plugin classes.
+
 = 1.4.0 =
 * Enhancement:  added options to prevent WordPress automatic updates, intended for developers.
 * Enhancement:  added code for 'core_version_check_query_args' filter.
