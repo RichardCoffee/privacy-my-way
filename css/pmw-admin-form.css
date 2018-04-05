@@ -23,7 +23,7 @@
 .form-title {
 	font-size: 16px;
 }
-/*  I can't seem to get this to work.  CSS expert, anyone?  */
+/*  FIXME: I can't seem to get this to work.  CSS expert, anyone?  */
 input[type="radio"].radio-multiple-list-no {
 	border-color: red;
 	color: red;
