@@ -10,7 +10,7 @@ class PMW_Register_Register {
 	protected static $title    = 'This plugin';
 	protected static $wp_vers  = '4.7.0';         #  get_theme_file_uri function added
 
-	private static $our_site = '<a href="the-creative-collective.com" target="tcc">%s</a>';
+	private static $our_site = '<a href="rtcenterprises.net" target="tcc">%s</a>';
 	private static $rc_email = '<a href="mailto:richard.coffee@rtcenterprises.net">%s</a>';
 	private static $jg_email = '<a href="mailto:cableman371@gmail.com">%s</a>';
 	private static function our_email() { return ( ( mt_rand( 1, 10 ) > 5 ) ? self::$rc_email : self::$jg_email ); }

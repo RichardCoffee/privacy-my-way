@@ -304,4 +304,12 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		return $value;
 	}
 
+	protected function customizer_data() {
+		$data = array(
+			array(
+			),
+		);
+		return apply_filters( "fluid_{$this->base}_customizer_data", $data );
+	}
+
 }
