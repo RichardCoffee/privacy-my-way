@@ -26,6 +26,10 @@ server is running, nor the language files installed.
 4.  Go to the Plugins screen and click Activate.
 5.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
 
+Note:  If an error occurs when attempting to activate the plugin, then check the plugin directory and make sure that
+the plugin directory name does not have a version number.  If it does, you will need to remove the version number from the
+directory name before the plugin can be activated.
+
 = Manual =
 
 This is your best option, although if you have gotten this far you probably don't need these instructions.

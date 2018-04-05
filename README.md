@@ -25,6 +25,7 @@ Please use [the latest release](https://github.com/RichardCoffee/privacy-my-way/
 
 When using the Upload option, be aware that Github includes the version number as part of the directory name inside the zip file.  You will
 need FTP or SSH access to around that.  Once you have the plugin actually installed, then upgrades via the admin dashboard will work just fine.
+If anyone knows how to get github not to do that, please let me know by opening an issue about it.
 
 ### Manual Installation
 
