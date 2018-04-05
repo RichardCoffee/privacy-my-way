@@ -27,7 +27,12 @@
  * Tags:              privacy, updates, plugins, themes, core, translations, law, eu
  */
 
-defined( 'ABSPATH' ) || exit;
+# https://github.com/helgatheviking/Nav-Menu-Roles/blob/master/nav-menu-roles.php
+if ( ! defined( 'ABSPATH' ) || ! function_exists( 'is_admin' ) ) {
+	header( 'Status: 403 Forbidden' );
+	header( 'HTTP/1.1 403 Forbidden' );
+	exit();
+}
 
 define( 'PMW_PRIVACY_DIR', plugin_dir_path( __FILE__ ) );
 
