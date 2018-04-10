@@ -43,7 +43,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 			'wp_version_check',
 		);
 		foreach( $actions as $action ) {
-			add_action( $action, array( $this, 'add_privacy_filters' ), 1 );
+			add_action( $action, array( $this, 'privacy_setup' ), 1 );
 		}
 		if ( is_admin() ) {
 			new PMW_Form_Privacy;

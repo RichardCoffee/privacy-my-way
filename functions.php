@@ -15,10 +15,13 @@ function pmw_privacy_class_loader( $class ) {
 }
 spl_autoload_register( 'pmw_privacy_class_loader' ); //*/
 
-function pmw_library() {
+function pmw( $force_log = false ) {
 	static $library;
 	if ( empty( $library ) ) {
 		$library = new PMW_Plugin_Library;
+	}
+	if ( $force_log ) {
+		$library->logging_force = true;
 	}
 	return $library;
 }
