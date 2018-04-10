@@ -23,7 +23,7 @@ class Privacy_My_Way {
 
 
 	public function __construct( $args = array() ) {
-		$this->logging_func = 'pmw_log_entry';
+		$this->logging_func = array( $this, 'log' );
 		$this->get_options();
 		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
 		if ( $this->options ) {  #  opt-in only
@@ -37,7 +37,7 @@ class Privacy_My_Way {
 			add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'plugins_site_transient' ), 10, 2 );
 			add_filter( 'pre_set_site_transient_update_themes',  array( $this, 'themes_site_transient' ),  10, 2 );
 		}
-		$this->logging( $this );
+		$this->logg( $this );
 		$this->check_transients();
 	}
 
@@ -50,7 +50,7 @@ class Privacy_My_Way {
 		}
 		$this->options = $options;
 		add_filter( 'logging_debug_privacy', function( $debug ) {
-			return ( $debug && isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) );
+			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) ? true : $debug;
 		} );
 	}
 
@@ -88,7 +88,7 @@ class Privacy_My_Way {
 					break;
 				default:
 			}
-			$this->logging(
+			$this->logg(
 				'setting: ' . $this->options['users'],
 				compact( 'original', 'users', 'count', 'option', 'network_id' )
 			);
@@ -123,7 +123,7 @@ class Privacy_My_Way {
 		$args = $this->strip_site_url( $args );
 		$args = $this->filter_plugins( $args, $url );
 		$args = $this->filter_themes(  $args, $url );
-		$this->logging( $url, $args );
+		$this->logg( $url, $args );
 		return $args;
 	}
 
@@ -132,7 +132,7 @@ class Privacy_My_Way {
 		if ( $preempt || isset( $args['_pmw_privacy_filter'] ) ) {
 			return $preempt;
 		}
-		$this->logging( 0, 'url: ' . $url );
+		$this->logg( 0, 'url: ' . $url );
 		#	only act on requests to api.wordpress.org
 		if (  ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) === false )
@@ -150,11 +150,11 @@ class Privacy_My_Way {
 		$response = wp_remote_request( $url, $args );	//	response really seems to have a lot of duplicated data in it.
 		if ( is_wp_error( $response ) ) {
 			$this->logging_force = true;  #  Log it.
-			$this->logging( 'response error', $url, $response );
+			$this->logg( 'response error', $url, $response );
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$body = json_decode( $body, true );
-			$this->logging( $url, $args, 'response body', $body );
+			$this->logg( $url, $args, 'response body', $body );
 		}
 		return $response;
 	}
@@ -182,17 +182,17 @@ class Privacy_My_Way {
 				#	Next three checks taken from resources.  I have not seen these in testing...
 				if ( isset( $args['headers']['user-agent'] ) ) {
 					$args['headers']['user-agent'] = 'WordPress/' . get_bloginfo( 'version' );
-					$this->logging( 'header:user-agent has been seen.' );
+					$this->logg( 'header:user-agent has been seen.' );
 				}
 				#	Anybody seen this?
 				if ( isset( $args['headers']['User-Agent'] ) ) {
 					$args['headers']['User-Agent'] = 'WordPress/' . get_bloginfo( 'version' );
-					$this->logging( 'header:User-Agent has been seen.' );
+					$this->logg( 'header:User-Agent has been seen.' );
 				}
 				#	I have not seen it...
 				if ( isset( $args['headers']['Referer'] ) ) {
 					unset( $args['headers']['Referer'] );
-					$this->logging( 'headers:Referer has been deleted.' );
+					$this->logg( 'headers:Referer has been deleted.' );
 				}
 			}
 			if ( isset( $this->options['install'] ) && ( $this->options['install'] === 'no' ) ) {
@@ -205,7 +205,7 @@ class Privacy_My_Way {
 				}
 			}
 			$args['_pmw_privacy_strip_site'] = true;
-		} #else { $this->logging( 'already been here', $args ); }
+		} #else { $this->logg( 'already been here', $args ); }
 		return $args;
 	}
 
@@ -229,7 +229,7 @@ class Privacy_My_Way {
 							break;
 						default:
 					}
-					$this->logging( 'plugins option:  ' . $this->options['plugins'], $plugins );
+					$this->logg( 'plugins option:  ' . $this->options['plugins'], $plugins );
 					$args['body']['plugins'] = wp_json_encode( $plugins );
 					$args['_pmw_privacy_filter_plugins'] = true;
 				}
@@ -291,7 +291,7 @@ class Privacy_My_Way {
 			}
 		}
 if ( $this->logging_force ) {
-	$this->logging( $this->logging_force, $initial, $value );
+	$this->logg( $this->logging_force, $initial, $value );
 }
 		return $value;
 	}
@@ -304,7 +304,7 @@ if ( $this->logging_force ) {
 			if ( ! isset( $args['_pmw_privacy_filter_themes'] ) || ( ! $args['_pmw_privacy_filter_themes'] ) ) {
 				if ( ! empty( $args['body']['themes'] ) ) {
 					$themes = json_decode( $args['body']['themes'], true );
-					$this->logging( $url, $themes );
+					$this->logg( $url, $themes );
 					switch ( $this->options['themes'] ) {
 						case 'none':
 							$themes = array(
@@ -320,11 +320,11 @@ if ( $this->logging_force ) {
 							break;
 						default:
 					}
-					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
+					$this->logg( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
 					$args['_pmw_privacy_filter_themes'] = true;
 				}
-			} #else { $this->logging( 'already been here', $args ); }
+			} #else { $this->logg( 'already been here', $args ); }
 		}
 		return $args;
 	}
@@ -387,11 +387,11 @@ if ( $this->logging_force ) {
 		$original = $url;
 		#$keys = array( 'php', 'locale', 'mysql', 'local_package', 'blogs', 'users', 'multisite_enabled', 'initial_db_version',);
 		$url_array = wp_parse_url( $url );
-		$this->logging( $url_array );
+		$this->logg( $url_array );
 		#	Do we need to filter?
 		if ( isset( $url_array['query'] ) ) {
 			$arg_array = wp_parse_args( $url_array['query'] );
-			$this->logging( $arg_array );
+			$this->logg( $arg_array );
 			if ( is_multisite() ) {
 				#	I really think that fibbing on this is a bad idea, but my pro-choice stance dictates that I can't make other people's choices for them.
 				if ( isset( $arg_array['multisite_enabled'] ) && ( $this->options['blogs'] === 'no' ) ) {
@@ -408,7 +408,7 @@ if ( $this->logging_force ) {
 					$url   = add_query_arg( 'users', $users, $url );
 				}
 			}
-			$this->logging( compact( 'original', 'url' ) );
+			$this->logg( compact( 'original', 'url' ) );
 		}
 		return $url;
 	}
@@ -424,7 +424,7 @@ if ( $this->logging_force ) {
 		);
 		foreach( $checks as $check ) {
 			if ( $trans = get_site_transient( $check ) ) {
-				$this->logging( $check, $trans );
+				$this->logg( $check, $trans );
 			}
 		}
 	}
@@ -433,12 +433,12 @@ if ( $this->logging_force ) {
 		if ( isset( $args['plugins'] ) ) {
 			$test_data = $args['plugins'];
 			$plugins = $this->filter_plugins( $test_data['args'], $test_data['url'] );
-			$this->logging( $test_data, $plugins );
+			$this->logg( $test_data, $plugins );
 		}
 		if ( isset( $args['themes'] ) ) {
 			$test_data = $args['themes'];
 			$themes = $this->filter_themes( $test_data['args'], $test_data['url'] );
-			$this->logging( $test_data, $themes );
+			$this->logg( $test_data, $themes );
 		}
 	}
 
