@@ -98,20 +98,20 @@ abstract class PMW_Form_Admin {
 	private function form_text() {
 	$text = array(
 		'error'  => array(
-			'render'    => _x( 'ERROR: Unable to locate function %s', 'string - a function name', 'tcc-privacy' ),
-			'subscript' => _x( 'ERROR: Not able to locate form data subscript:  %s', 'placeholder will be an ASCII character string', 'tcc-privacy' )
+			'render'    => _x( 'ERROR: Unable to locate function %s', 'string - a function name', 'rtc-privacy' ),
+			'subscript' => _x( 'ERROR: Not able to locate form data subscript:  %s', 'placeholder will be an ASCII character string', 'rtc-privacy' )
 		),
 		'submit' => array(
-			'save'      => __( 'Save Changes', 'tcc-privacy' ),
-			'object'    => __( 'Form', 'tcc-privacy' ),
-			'reset'     => _x( 'Reset %s', 'placeholder is a noun, may be plural', 'tcc-privacy' ),
-			'subject'   => __( 'Form', 'tcc-privacy' ),
-			'restore'   => _x( 'Default %s options restored.', 'placeholder is a noun, probably singular', 'tcc-privacy' )
+			'save'      => __( 'Save Changes', 'rtc-privacy' ),
+			'object'    => __( 'Form', 'rtc-privacy' ),
+			'reset'     => _x( 'Reset %s', 'placeholder is a noun, may be plural', 'rtc-privacy' ),
+			'subject'   => __( 'Form', 'rtc-privacy' ),
+			'restore'   => _x( 'Default %s options restored.', 'placeholder is a noun, probably singular', 'rtc-privacy' )
 		),
 		'media'  => array(
-			'title'     => __( 'Assign/Upload Image', 'tcc-privacy' ),
-			'button'    => __( 'Assign Image', 'tcc-privacy' ),
-			'delete'    => __( 'Unassign Image', 'tcc-privacy' )
+			'title'     => __( 'Assign/Upload Image', 'rtc-privacy' ),
+			'button'    => __( 'Assign Image', 'rtc-privacy' ),
+			'delete'    => __( 'Unassign Image', 'rtc-privacy' )
 		)
 	);
 	$this->form_text = apply_filters( 'form_text_' . $this->slug, $text, $text );
@@ -524,19 +524,21 @@ abstract class PMW_Form_Admin {
 	private function render_radio($data) {
 		extract( $data );	#	associative array: keys are 'ID', 'value', 'layout', 'name'
 		if ( empty( $layout['source'] ) ) return;
-		$uniq        = uniqid();
-		$before_text = ( isset( $layout['text'] ) )    ? $layout['text']    : '';
-		$after_text  = ( isset( $layout['postext'] ) ) ? $layout['postext'] : '';
 		$radio_attrs = array(
 			'type' => 'radio',
 			'name' => $name,
-			'onchange' => ( isset( $layout['change'] ) ) ? $layout['change']  : '',
-			'aria-describedby' => $uniq,
-		); ?>
-		<div>
-			<div id="<?php echo $uniq; ?>">
-				<?php echo esc_html( $before_text ); ?>
-			</div><?php
+		);
+		if ( isset( $layout['change'] ) ) {
+			$radio_attrs['onchange'] = $layout['change'];
+		} ?>
+		<div><?php
+			if ( isset( $layout['text'] ) ) {
+				$uniq = uniqid(); ?>
+				<div id="<?php echo $uniq; ?>">
+					<?php e_esc_html( $layout['text'] ); ?>
+				</div><?php
+				$radio_attrs['aria-describedby'] = $uniq;
+			}
 			foreach( $layout['source'] as $key => $text ) {
 				$radio_attrs['value'] = $key; ?>
 				<div>
@@ -546,17 +548,19 @@ abstract class PMW_Form_Admin {
 							// FIXME:  this is here so I can display font awesome icons - it needs to be done differently
 							echo $text;
 						} else {
-							echo esc_html( $text );
+							e_esc_html( $text );
 						}
 						if ( isset( $layout['extra_html'][ $key ] ) ) {
 							echo $layout['extra_html'][ $key ];
 						} ?>
 					</label>
 				</div><?php
+			}
+			if ( isset( $layout['postext'] ) ) { ?>
+				<div>
+					<?php e_esc_html( $layout['postext'] ) ; ?>
+				</div><?php
 			} ?>
-			<div>
-				<?php echo esc_html( $after_text ) ; ?>
-			</div>
 		</div><?php
 	} //*/
 
@@ -573,8 +577,8 @@ abstract class PMW_Form_Admin {
 				<?php e_esc_html( $pre_text ); ?>
 			</div>
 			<div class="radio-multiple-header">
-				<span class="radio-multiple-yes"><?php esc_html_e( 'Yes',  'tcc-privacy' ); ?></span>&nbsp;
-				<span class="radio-multiple-no" ><?php esc_html_e( 'No', 'tcc-privacy' ); ?></span>
+				<span class="radio-multiple-yes"><?php esc_html_e( 'Yes', 'rtc-privacy' ); ?></span>&nbsp;
+				<span class="radio-multiple-no" ><?php esc_html_e( 'No', 'rtc-privacy' ); ?></span>
 			</div><?php
 			foreach( $layout['source'] as $key => $text ) {
 				$check  = ( isset( $value[ $key ] ) ) ? $value[ $key ] : $preset; ?>
@@ -627,16 +631,16 @@ abstract class PMW_Form_Admin {
 
 	private function render_spinner( $data ) {
 		extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-/*		$attrs = array(
+		$attrs = array(
+			'type'  => 'number',
+			'class' => 'small-text',
 			'id'    => $ID,
 			'name'  => $name,
-			'value' => $value, */
-
- ?>
-		<input type="number" class="small-text" min="1" step="1"
-		       id="<?php e_esc_attr( $ID ); ?>"
-		       name="<?php e_esc_attr( $name ); ?>"
-		       value="<?php e_esc_attr( sanitize_text_field( $value ) ); ?>" /> <?php
+			'min'   => '1',
+			'step'  => '1',
+			'value' => $value,
+		);
+		fluid()->apply_attrs_tag( 'input', $attrs );
 		if ( ! empty( $layout['stext'] ) ) { e_esc_attr( $layout['stext'] ); }
 	}
 

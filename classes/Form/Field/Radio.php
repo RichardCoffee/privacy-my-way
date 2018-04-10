@@ -2,12 +2,16 @@
 
 class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 
-	protected $options  = array();
-	protected $sanitize = 'sanitize_title';
-	protected $type     = 'radio';
+	protected $choices = array();
+	protected $type    = 'radio';
+
+	public function __construct( $args ) {
+		parent::__construct( $args );
+		$this->sanitize = array( $this, 'sanitize' );
+	}
 
 	public function radio() {
-		if ( $this->options ) {
+		if ( $this->choices ) {
 			$attrs = array(
 				'type'  => $this->type,
 				'name'  => $this->field_name,
@@ -23,7 +27,7 @@ class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 					</div><?php
 					$attrs['aria-describedby'] = $uniq;
 				}
-				foreach( $this->options as $key => $text ) {
+				foreach( $this->choices as $key => $text ) {
 					$attrs['value'] = $key; ?>
 					<div>
 						<label>
@@ -39,6 +43,12 @@ class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 				} ?>
 			</div><?php
 		}
+	}
+
+	# See also: classes/Form/Sanitizer.php
+	public function sanitize( $input ) {
+		$input = sanitize_key( $input );
+		return ( array_key_exists( $input, $this->choices ) ? $input : $this->field_default );
 	}
 
 
