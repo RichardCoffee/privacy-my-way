@@ -23,22 +23,31 @@ class Privacy_My_Way {
 
 
 	public function __construct( $args = array() ) {
+
 		$this->logging_func = array( $this, 'log' );
 		$this->get_options();
 		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
+
 		if ( $this->options ) {  #  opt-in only
+
 			add_filter( 'core_version_check_query_args', array( $this, 'core_version_check_query_args' ) );
+
 			#	These next two filters are multisite only
 			add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
 			add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
+
 			add_filter( 'http_headers_useragent',     array( $this, 'http_headers_useragent' ),     10, 2 );
 			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
 			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
+
 			add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'plugins_site_transient' ), 10, 2 );
 			add_filter( 'pre_set_site_transient_update_themes',  array( $this, 'themes_site_transient' ),  10, 2 );
+
 			add_filter( 'pre_set_transient_plugin_slugs', array( $this, 'log_filter_arguments' ), 10, 3 );
-			add_filter( 'site_transient_update_plugins', array( $this, 'log_filter_arguments' ), 10, 2 );
+			add_filter( 'site_transient_update_plugins',  array( $this, 'log_filter_arguments' ), 10, 2 );
+
 		}
+
 		$this->logg( $this );
 		$this->check_transients();
 	}
@@ -283,6 +292,7 @@ class Privacy_My_Way {
 	}
 
 	public function plugins_site_transient( $value, $transient ) {
+pmw(1)->log($value,$transient);
 		$initial = $value;
 		foreach( $this->options['plugin_list'] as $plugin => $state ) {
 			if ( $state === 'no' ) {
@@ -295,6 +305,7 @@ class Privacy_My_Way {
 if ( $this->logging_force ) {
 	$this->logg( $this->logging_force, $initial, $value );
 }
+pmw(1)->log($value);
 		return $value;
 	}
 
@@ -375,6 +386,7 @@ if ( $this->logging_force ) {
 	}
 
 	public function themes_site_transient( $value, $transient ) {
+pmw(1)->log($value,$transient);
 		foreach( $this->options['theme_list'] as $theme => $state ) {
 			if ( $state === 'no' ) {
 				if ( isset( $value->checked[ $theme ] ) ) {
@@ -382,6 +394,7 @@ if ( $this->logging_force ) {
 				}
 			}
 		}
+pmw(1)->log($value);
 		return $value;
 	}
 
@@ -446,7 +459,7 @@ if ( $this->logging_force ) {
 
 	public function log_filter_arguments() {
 		$args = func_get_args();
-		$this->log( $args );
+		pmw(1)->log( $args );
 		return $args[0];
 	}
 

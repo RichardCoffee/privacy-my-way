@@ -1,10 +1,14 @@
 <?php
-
+/**
+ * @package    Fluidity
+ * @subpackage Debugging
+ * @requires   PHP 5.3.6
+ */
 trait PMW_Trait_Logging {
 
 	protected $logging_debug  =  WP_DEBUG; #  boolean  - enable/disable logging
 	public    $logging_force  =  false;    #  boolean  - can be used to force a single log entry
-	protected $logging_func;               #  callable - logging function: must be able to accept a variable number of parameters
+	public    $logging_func;               #  callable - logging function: must be able to accept a variable number of parameters
 	protected $logging_prefix = 'rtc';     #  string   - log file prefix
 
 
@@ -25,14 +29,28 @@ trait PMW_Trait_Logging {
 
 /*** Discover functions   ***/
 
+	/**
+	 * Get the calling function.
+	 *
+	 * Retrieve information from the calling function/file, while also
+	 * selectively skipping parts of the stack.
+	 *
+	 * @link http://php.net/debug_backtrace
+	 * @param numeric $depth
+	 * @return string
+	 */
 	protected function logging_calling_location( $depth = 1 ) {
 		#	This is not intended to be an exhaustive list
 		static $skip_list = array(
+			'__call',
 			'apply_filters',
 			'call_user_func',
 			'call_user_func_array',
+			'debug_calling_function',
+			'log_entry',
 			'log',
 			'logg',
+			'logging'
 		);
 		$default = $file = $func = $line = 'n/a';
 		$call_trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
@@ -46,6 +64,7 @@ trait PMW_Trait_Logging {
 		return "$file, $func, $line";
 	}
 
+	# generally only called in library classes
 	protected function logging_check_function() {
 		if ( ! is_callable( $this->logging_func ) ) {
 			$this->logging_func = array( $this, 'log' );

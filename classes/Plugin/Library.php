@@ -12,6 +12,7 @@ class PMW_Plugin_Library {
 	}
 
 	protected function initialize() {
+		$this->register__call( array( $this, 'logging_calling_location' ),          'debug_calling_function' );
 		$this->register__call( array( $this, 'logging_get_calling_function_name' ), 'get_calling_function' );
 		$this->register__call( array( $this, 'logging_was_called_by' ),             'was_called_by' );
 		if ( WP_DEBUG && function_exists( 'add_action' ) ) {

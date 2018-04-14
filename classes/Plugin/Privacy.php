@@ -52,6 +52,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	}
 
 	public function add_filters() {
+		add_filter( 'all_plugins',                   array( $this, 'add_privacy_filters' ) );
 		add_filter( 'core_version_check_locale',     array( $this, 'add_privacy_filters' ) );
 		add_filter( 'fluidity_initialize_options',   array( $this, 'add_privacy_options' ) );
 		$options = get_option( 'tcc_options_privacy', array() );
@@ -67,9 +68,9 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		parent::add_filters();
 	}
 
-	public function add_privacy_filters( $locale = '' ) {
+	public function add_privacy_filters( $arg = '' ) {
 		$this->privacy_setup();
-		return $locale;
+		return $arg;
 	}
 
 	# intended only for use with https://github.com/RichardCoffee/fluidity-theme

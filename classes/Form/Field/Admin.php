@@ -50,7 +50,7 @@ class PMW_Form_Field_Admin extends PMW_Form_Field_Field {
 				$opts['label_for'] = $this->field_id;
 			} else {
 				#  create our own label
-				$label = $this->label();
+				$label = $this->get_label();
 			}
 			if ( ! empty( $this->tr_class) ) {
 				$opts['class'] = $this->tr_class;

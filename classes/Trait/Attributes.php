@@ -100,7 +100,7 @@ trait PMW_Trait_Attributes {
 	}
 
 	/**
-	 * generates the html for the desired tag and attributes
+	 * generates the initial html for the desired tag and attributes
 	 *
 	 * @param string $html_tag tag to be generated
 	 * @param array $attrs contains attribute/value pairs
