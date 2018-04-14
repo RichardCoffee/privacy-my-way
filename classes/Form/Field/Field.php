@@ -28,6 +28,7 @@ abstract class PMW_Form_Field_Field {
 
 	protected static $date_format = 'm/d/y';
 
+	use PMW_Trait_Attributes;
 	use PMW_Trait_Magic;
 	use PMW_Trait_ParseArgs;
 
