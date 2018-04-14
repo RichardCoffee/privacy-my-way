@@ -4,6 +4,8 @@ class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 
 	protected $choices = array();
 	protected $type    = 'radio';
+	protected $field_postext = '';      # text shown below input
+	protected $field_pretext = '';      # text shown above input
 
 	public function __construct( $args ) {
 		parent::__construct( $args );
@@ -20,13 +22,13 @@ class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 				$attrs['onchange'] = $this->onchange;
 			} ?>
 			<div title="<?php echo esc_attr( $this->field_help ); ?>"><?php
-				if ( $this->field_pretext ) {
+/*				if ( $this->field_pretext ) {
 					$uniq = 'radio_' . uniqid(); ?>
 					<div id="<?php echo $uniq; ?>">
 						<?php echo esc_html( $this->field_pretext ); ?>
 					</div><?php
 					$attrs['aria-describedby'] = $uniq;
-				}
+				} //*/
 				foreach( $this->choices as $key => $text ) {
 					$attrs['value'] = $key; ?>
 					<div>
@@ -36,11 +38,11 @@ class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 						</label>
 					</div><?php
 				}
-				if ( $this->field_postext ) { ?>
+/*				if ( $this->field_postext ) { ?>
 					<div>
 						<?php echo esc_html( $this->field_postext ) ; ?>
 					</div><?php
-				} ?>
+				} //*/ ?>
 			</div><?php
 		}
 	}
@@ -48,7 +50,7 @@ class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 	# See also: classes/Form/Sanitizer.php
 	public function sanitize( $input ) {
 		$input = sanitize_key( $input );
-		return ( array_key_exists( $input, $this->choices ) ? $input : $this->field_default );
+		return ( array_key_exists( $input, $this->choices ) ? $input : $this->default );
 	}
 
 
