@@ -459,7 +459,7 @@ pmw(1)->log($value);
 
 	public function log_filter_arguments() {
 		$args = func_get_args();
-		pmw(1)->log( pmw()->get_calling_function, $args );
+		pmw(1)->log( pmw()->get_calling_function(), $args );
 		return $args[0];
 	}
 
