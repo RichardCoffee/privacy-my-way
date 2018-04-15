@@ -62,19 +62,19 @@ private static $instances = array();
 	} //*/
 
 	private function __clone() {
-		$message = __( 'This class can not be cloned.' , 'tcc-privacy' ) . ' * ' . debug_calling_function();
+		$message = __( 'This class can not be cloned.' , 'rtc-privacy' ) . ' * ' . debug_calling_function();
 		$version = ( isset( $this->version ) ) ? $this->version : '0.0.0';
 		_doing_it_wrong( __FUNCTION__, esc_html( $message ), esc_html( $version ) );
 	}
 
 	private function __sleep() {
-		$message = __( 'This class can not be serialized.' , 'tcc-privacy' ) . ' * ' . debug_calling_function();
+		$message = __( 'This class can not be serialized.' , 'rtc-privacy' ) . ' * ' . debug_calling_function();
 		$version = ( isset( $this->version ) ) ? $this->version : '0.0.0';
 		_doing_it_wrong( __FUNCTION__, esc_html( $message ), esc_html( $version ) );
 	}
 
 	private function __wakeup() {
-		$message = __( 'This class can not be unserialized.' , 'tcc-privacy' ) . ' * ' . debug_calling_function();
+		$message = __( 'This class can not be unserialized.' , 'rtc-privacy' ) . ' * ' . debug_calling_function();
 		$version = ( isset( $this->version ) ) ? $this->version : '0.0.0';
 		_doing_it_wrong( __FUNCTION__, esc_html( $message ), esc_html( $version ) );
 	}
