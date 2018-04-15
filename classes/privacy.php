@@ -61,7 +61,7 @@ class Privacy_My_Way {
 		}
 		$this->options = $options;
 		add_filter( 'logging_debug_privacy', function( $debug ) {
-			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) ? true : $debug;
+			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) ? true : false; //$debug;
 		} );
 	}
 
@@ -440,6 +440,7 @@ pmw(1)->log($value);
 		foreach( $checks as $check ) {
 			if ( $trans = get_site_transient( $check ) ) {
 				$this->logg( $check, $trans );
+pmw(1)->log( pmw()->get_calling_function(), $args );
 			}
 		}
 	}
@@ -459,7 +460,7 @@ pmw(1)->log($value);
 
 	public function log_filter_arguments() {
 		$args = func_get_args();
-		pmw(1)->log( pmw()->get_calling_function(), $args );
+pmw(1)->log( pmw()->get_calling_function(), $args );
 		return $args[0];
 	}
 
