@@ -394,8 +394,10 @@ abstract class PMW_Form_Admin {
 		$attrs['class'] = ( ! empty( $layout['divcss'] ) ) ? $layout['divcss'] : '';
 		$attrs['title'] = ( isset( $layout['help'] ) )     ? $layout['help']   : '';
 		if ( ! empty( $layout['showhide'] ) ) {
-			$attrs['data-item'] = ( isset( $layout['showhide']['item'] ) ) ? $layout['showhide']['item'] : $layout['showhide']['target'];
-			$attrs['data-show'] = $layout['showhide']['show'];
+			$state = array_merge( array( 'show' => null, 'hide' => null ), $layout['showhide'] );
+			$attrs['data-item'] = ( isset( $state['item'] ) ) ? $state['item'] : $state['target'];
+			$attrs['data-show'] = $state['show'];
+			$attrs['data-hide'] = $state['hide'];
 		}
 		return $attrs;
 	}

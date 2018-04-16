@@ -2,7 +2,7 @@
 
 class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 
-	protected $choices = array();
+	public    $choices = array();
 	protected $type    = 'radio';
 	protected $field_postext = '';      # text shown below input
 	protected $field_pretext = '';      # text shown above input

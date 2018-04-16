@@ -11,8 +11,6 @@ abstract class PMW_Options_Options {
 	abstract protected function form_title();
 	abstract public    function describe_options();
 	abstract protected function options_layout();
-	abstract protected function customizer_data();
-
 
 	public function __construct() {
 		add_filter( 'fluidity_options_form_layout',        array( $this, 'form_layout' ),          $this->priority );
@@ -72,58 +70,6 @@ abstract class PMW_Options_Options {
 	public function get_item( $item ) {
 		$layout = ( empty( $this->screen ) ) ? $this->options_layout() : $this->screen['layout'];
 		return ( isset( $layout[ $item ] ) ) ? $layout[ $item ] : array();
-	}
-
-
-/***   WP Customizer   ***/
-
-	public function customizer( WP_Customize_Manager $customize ) {
-		$data   = $this->customizer_data();
-		$layout = $this->options_layout();
-		foreach( $data as $section ) {
-			$priority     = 0;
-			$section_id   = 'fluid_' . $section['id'];
-			$section_args = $this->customizer_section( $layout[ $section['section'] ] );
-			$customize->add_section( $section_id, $section_args );
-			foreach( $section['controls'] as $control ) {
-				$item         = $layout[ $control ];
-				$priority    += 10;
-				$setting_id   = $section_id . '_' . $control;
-				$setting_args = $this->customizer_setting( $item );
-				$customize->add_setting( $setting_id, $setting_args );
-				new PMW_Form_Customizer( compact( 'customize', 'section_id', 'setting_id', 'item', 'priority' ) );
-			}
-		}
-	}
-
-	protected function customizer_section( $item ) {
-		$args = array(
-			'priority'           => ( isset( $item['priority'] ) )   ? $item['priority']           : $this->priority,
-			'panel'              => ( isset( $item['panel'] ) )      ? $item['panel']              : '',
-			'capability'         => ( isset( $item['capability'] ) ) ? $item['capability']         : $this->capability,
-#			'theme_supports'     => ( isset( $item['theme_supports'] ) ) ? $item['theme_supports'] : '', // plugins only
-			'title'              => $item['label'],
-			'description'        => $item['text'],
-#			'type'               =>
-#			'active_callback'    =>
-			'description_hidden' => true,
-		);
-		return $args;
-	}
-
-	protected function customizer_setting( $item ) {
-		$args = array(
-			'type'                 => ( isset( $item['type'] ) )           ? $item['type']           : 'theme_mod', // 'option',
-			'capability'           => ( isset( $item['capability'] ) )     ? $item['capability']     : $this->capability,
-#			'theme_supports'       => ( isset( $item['theme_supports'] ) ) ? $item['theme_supports'] : '', // plugins only
-			'default'              => ( isset( $item['default'] ) )        ? $item['default']        : '',
-			'transport'            => ( isset( $item['transport'] ) )      ? $item['transport']      : 'refresh', // 'postMessage',
-			'validate_callback'    => ( isset( $item['validate'] ) )       ? $item['validate']       : '', // when is this called?
-			'sanitize_callback'    => ( isset( $item['sanitize'] ) )       ? $item['sanitize']       : array( fluid_sanitize(), $item['render'] ),
-			'sanitize_js_callback' => ( isset( $item['js_callback'] ) )    ? $item['js_callback']    : '',
-			'dirty'                => ( isset( $item['dirty'] ) )          ? $item['dirty']          : array(), // wtf?
-		);
-		return $args;
 	}
 
 
