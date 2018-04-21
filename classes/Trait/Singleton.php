@@ -12,20 +12,12 @@
 trait PMW_Trait_Singleton {
 
 
-	protected static $abort__construct;
-	private   static $instance;
+	public  static $abort__construct = false;
+	private static $instance = null;
 
 
 	public static function instance() {
-		if ( ! ( self::$instance instanceof self ) ) {
-			$instance = new self();
-			if ( static::$abort__construct ) {
-				static::$abort__construct = false;
-			} else {
-				self::$instance = $instance;
-			}
-		}
-		return self::$instance;
+		return self::get_instance();
 	}
 
 	public static function get_instance( $args = array() ) {
@@ -43,10 +35,6 @@ trait PMW_Trait_Singleton {
 	/**  An alternate methodology  **/
 /*
 private static $instances = array();
-
-	public static function instance() {
-		return self::get_instance();
-	}
 
 	public static function get_instance( $args = array() ) {
 		$class = get_called_class();

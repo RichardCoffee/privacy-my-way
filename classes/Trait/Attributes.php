@@ -6,6 +6,7 @@
 /**
  * A trait that provides methods to generate html for tag attributes
  *
+ * @link 4.9.5:wp-includes/general-template.php:2949
  */
 trait PMW_Trait_Attributes {
 
@@ -51,7 +52,7 @@ trait PMW_Trait_Attributes {
 		$is_allowed_no_value = array( 'itemscope', 'value' );
 /*		static $is_allowed_no_value;
 		if ( ! $is_allowed_no_value ) {
-			$is_allowed_no_value = apply_filters( 'fluid_attr_is_allowed_no_value', array( 'itemscope', 'value' ) );
+			$is_allowed_no_value = apply_filters( 'fluid_attr_is_allowed_no_value', [ 'itemscope', 'value' ] );
 		} //*/
 
 		$html = ' ';
@@ -67,6 +68,7 @@ trait PMW_Trait_Attributes {
 				case 'href':
 				case 'itemtype': # schema.org
 				case 'src':
+					# https://konstantin.blog/2012/esc_url-vs-esc_url_raw/
 					$value = esc_url( $value );
 					break;
 				case 'class':
@@ -90,13 +92,18 @@ trait PMW_Trait_Attributes {
 	/**
 	 * applys the wordpress function sanitize_html_class to a string containing multiple css classes
 	 *
-	 * @param string $css css classes to be sanitized
+	 * @param string|array $classes css classes to be sanitized
 	 * @return string
 	 */
-	private function sanitize_html_class( $css ) {
-		$classes = explode( ' ', $css );
-		$result  = array_map( 'sanitize_html_class', $classes );
-		return implode( ' ', $result );
+	private function sanitize_html_class( $classes ) {
+		if ( is_array( $classes ) ) {
+			// pack it down then blow it up - insure each element is a single class
+			$classes = array_unique( explode( ' ', implode( ' ', $classes ) ) );
+		} else {
+			// convert string to an array
+			$classes = explode( ' ', $classes );
+		}
+		return implode( ' ', array_map( 'sanitize_html_class', $classes ) );
 	}
 
 	/**
@@ -107,7 +114,8 @@ trait PMW_Trait_Attributes {
 	 * @return string
 	 */
 	public function get_apply_attrs_tag( $html_tag, $attrs ) {
-		$html = '<' . $html_tag . $this->get_apply_attrs( $attrs );
+		$html  = "<$html_tag ";
+		$html .= $this->get_apply_attrs( $attrs );
 		$html .= ( $this->is_self_closing( $html_tag ) ) ? ' />' : '>';
 		return $html;
 	}
@@ -137,11 +145,12 @@ trait PMW_Trait_Attributes {
 	 * @return string
 	 */
 	public function get_apply_attrs_element( $element, $attrs, $text = '' ) {
-		$html = '<' . $element . $this->get_apply_attrs( $attrs );
+		$html  = "<$element ";
+		$html .= $this->get_apply_attrs( $attrs );
 		if ( $this->is_self_closing( $element ) ) {
 			$html .= ' />';
 		} else {
-			$html .= '>' . esc_html( $text ) . '</' . $element . '>';
+			$html .= '>' . esc_html( $text ) . "</$element>";
 		}
 		return $html;
 	}

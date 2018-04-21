@@ -4,26 +4,28 @@
  * @subpackage Debugging
  * @requires   PHP 5.3.6
  */
+
+defined( 'WP_DEBUG' ) || exit;
+
 trait PMW_Trait_Logging {
 
-	protected $logging_debug  =  WP_DEBUG; #  boolean  - enable/disable logging
-	public    $logging_force  =  false;    #  boolean  - can be used to force a single log entry
-	public    $logging_func;               #  callable - logging function: must be able to accept a variable number of parameters
-	protected $logging_prefix = 'rtc';     #  string   - log file prefix
+	public $logging_debug  =  WP_DEBUG; #  boolean  - enable/disable logging
+	public $logging_force  =  false;    #  boolean  - can be used to force a single log entry
+	public $logging_func;               #  callable - logging function: must be able to accept a variable number of parameters
+	public $logging_prefix = 'rtc';     #  string   - log file prefix
 
 
 /***   Action functions   ***/
 
 	public function log() {
 		call_user_func_array( array( $this, 'logging_entry' ), func_get_args() );
-		$this->logging_force = false;
 	}
 
 	public function logg() {
 		if ( is_callable( $this->logging_func ) && ( $this->logging_debug || $this->logging_force ) ) {
 			call_user_func_array( $this->logging_func, func_get_args() );
+			$this->logging_force = false;
 		}
-		$this->logging_force = false;
 	}
 
 
@@ -39,7 +41,7 @@ trait PMW_Trait_Logging {
 	 * @param numeric $depth
 	 * @return string
 	 */
-	protected function logging_calling_location( $depth = 1 ) {
+	public function logging_calling_location( $depth = 1 ) {
 		#	This is not intended to be an exhaustive list
 		static $skip_list = array(
 			'__call',
@@ -89,7 +91,7 @@ trait PMW_Trait_Logging {
 		return false;
 	}
 
-	# see classes/Plugin/Library.php for usage
+	# see classes/Plugin/Library.php or classes/Theme/Library.php for usage
 	public function logging_log_deprecated() {
 		$args = func_get_args();
 		$this->log( $args, 'stack' );
@@ -98,7 +100,7 @@ trait PMW_Trait_Logging {
 
 /***  Task functions   ***/
 
-	protected function logging_entry() {
+	public function logging_entry() {
 		if ( ( ! $this->logging_force ) && defined( 'DOING_AJAX' ) && DOING_AJAX ) { return; }
 		if ( $this->logging_debug || $this->logging_force ) {
 			$args  = func_get_args();
@@ -113,6 +115,7 @@ trait PMW_Trait_Logging {
 				foreach( $args as $message ) {
 					$this->logging_write_entry( $message );
 				}
+				$this->logging_force = false;
 			}
 		}
 	}
@@ -121,15 +124,17 @@ trait PMW_Trait_Logging {
 		$destination = $log_file;
 		if ( defined( 'WP_CONTENT_DIR' ) ) {
 			$destination = WP_CONTENT_DIR . '/debug.log';
-		} else if ( is_writable( '../logs' ) && ( is_dir( '../logs' ) ) ) {
+		} else if ( is_file( $destination ) && is_writable( $destination ) ) {
+			// accept as is
+		} else if ( is_dir( '../logs' ) && is_writable( '../logs' ) ) {
 			$destination = '../logs/' . $this->logging_prefix . '-' . date( 'Ymd' ) . '.log';
-		} else {
-			$destination = 'error_log';
+#		} else {
+#			$destination = 'error_log';
 		}
 		return $destination; // apply_filters( 'logging_write_destination', $destination );
 	}
 
-	protected function logging_write_entry( $log_me, $log_file = 'error_log' ) {
+	public function logging_write_entry( $log_me, $log_file = 'error_log' ) {
 		static $destination = '';
 		if ( empty( $destination ) ) {
 			$destination = $this->logging_write_destination( $log_file );
