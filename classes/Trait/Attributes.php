@@ -20,28 +20,6 @@ trait PMW_Trait_Attributes {
 	}
 
 	/**
-	 * echo the generated html
-	 *
-	 * @since 20180408
-	 * @param string $element
-	 * @param array $attrs
-	 * @param string $text
-	 */
-	public function apply_attrs_element( $element, $attrs, $text = '' ) {
-		echo $this->get_apply_attrs_element( $element, $attrs, $text );
-	}
-
-	/**
-	 * echo the generated tag html
-	 *
-	 * @param string $html_tag the tag to be generated
-	 * @param array $attrs an associative array containing the attribute keys and values
-	 */
-	public function apply_attrs_tag( $html_tag, $attrs ) {
-		echo $this->get_apply_attrs_tag( $html_tag, $attrs );
-	}
-
-	/**
 	 * generates the html for the tag attributes
 	 *
 	 * @param array $attrs contains attribute/value pairs
@@ -107,6 +85,16 @@ trait PMW_Trait_Attributes {
 	}
 
 	/**
+	 * echo the generated tag html
+	 *
+	 * @param string $html_tag the tag to be generated
+	 * @param array $attrs an associative array containing the attribute keys and values
+	 */
+	public function apply_attrs_tag( $html_tag, $attrs ) {
+		echo $this->get_apply_attrs_tag( $html_tag, $attrs );
+	}
+
+	/**
 	 * generates the initial html for the desired tag and attributes
 	 *
 	 * @param string $html_tag tag to be generated
@@ -133,6 +121,18 @@ trait PMW_Trait_Attributes {
 			$self_closing = apply_filters( 'fluid_tag_is_self_closing', $self_closing );
 		}
 		return in_array( $tag, $self_closing, true );
+	}
+
+	/**
+	 * echo the generated html
+	 *
+	 * @since 20180408
+	 * @param string $element
+	 * @param array $attrs
+	 * @param string $text
+	 */
+	public function apply_attrs_element( $element, $attrs, $text = '' ) {
+		echo $this->get_apply_attrs_element( $element, $attrs, $text );
 	}
 
 	/**
