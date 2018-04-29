@@ -292,19 +292,15 @@ class Privacy_My_Way {
 	}
 
 	public function plugins_site_transient( $value, $transient ) {
-pmw(1)->log($value,$transient);
+pmw(1)->log($transient,$value);
 		$initial = $value;
 		foreach( $this->options['plugin_list'] as $plugin => $state ) {
 			if ( $state === 'no' ) {
 				if ( isset( $value->checked[ $plugin ] ) ) {
 					unset( $value->checked[ $plugin ] );
-#$this->logging_force = $plugin;
 				}
 			}
 		}
-if ( $this->logging_force ) {
-	$this->logg( $this->logging_force, $initial, $value );
-}
 pmw(1)->log($value);
 		return $value;
 	}
@@ -386,7 +382,7 @@ pmw(1)->log($value);
 	}
 
 	public function themes_site_transient( $value, $transient ) {
-pmw(1)->log($value,$transient);
+pmw(1)->log($transient,$value);
 		foreach( $this->options['theme_list'] as $theme => $state ) {
 			if ( $state === 'no' ) {
 				if ( isset( $value->checked[ $theme ] ) ) {

@@ -4,6 +4,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 
 	private   $checker  = null;
+	private   $form     = null;
 	protected $github   = 'https://github.com/RichardCoffee/privacy-my-way/';
 	protected $privacy  = null;
 	protected $setting  = 'options-general.php?page=privacy';
@@ -46,7 +47,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 			add_action( $action, array( $this, 'privacy_setup' ), 1 );
 		}
 		if ( is_admin() ) {
-			new PMW_Form_Privacy;
+			$this->form = new PMW_Form_Privacy;
 		}
 		parent::add_actions();
 	}
@@ -77,6 +78,9 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	public function add_privacy_options( $options ) {
 		$this->setting = 'admin.php?page=fluidity_options&tab=privacy';
 		$options['Privacy'] = new PMW_Options_Privacy;
+		add_action( 'tcc_load_form_page', function() {
+			wp_enqueue_style( 'privacy-form.css', $this->paths->get_plugin_file_uri( 'css/pmw-admin-form.css' ), null, $this->paths->version );
+		} );
 		return $options;
 	}
 
