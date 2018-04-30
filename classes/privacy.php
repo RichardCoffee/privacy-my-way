@@ -150,6 +150,8 @@ class Privacy_My_Way {
 			&& ( stripos( $url, '://api.wordpress.org/themes/update-check/'  ) === false )
 #			&& ( stripos( $url, '://api.wordpress.org/translations/'         ) === false )
 			) {
+$this->log($url);
+if ( ! ( stripos( $url, 'plugin' ) === false ) ) { $this->log(0,$args); }
 			return $preempt;
 		}
 		$url  = $this->filter_url( $url );
