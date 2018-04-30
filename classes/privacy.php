@@ -303,7 +303,7 @@ pmw(1)->log($transient,$value);
 				}
 			}
 		}
-pmw(1)->log($value);
+#pmw(1)->log($value);
 		return $value;
 	}
 
