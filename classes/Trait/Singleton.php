@@ -55,7 +55,7 @@ private static $instances = array();
 		_doing_it_wrong( __FUNCTION__, esc_html( $message ), esc_html( $version ) );
 	}
 
-	private function __sleep() {
+	public function __sleep() {
 		$message = __( 'This class can not be serialized.' , 'rtc-privacy' ) . ' * ' . debug_calling_function();
 		$version = ( isset( $this->version ) ) ? $this->version : '0.0.0';
 		_doing_it_wrong( __FUNCTION__, esc_html( $message ), esc_html( $version ) );

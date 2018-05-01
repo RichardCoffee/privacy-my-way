@@ -44,6 +44,7 @@ abstract class PMW_Form_Field_Field {
 		if ( $this->form_control ) {
 			$this->add_form_control_css();
 		}
+		$this->field_value = $this->sanitize( $this->field_value );
 	}
 
 	public function get_date_format() {
@@ -51,10 +52,14 @@ abstract class PMW_Form_Field_Field {
 	}
 
 	public function input() {
-		echo $this->get_input();
+		$this->element( 'input', $this->get_input_attributes() );
 	}
 
 	public function get_input() {
+		return $this->get_apply_attrs_element( 'input', $this->get_input_attributes() );
+	}
+
+	protected function get_input_attributes() {
 		$attrs = array(
 			'id'          => $this->field_id,
 			'type'        => $this->type,
@@ -63,23 +68,31 @@ abstract class PMW_Form_Field_Field {
 			'value'       => $this->field_value,
 			'placeholder' => $this->placeholder,
 		);
-		return $this->get_apply_attrs_tag( 'input', $attrs );
+		return $attrs;
 	}
 
+
 	protected function label() {
-		echo $this->get_label();
+		if ( empty( $this->description ) ) {
+			return;
+		}
+		$this->element( 'label', $this->get_label_attributes(), $this->description );
 	}
 
 	protected function get_label() {
 		if ( empty( $this->description ) ) {
 			return '';
 		}
+		return $this->get_apply_attrs_element( 'label', $this->get_label_attributes(), $this->description );
+	}
+
+	protected function get_label_attributes() {
 		$attrs = array(
 			'id'    => $this->field_id . '_label',
 			'class' => $this->label_css . ( ! $this->see_label ) ? ' screen-reader-text' : '',
 			'for'   => $this->field_id,
 		);
-		return $this->get_apply_attrs_element( 'label', $attrs, $this->description );
+		return $attrs;
 	}
 
 	protected function add_form_control_css( $new = 'form-control' ) {

@@ -30,10 +30,12 @@ class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 					$attrs['aria-describedby'] = $uniq;
 				} //*/
 				foreach( $this->choices as $key => $text ) {
+					if ( isset( $attrs['checked'] ) ) { unset( $attrs['checked'] ); }
 					$attrs['value'] = $key; ?>
 					<div>
-						<label>
-							<input <?php fluid()->apply_attrs( $attrs ); ?> <?php checked( $this->field_value, $key ); ?>><?php
+						<label><?php
+							$attrs = $this->checked( $attrs, $this->field_value, $key );
+							$this->element( 'input', $attrs );
 							echo esc_html( $text ); ?>
 						</label>
 					</div><?php

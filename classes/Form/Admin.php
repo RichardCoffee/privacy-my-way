@@ -285,7 +285,7 @@ abstract class PMW_Form_Admin {
 	}
 
   public function render_tabbed_form() {
-    $active_page = sanitize_key($_GET['page']); ?>
+    $active_page = sanitize_key( $_GET['page'] ); ?>
     <div class="wrap">
       <div id="icon-themes" class="icon32"></div>
       <h1 class='centered'>
@@ -305,7 +305,7 @@ abstract class PMW_Form_Admin {
         } ?>
       </h2>
       <form method="post" action="options.php">
-        <input type='hidden' name='tab' value='<?php echo $this->tab; ?>'><?php
+        <input type='hidden' name='tab' value='<?php echo esc_attr( $this->tab ); ?>'><?php
         $current  = (isset($this->form[$this->tab]['option'])) ? $this->form[$this->tab]['option'] : $this->prefix.$this->tab;
         do_action( "form_admin_pre_display_{$this->tab}" );
         settings_fields($current);
@@ -332,59 +332,65 @@ abstract class PMW_Form_Admin {
 		extract( $args );  #  array( 'key'=>$key, 'item'=>$item, 'num'=>$i);
 		$data   = $this->form_opts;
 		$layout = $this->form['layout'];
-		echo '<div ' . $this->get_apply_attrs( $this->render_attributes( $layout[ $item ] ) ) . '>';
+		$this->apply_attrs_tag( 'div', $this->render_attributes( $layout[ $item ] ) );
+			if ( empty( $layout[ $item ]['render'] ) ) {
+				e_esc_html( $data[ $item ] );
+			} else {
+				$func  = 'render_' . $layout[ $item ]['render'];
+				$name  = $this->current . '[' . $item . ']';
+				$value = ( isset( $data[ $item ] ) ) ? $data[ $item ] : '';
+				if ( $layout[ $item ]['render'] === 'array' ) {
+					$name .= '[' . $num . ']';
+					#if ( isset( $add ) && $add ) { $layout[ $item ]['add'] = true; }
+					$value = ( isset( $data[ $item ][ $num ] ) ) ? $data[ $item ][ $num ] : '';
+				}
+				$field = str_replace( array( '[', ']' ), array( '_', '' ), $name );
+				$fargs = array(
+					'ID'     => $field,
+					'value'  => $value,
+					'layout' => $layout[ $item ],
+					'name'   => $name,
+				);
+				if ( method_exists( $this, $func ) ) {
+					$this->$func( $fargs );
+				} else if ( function_exists( $func ) ) {
+					$func( $fargs );
+				} else {
+					$this->logg( sprintf( $this->form_text['error']['render'], $func ) );
+				}
+			} ?>
+		</div><?php
+	}
+
+	public function render_tabbed_options( $args ) {
+		extract( $args );  #  $args = array( 'key' => {group-slug}, 'item' => {item-slug})
+		$data   = $this->form_opts;
+		$layout = $this->form[ $key ]['layout'];
+		$this->apply_attrs_tag( 'div', $this->render_attributes( $layout[ $item ] ) );
 		if ( empty( $layout[ $item ]['render'] ) ) {
-			echo $data[ $item ];
+			e_esc_html( $data[$item] );
 		} else {
-			$func  = 'render_' . $layout[ $item ]['render'];
-			$name  = $this->current . '[' . $item . ']';
-			$value = ( isset( $data[ $item ] ) ) ? $data[ $item ] : '';
-			if ( $layout[ $item ]['render'] === 'array' ) {
-				$name .= '[' . $num . ']';
-				#if ( isset( $add ) && $add ) { $layout[ $item ]['add'] = true; }
-				$value = ( isset( $data[ $item ][ $num ] ) ) ? $data[ $item ][ $num ] : '';
+			$func = "render_{$layout[$item]['render']}";
+			$name = $this->current . "[$item]";
+			if ( ! isset( $data[ $item ] ) ) {
+				$data[ $item ] = ( empty( $layout[ $item ]['default'])) ? '' : $layout[ $item ]['default'];
 			}
-			$field = str_replace( array( '[', ']' ), array( '_', '' ), $name );
 			$fargs = array(
-				'ID'     => $field,
-				'value'  => $value,
+				'ID'     => $item,
+				'value'  => $data[ $item ],
 				'layout' => $layout[ $item ],
-				'name'   => $name,
+				'name'   => $name
 			);
 			if ( method_exists( $this, $func ) ) {
 				$this->$func( $fargs );
-			} else if ( function_exists( $func ) ) {
+			} elseif ( function_exists( $func ) ) {
 				$func( $fargs );
 			} else {
-				$this->logg( sprintf( $this->form_text['error']['render'], $func ) );
+				$this->log( sprintf( $this->form_text['error']['render'], $func ) );
 			}
 		}
-		echo '</div>';
+		echo "</div>"; //*/
 	}
-
-  public function render_tabbed_options($args) {
-    extract($args);  #  $args = array( 'key' => {group-slug}, 'item' => {item-slug})
-    $data   = $this->form_opts;
-    $layout = $this->form[$key]['layout'];
-    $attr   = $this->get_apply_attrs( $this->render_attributes( $layout[ $item ] ) );
-    echo "<div $attr>";
-    if (empty($layout[$item]['render'])) {
-      echo $data[$item];
-    } else {
-      $func = "render_{$layout[$item]['render']}";
-      $name = $this->current."[$item]";
-      if (!isset($data[$item])) $data[$item] = (empty($layout[$item]['default'])) ? '' : $layout[$item]['default'];
-      $fargs = array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name);
-      if (method_exists($this,$func)) {
-        $this->$func($fargs);
-      } elseif (function_exists($func)) {
-        $func($fargs);
-      } else {
-        $this->logg( sprintf( $this->form_text['error']['render'], $func ) );
-      }
-    }
-    echo "</div>"; //*/
-  }
 
   public function render_multi_options($args) {
   }
@@ -470,37 +476,48 @@ abstract class PMW_Form_Admin {
 
 	private function render_colorpicker($data) {
 		extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-		$text = ( ! empty( $layout['text'] ) ) ? $layout['text'] : ''; ?>
-		<input type="text" class="form-colorpicker"
-		       name="<?php e_esc_attr( $name ); ?>"
-		       value="<?php e_esc_attr( $value ); ?>"
-		       data-default-color="<?php e_esc_attr( $layout['default'] ); ?>" />&nbsp;<?php
-		if ( ! empty( $text ) ) { ?>
-			<span class="form-colorpicker-text">
-				<?php e_esc_html( $text ); ?>
-			</span><?php
+		$attrs = array(
+			'type'  => 'text',
+			'class' => 'form-colorpicker',
+			'name'  => $name,
+			'value' => $value,
+			'data-default-color' => $layout['default']
+		);
+		$this->apply_attrs_element( 'input', $attrs );
+		$text = ( ! empty( $layout['text'] ) ) ? $layout['text'] : '';
+		if ( ! empty( $text ) ) {
+			echo esc_html( '&nbsp;' );
+			$this->apply_attrs_element( 'span', [ 'class' => 'form-colorpicker-text' ], $text );
 		}
 	}
 
-  private function render_display($data) {
-    extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-    if (isset($layout['default']) && !empty($value)) echo $value;
-    if (!empty($layout['text'])) echo " <span>{$layout['text']}</span>";
-  }
+	private function render_display( $data ) {
+		extract( $data );  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
+		if ( isset( $layout['default'] ) && ! empty( $value ) ) { e_esc_html( $value ); }
+		if ( ! empty( $layout['text'] ) ) { $this->element( 'span', [ ], ' ' . $layout['text'] ); }
+	}
 
-  private function render_font($data) {
-    extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-    $html = "<select id='$ID' name='{$name}[]' multiple";
-    $html.= (isset($layout['change'])) ? " onchange='{$layout['change']}'>" : ">";
-    foreach($layout['source'] as $key=>$text) {
-      $html.= "<option value='$key'";
-      $html.= ($key===$value) ? " selected='selected'" : '';
-      $html.= "> $key </option>";
-    }
-    $html.= '</select>';
-    $html.= (!empty($data['layout']['text'])) ? "<span class=''> {$data['layout']['text']}</span>" : '';
-    echo $html;
-  }
+	private function render_font( $data ) {
+		extract( $data );  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
+		$attrs = array(
+			'id'       => $ID,
+			'name'     => "{$name}[]",
+			'multiple' => ''
+		);
+		if ( isset( $layout['change'] ) ) {
+			$attrs['onchange'] = $layout['change'];
+		}
+		$this->tag( 'select', $attrs );
+			foreach( $layout['source'] as $key => $text ) {
+				$attrs = [ 'value' => $key ];
+				$attrs = $this->selected( $attrs, $key, $value );
+				$this->element( 'option', $attrs, ' ' . $key . ' ' );
+			} ?>
+		</select><?php
+		if ( ! empty( $data['layout']['text'] ) ) {
+			$this->element( 'span', [ ], ' ' . $data['layout']['text'] );
+		}
+	}
 
 	private function render_image( $data ) {
 		extract( $data );  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
@@ -514,10 +531,10 @@ abstract class PMW_Form_Admin {
 				<?php e_esc_html( $media['button'] ); ?>
 			</button>
 			<input id="<?php e_esc_attr( $ID ); ?>_input" type="text" class="hidden" name="<?php e_esc_attr( $name ); ?>" value="<?php e_esc_html( $value ); ?>" />
-			<div class="<?php echo $img_css; ?>">
+			<div class="<?php e_esc_attr( $img_css ); ?>">
 				<img id="<?php e_esc_attr( $ID ); ?>_img" src="<?php e_esc_attr( $value ); ?>" alt="<?php e_esc_attr( $value ); ?>">
 			</div>
-			<button type="button" class="<?php echo $btn_css; ?>">
+			<button type="button" class="<?php e_esc_attr( $btn_css ); ?>">
 				<?php e_esc_html( $media['delete'] ); ?>
 			</button>
 		</div><?php
@@ -527,16 +544,14 @@ abstract class PMW_Form_Admin {
 		extract( $data );	#	associative array: keys are 'ID', 'value', 'layout', 'name'
 		if ( empty( $layout['source'] ) ) return;
 		$radio_attrs = array(
-			'type' => 'radio',
-			'name' => $name,
-		);
-		if ( isset( $layout['change'] ) ) {
-			$radio_attrs['onchange'] = $layout['change'];
-		} ?>
+			'type'     => 'radio',
+			'name'     => $name,
+			'onchange' => ( isset( $layout['change'] ) ) ? $layout['change'] : '',
+		); ?>
 		<div><?php
 			if ( isset( $layout['text'] ) ) {
 				$uniq = uniqid(); ?>
-				<div id="<?php echo $uniq; ?>">
+				<div id="<?php e_esc_attr( $uniq ); ?>">
 					<?php e_esc_html( $layout['text'] ); ?>
 				</div><?php
 				$radio_attrs['aria-describedby'] = $uniq;
@@ -547,13 +562,12 @@ abstract class PMW_Form_Admin {
 					<label>
 						<input <?php $this->apply_attrs( $radio_attrs ); ?> <?php checked( $value, $key ); ?>><?php
 						if ( isset( $layout['src-html'] ) ) {
-							// FIXME:  this is here so I can display font awesome icons - it needs to be done differently
-							echo $text;
+							echo wp_kses( $text, pmw()->kses() );
 						} else {
 							e_esc_html( $text );
 						}
 						if ( isset( $layout['extra_html'][ $key ] ) ) {
-							echo $layout['extra_html'][ $key ];
+							echo wp_kses( $layout['extra_html'][ $key ], pmw()->kses() );
 						} ?>
 					</label>
 				</div><?php
@@ -575,7 +589,7 @@ abstract class PMW_Form_Admin {
 		$post_text = ( isset( $layout['postext'] ) ) ? $layout['postext'] : '';
 		$preset    = ( isset( $layout['preset'] ) )  ? $layout['preset']  : 'no'; ?>
 		<div class="radio-multiple-div">
-			<div class="<?php echo $pre_css; ?>">
+			<div class="<?php e_esc_attr( $pre_css ); ?>">
 				<?php e_esc_html( $pre_text ); ?>
 			</div>
 			<div class="radio-multiple-header">
@@ -593,7 +607,7 @@ abstract class PMW_Form_Admin {
 						       name="<?php echo esc_attr( $name.'['.$key.']' ) ; ?>"
 						       <?php checked( $check, 'no' ); ?> />
 						<span class="radio-multiple-list-text">
-							<?php echo $text; ?>
+							<?php echo wp_kses( $text, pmw()->kses() ); ?>
 						</span>
 					</label>
 				</div><?php
@@ -604,27 +618,39 @@ abstract class PMW_Form_Admin {
 		</div><?php
 	}
 
-  private function render_select($data) {
-    extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-    if (empty($layout['source'])) return;
-    $source_func = $layout['source'];
-    if (!empty($layout['text'])) echo '<div class="form-select-text"> ' . esc_attr( $layout['text'] ) . '</div>';
-    $html = "<select id='$ID' name='$name'";
-    $html.= ( strpos( '[]', $name ) )  ? ' multiple="multiple"' : '';
-    $html.= (isset($layout['change'])) ? " onchange='{$layout['change']}'>" : ">";
-    echo $html;
-    if (is_array($source_func)) {
-      foreach($source_func as $key=>$text) {
-        $select = ( in_array( $key, (array)$value ) ) ? "selected='selected'" : '';
-        echo "<option value='$key' $select> $text </option>";
-      }
-    } elseif (method_exists($this,$source_func)) {
-      $this->$source_func($value);
-    } elseif (function_exists($source_func)) {
-      $source_func($value);
-    }
-    echo '</select>';
-  }
+	private function render_select( $data ) {
+		extract( $data );  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
+		if ( empty( $layout['source'] ) ) {
+			return;
+		}
+		if ( ! empty( $layout['text'] ) ) {
+			$this->element( 'div', [ 'class' => 'form-select-text' ], $layout['text'] );
+		}
+		$attrs = array(
+			'id'   => $ID,
+			'name' => $name
+		);
+		if ( ! ( strpos( '[]', $name ) === false ) ) {
+			$attrs['multiple'] = 'multiple';
+		}
+		if ( isset( $layout['change'] ) ) {
+			$attrs['onchange'] = $layout['change'];
+		}
+		$this->tag( 'select', $attrs );
+			$source_func = $layout['source'];
+			if ( is_array( $source_func ) ) {
+				foreach( $source_func as $key => $text ) {
+					$attrs = [ 'value' => $key ];
+					$attrs = $this->selected( $attrs, $key, $value );
+					$this->element( 'option', $attrs, ' ' . $text . ' ' );
+				}
+			} elseif ( method_exists( $this, $source_func ) ) {
+				$this->$source_func( $value );
+			} elseif ( function_exists( $source_func ) ) {
+				$source_func( $value );
+			} ?>
+		</select><?php
+	}
 
 	private function render_select_multiple( $data ) {
 		$data['name'] .= '[]';
@@ -642,36 +668,33 @@ abstract class PMW_Form_Admin {
 			'step'  => '1',
 			'value' => $value,
 		);
-		fluid()->apply_attrs_tag( 'input', $attrs );
+		$this->apply_attrs_tag( 'input', $attrs );
 		if ( ! empty( $layout['stext'] ) ) { e_esc_attr( $layout['stext'] ); }
 	}
 
 	private function render_text( $data ) {
 		extract( $data );  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-		$html = (!empty($layout['text']))  ? "<p> ".esc_attr($layout['text'])."</p>" : "";
-/*
-		$html.= '<input type="text"';
+		if ( ! empty( $layout['text'] ) ) {
+			$this->element( 'p', [ ], ' ' . $layout['text'] );
+		}
 		$attrs = array(
-			'id' => $ID,
-			'class' => ( isset( $layout['class'] ) )  ? $layout['class'] : 'regular-text';
+			'type'  => 'text',
+			'id'    => $ID,
+			'class' => ( isset( $layout['class'] ) )  ? $layout['class'] : 'regular-text',
 			'name'  => $name,
 			'value' => $value,
-			'title' => ( isset( $layout['help'] ) )   ? $layout['help']  : '';
-			'placeholder' => ( isset( $layout['place'] ) ) ? $layout['place'] : '';
-			'onchange' => ( isset( $layout['change'] ) ) ? $layout['change']  : '';
-
-//*/
-
-    $html.= "<input type='text' id='$ID' class='";
-    $html.= (isset($layout['class']))  ? esc_attr($layout['class'])."'" : "regular-text'";
-    $html.= " name='$name' value='".esc_attr(sanitize_text_field($value))."'";
-    $html.= (isset($layout['help']))   ? " title='".esc_attr($layout['help'])."'"        : "";
-    $html.= (isset($layout['place']))  ? " placeholder='".esc_attr($layout['place'])."'" : "";
-    $html.= (isset($layout['change'])) ? " onchange='{$layout['change']}' />"            : "/>";
-    $html.= (!empty($layout['stext'])) ? ' '.esc_attr($layout['stext'])                  : "";
-    $html.= (!empty($layout['etext'])) ? "<p> ".esc_attr($layout['etext'])."</p>"        : "";
-    echo $html;
-  }
+			'title' => ( isset( $layout['help'] ) )   ? $layout['help']  : '',
+			'placeholder' => ( isset( $layout['place'] ) ) ? $layout['place'] : '',
+			'onchange'    => ( isset( $layout['change'] ) ) ? $layout['change']  : '',
+		);
+		$this->element( 'input', $attrs );
+		if ( ! empty( $layout['stext'] ) ) {
+			e_esc_html( ' ' . $layout['stext'] );
+		}
+		if ( ! empty( $layout['etext'] ) ) {
+			$this->element( 'p', [ ], ' ' . $layout['etext'] );
+		}
+	}
 
 	private function render_text_color( $data ) {
 		$this->render_text( $data );
@@ -727,7 +750,7 @@ abstract class PMW_Form_Admin {
 	}
 
   public function validate_tabbed_form($input) {
-    $option = sanitize_key($_POST['tab']);
+    $option = sanitize_key( $_POST['tab'] );
     $output = $this->get_defaults($option);
     if (isset($_POST['reset'])) {
       $object = (isset($this->form[$option]['title'])) ? $this->form[$option]['title'] : $this->form_test['submit']['object'];
