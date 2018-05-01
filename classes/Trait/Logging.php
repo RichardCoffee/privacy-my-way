@@ -81,6 +81,8 @@ trait PMW_Trait_Logging {
 
 	public function logging_get_calling_function_name( $depth = 1 ) {
 		$result = $this->logging_calling_location( $depth );
+		$trace  = array_map( 'trim', explode( '/', $result ) );
+		$result = $this->logging_calling_location( $trace[1] );
 		$trace  = array_map( 'trim', explode( ',', $result ) );
 		return $trace[1];
 	}

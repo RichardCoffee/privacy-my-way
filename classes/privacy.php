@@ -294,7 +294,7 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { $this->log(0,$args); }
 	}
 
 	public function plugins_site_transient( $value, $transient ) {
-pmw(1)->log($transient,$value);
+#pmw(1)->log($transient,$value);
 		$initial = $value;
 		foreach( $this->options['plugin_list'] as $plugin => $state ) {
 			if ( $state === 'no' ) {
@@ -303,7 +303,7 @@ pmw(1)->log($transient,$value);
 				}
 			}
 		}
-#pmw(1)->log($value);
+pmw(1)->log($transient,$value);
 		return $value;
 	}
 
@@ -384,7 +384,7 @@ pmw(1)->log($transient,$value);
 	}
 
 	public function themes_site_transient( $value, $transient ) {
-pmw(1)->log($transient,$value);
+#pmw(1)->log($transient,$value);
 		foreach( $this->options['theme_list'] as $theme => $state ) {
 			if ( $state === 'no' ) {
 				if ( isset( $value->checked[ $theme ] ) ) {
@@ -392,7 +392,7 @@ pmw(1)->log($transient,$value);
 				}
 			}
 		}
-pmw(1)->log($value);
+pmw(1)->log($transient,$value);
 		return $value;
 	}
 
