@@ -438,7 +438,7 @@ pmw(1)->log($transient,$value);
 		foreach( $checks as $check ) {
 			if ( $trans = get_site_transient( $check ) ) {
 				$this->logg( $check, $trans );
-pmw(1)->log( pmw()->get_calling_function(), $trans );
+pmw(1)->log( pmw()->get_calling_function(), $check, $trans );
 			}
 		}
 	}
