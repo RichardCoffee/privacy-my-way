@@ -458,6 +458,9 @@ pmw(1)->log( pmw()->get_calling_function(), $check, $trans );
 	public function log_filter_arguments() {
 		$args = func_get_args();
 pmw(1)->log( pmw()->get_calling_function(), $args );
+if ( isset( $args[0]->response ) && isset( $args[0]->response['foogallery/foogallery.php'] ) ) {
+  pmw(1)->log('stack');
+}
 		return $args[0];
 	}
 
