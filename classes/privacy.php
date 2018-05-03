@@ -66,6 +66,7 @@ class Privacy_My_Way {
 	}
 
 	public function core_version_check_query_args( $args ) {
+pmw(1)->log($args);
 		return $args;
 	}
 
@@ -384,7 +385,6 @@ pmw(1)->log($transient,$value);
 	}
 
 	public function themes_site_transient( $value, $transient ) {
-#pmw(1)->log($transient,$value);
 		foreach( $this->options['theme_list'] as $theme => $state ) {
 			if ( $state === 'no' ) {
 				if ( isset( $value->checked[ $theme ] ) ) {
@@ -392,7 +392,6 @@ pmw(1)->log($transient,$value);
 				}
 			}
 		}
-pmw(1)->log($transient,$value);
 		return $value;
 	}
 
