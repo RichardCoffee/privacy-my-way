@@ -459,7 +459,8 @@ pmw(1)->log( pmw()->get_calling_function(), $check, $trans );
 		$args = func_get_args();
 pmw(1)->log( pmw()->get_calling_function(), $args );
 if ( ( isset( $args[0]->response ) && isset( $args[0]->response['foogallery/foogallery.php'] ) )
-	|| ( isset( $args[0]->checked ) && isset( $args[0]->checked['foogallery/foogallery.php'] ) ) ) {
+	|| ( isset( $args[0]->checked ) && isset( $args[0]->checked['foogallery/foogallery.php'] ) )
+	|| ( isset( $args[2] ) && ( $args[2] === 'plugin_slugs' ) ) ) {
   pmw(1)->log('stack');
 }
 		return $args[0];
