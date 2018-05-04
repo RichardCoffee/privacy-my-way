@@ -84,7 +84,7 @@ trait PMW_Trait_Logging {
 		$trace  = array_map( 'trim', explode( '/', $result ) );
 		$result = $this->logging_calling_location( $trace[1] );
 		$trace  = array_map( 'trim', explode( ',', $result ) );
-		while ( $trace[1] === 'n/a' ) {
+		if ( $trace[1] === 'n/a' ) {
 			$trace  = array_map( 'trim', explode( '/', $result ) );
 			$result = $this->logging_calling_location( $trace[1] );
 			$trace  = array_map( 'trim', explode( ',', $result ) );
