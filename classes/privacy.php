@@ -294,17 +294,25 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { $this->log(0,$args); }
 	}
 
 	public function plugins_site_transient( $value, $transient ) {
-		foreach( $this->options['plugin_list'] as $plugin => $state ) {
-			if ( $state === 'no' ) {
-				if ( isset( $value->checked[ $plugin ] ) ) {
-					unset( $value->checked[ $plugin ] );
+		if ( pmw()->was_called_by('get_site_transient') === false ) {
+			if ( $this->options['plugins'] === 'filter' ) {
+				foreach( $this->options['plugin_list'] as $plugin => $state ) {
+					if ( $state === 'no' ) {
+						if ( isset( $value->checked[ $plugin ] ) ) {
+							unset( $value->checked[ $plugin ] );
+						}
+						if ( isset( $value->response[ $plugin ] ) ) {
+							unset( $value->response[ $plugin ] );
+							$this->logg( "response found for $plugin", 'stack' );
+						}
+					}
 				}
 			}
-		}
 pmw(1)->log($transient,$value);
 if ( isset( $value->response ) && isset( $value->response['foogallery/foogallery.php'] ) ) {
 pmw(1)->log('function stack','stack');
 }
+		}
 		return $value;
 	}
 
@@ -476,14 +484,12 @@ pmw(1)->log( pmw()->get_calling_function(), $check, $trans );
 
 	public function log_filter_arguments() {
 		$args = func_get_args();
-if ( pmw()->was_called_by('privacy_setup') === false ) {
-	pmw(1)->log( pmw()->get_calling_function(), current_filter(), $args );
-	if ( ( isset( $args[0]->response ) && isset( $args[0]->response['foogallery/foogallery.php'] ) )
-		|| ( isset( $args[0]->checked ) && isset( $args[0]->checked['foogallery/foogallery.php'] ) )
-		|| ( isset( $args[2] ) && ( $args[2] === 'plugin_slugs' ) ) ) {
-		pmw(1)->log('function stack','stack');
-	}
-}
+		pmw(1)->log( pmw()->get_calling_function(), current_filter(), $args );
+		if ( ( isset( $args[0]->response ) && isset( $args[0]->response['foogallery/foogallery.php'] ) )
+			|| ( isset( $args[0]->checked ) && isset( $args[0]->checked['foogallery/foogallery.php'] ) )
+			|| ( isset( $args[2] ) && ( $args[2] === 'plugin_slugs' ) ) ) {
+			pmw(1)->log('function stack','stack');
+		}
 		return $args[0];
 	}
 
