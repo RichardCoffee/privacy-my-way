@@ -460,11 +460,13 @@ pmw(1)->log( pmw()->get_calling_function(), $check, $trans );
 
 	public function log_filter_arguments() {
 		$args = func_get_args();
-pmw(1)->log( pmw()->get_calling_function(), current_filter(), $args );
-if ( ( isset( $args[0]->response ) && isset( $args[0]->response['foogallery/foogallery.php'] ) )
-	|| ( isset( $args[0]->checked ) && isset( $args[0]->checked['foogallery/foogallery.php'] ) )
-	|| ( isset( $args[2] ) && ( $args[2] === 'plugin_slugs' ) ) ) {
-  pmw(1)->log('function stack','stack');
+if ( pmw()->was_called_by('privacy_setup') === false ) {
+	pmw(1)->log( pmw()->get_calling_function(), current_filter(), $args );
+	if ( ( isset( $args[0]->response ) && isset( $args[0]->response['foogallery/foogallery.php'] ) )
+		|| ( isset( $args[0]->checked ) && isset( $args[0]->checked['foogallery/foogallery.php'] ) )
+		|| ( isset( $args[2] ) && ( $args[2] === 'plugin_slugs' ) ) ) {
+		pmw(1)->log('function stack','stack');
+	}
 }
 		return $args[0];
 	}
