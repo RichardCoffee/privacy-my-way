@@ -305,6 +305,9 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { $this->log(0,$args); }
 			}
 		}
 pmw(1)->log($transient,$value);
+if ( isset( $value->response ) && isset( $value->response['foogallery/foogallery.php'] ) ) {
+pmw(1)->log('function stack','stack');
+}
 		return $value;
 	}
 
@@ -461,7 +464,7 @@ pmw(1)->log( pmw()->get_calling_function(), current_filter(), $args );
 if ( ( isset( $args[0]->response ) && isset( $args[0]->response['foogallery/foogallery.php'] ) )
 	|| ( isset( $args[0]->checked ) && isset( $args[0]->checked['foogallery/foogallery.php'] ) )
 	|| ( isset( $args[2] ) && ( $args[2] === 'plugin_slugs' ) ) ) {
-  pmw(1)->log(0,'stack');
+  pmw(1)->log('function stack','stack');
 }
 		return $args[0];
 	}
