@@ -43,7 +43,7 @@ class Privacy_My_Way {
 			add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'plugins_site_transient' ), 10, 2 );
 			add_filter( 'pre_set_site_transient_update_themes',  array( $this, 'themes_site_transient' ),  10, 2 );
 
-			add_filter( 'pre_set_transient_plugin_slugs', array( $this, 'log_filter_arguments' ), 10, 3 );
+			add_filter( 'pre_set_transient_plugin_slugs', array( $this, 'pre_set_transient_plugin_slugs' ), 10, 3 );
 			add_filter( 'site_transient_update_plugins',  array( $this, 'log_filter_arguments' ), 10, 2 );
 
 		}
@@ -295,8 +295,6 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { $this->log(0,$args); }
 	}
 
 	public function plugins_site_transient( $value, $transient ) {
-#pmw(1)->log($transient,$value);
-		$initial = $value;
 		foreach( $this->options['plugin_list'] as $plugin => $state ) {
 			if ( $state === 'no' ) {
 				if ( isset( $value->checked[ $plugin ] ) ) {
@@ -308,6 +306,25 @@ pmw(1)->log($transient,$value);
 if ( isset( $value->response ) && isset( $value->response['foogallery/foogallery.php'] ) ) {
 pmw(1)->log('function stack','stack');
 }
+		return $value;
+	}
+
+	public function pre_set_transient_plugin_slugs( $value, $expiration, $transient ) {
+#		if ( $this->options['plugins'] === 'active' ) {
+#			$allowed = array();
+			$active = get_option('active_plugins');
+pmw(1)->log('active plugins');
+#		} else
+ if ( $this->options['plugins'] === 'filter' ) {
+			$allowed = array();
+			foreach( $value as $plugin ) {
+				if ( isset( $this->options['plugin_list'][ $plugin ] ) && ( ! ( $this->options['plugin_list'][ $plugin ] === 'no' ) ) ) {
+					$allowed[] = $plugin;
+				}
+			}
+pmw(1)->log('filter plugins',$value,$allowed);
+			return $allowed;
+		}
 		return $value;
 	}
 
