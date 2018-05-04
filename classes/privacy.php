@@ -303,15 +303,15 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { $this->log(0,$args); }
 						}
 						if ( isset( $value->response[ $plugin ] ) ) {
 							unset( $value->response[ $plugin ] );
-							$this->logg( "response found for $plugin", 'stack' );
+pmw(1)->log($transient,$plugin,'stack');
+						}
+						if ( isset( $value->no_update[ $plugin ] ) ) {
+							unset( $value->no_update[ $plugin ] );
 						}
 					}
 				}
 			}
 pmw(1)->log($transient,$value);
-if ( isset( $value->response ) && isset( $value->response['foogallery/foogallery.php'] ) ) {
-pmw(1)->log('function stack','stack');
-}
 		}
 		return $value;
 	}
