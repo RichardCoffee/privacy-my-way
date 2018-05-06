@@ -457,9 +457,9 @@ pmw(1)->log('filter plugins',$value,$allowed);
 
 	private function check_transients() {
 		$checks = array(
-			'update_core',
+#			'update_core',
 			'update_plugins',
-			'update_themes',
+#			'update_themes',
 		);
 		foreach( $checks as $check ) {
 			if ( $trans = get_site_transient( $check ) ) {
