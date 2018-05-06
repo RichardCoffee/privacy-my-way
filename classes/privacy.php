@@ -65,6 +65,11 @@ class Privacy_My_Way {
 	}
 
 	public function core_version_check_query_args( $args ) {
+		$args['blogs'] = $this->pre_site_option_blog_count( $args['blogs'], null, null );
+		$args['users'] = $this->pre_site_option_user_count( $args['users'], null, null );
+		if ( $args['blogs'] === 1 ) {
+			$args['multisite_enabled'] = false;
+		}
 pmw(1)->log($args);
 		return $args;
 	}
@@ -129,6 +134,7 @@ pmw(1)->log($args);
 	public function http_request_args( $args, $url ) {
 		#	only act on requests to api.wordpress.org
 		if ( stripos( $url, '://api.wordpress.org/' ) === false ) {
+pmw(1)->log($args);
 			return $args;
 		}
 		$args = $this->strip_site_url( $args );
