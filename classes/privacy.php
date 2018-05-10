@@ -337,7 +337,7 @@ pmw(1)->log('active plugins');
 					$allowed[] = $plugin;
 				}
 			}
-pmw(1)->log('filter plugins',$value,$allowed);
+pmw(1)->log($transient,$value,$allowed);
 			return $allowed;
 		}
 		return $value;
