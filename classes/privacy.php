@@ -134,7 +134,7 @@ pmw(1)->log($args);
 	public function http_request_args( $args, $url ) {
 		#	only act on requests to api.wordpress.org
 		if ( stripos( $url, '://api.wordpress.org/' ) === false ) {
-pmw(1)->log($args);
+pmw(1)->log($url,$args);
 			return $args;
 		}
 		$args = $this->strip_site_url( $args );
@@ -156,8 +156,8 @@ pmw(1)->log($args);
 			&& ( stripos( $url, '://api.wordpress.org/themes/update-check/'  ) === false )
 #			&& ( stripos( $url, '://api.wordpress.org/translations/'         ) === false )
 			) {
-$this->log($url);
-if ( ! ( stripos( $url, 'plugin' ) === false ) ) { $this->log(0,$args); }
+pmw(1)->log($url);
+if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log(0,$args,'stack'); }
 			return $preempt;
 		}
 		$url  = $this->filter_url( $url );
@@ -232,6 +232,8 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { $this->log(0,$args); }
 	/** Plugins  **/
 
 	protected function filter_plugins( $args, $url ) {
+pmw(1)->log($url);
+if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log(0,$args); }
 		if ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) !== false ) {
 			if ( ! isset( $args['_pmw_privacy_filter_plugins'] ) || ( ! $args['_pmw_privacy_filter_plugins'] ) ) {
 				if ( ! empty( $args['body']['plugins'] ) ) {
@@ -328,7 +330,7 @@ pmw(1)->log($transient,$value);
 			$active = get_option('active_plugins');
 pmw(1)->log('active plugins');
 #		} else
- if ( $this->options['plugins'] === 'filter' ) {
+		if ( $this->options['plugins'] === 'filter' ) {
 			$allowed = array();
 			foreach( $value as $plugin ) {
 				if ( isset( $this->options['plugin_list'][ $plugin ] ) && ( ! ( $this->options['plugin_list'][ $plugin ] === 'no' ) ) ) {
@@ -471,6 +473,10 @@ pmw(1)->log('filter plugins',$value,$allowed);
 			if ( $trans = get_site_transient( $check ) ) {
 				$this->logg( $check, $trans );
 pmw(1)->log( pmw()->get_calling_function(), $check, $trans );
+if ( isset( $trans->response ) && isset( $trans->response['foogallery/foogallery.php'] ) ) {
+	pmw(1)->log('stack');
+	delete_site_transient( $check );
+}
 			}
 		}
 	}
