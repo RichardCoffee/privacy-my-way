@@ -68,7 +68,7 @@ class Privacy_My_Way {
 		$args['blogs'] = $this->pre_site_option_blog_count( $args['blogs'], null, null );
 		$args['users'] = $this->pre_site_option_user_count( $args['users'], null, null );
 		if ( $args['blogs'] === 1 ) {
-			$args['multisite_enabled'] = false;
+			$args['multisite_enabled'] = 0;
 		}
 pmw(1)->log($args);
 		return $args;
@@ -132,9 +132,9 @@ pmw(1)->log($args);
 	}
 
 	public function http_request_args( $args, $url ) {
+pmw(1)->log($url,$args);
 		#	only act on requests to api.wordpress.org
 		if ( stripos( $url, '://api.wordpress.org/' ) === false ) {
-pmw(1)->log($url,$args);
 			return $args;
 		}
 		$args = $this->strip_site_url( $args );
@@ -145,6 +145,7 @@ pmw(1)->log($url,$args);
 	}
 
 	public function pre_http_request( $preempt, $args, $url ) {
+pmw(1)->log($url,$args);
 		#	check if already preempted or if we have been here before
 		if ( $preempt || isset( $args['_pmw_privacy_filter'] ) ) {
 			return $preempt;
@@ -232,8 +233,12 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log(0,$args,'stack');
 	/** Plugins  **/
 
 	protected function filter_plugins( $args, $url ) {
+$logit = false;
 pmw(1)->log($url);
-if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log(0,$args); }
+if ( ! ( stripos( $url, 'plugin' ) === false ) ) {
+	pmw(1)->log(0,$args);
+	$logit = true;
+}
 		if ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) !== false ) {
 			if ( ! isset( $args['_pmw_privacy_filter_plugins'] ) || ( ! $args['_pmw_privacy_filter_plugins'] ) ) {
 				if ( ! empty( $args['body']['plugins'] ) ) {
@@ -256,6 +261,9 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log(0,$args); }
 				}
 			}
 		}
+if ( $logit ) {
+	pmw(1)->log(0,$args);
+}
 		return $args;
 	}
 
@@ -337,7 +345,7 @@ pmw(1)->log('active plugins');
 					$allowed[] = $plugin;
 				}
 			}
-pmw(1)->log($transient,$value,$allowed);
+pmw(1)->log($transient,$value,$allowed,'stack');
 			return $allowed;
 		}
 		return $value;
@@ -475,7 +483,7 @@ pmw(1)->log($transient,$value,$allowed);
 pmw(1)->log( pmw()->get_calling_function(), $check, $trans );
 if ( isset( $trans->response ) && isset( $trans->response['foogallery/foogallery.php'] ) ) {
 	pmw(1)->log('stack');
-	delete_site_transient( $check );
+#	delete_site_transient( $check );
 }
 			}
 		}
