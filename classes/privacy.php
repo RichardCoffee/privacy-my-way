@@ -30,20 +30,21 @@ class Privacy_My_Way {
 
 		if ( $this->options ) {  #  opt-in only
 
-			add_filter( 'core_version_check_query_args', array( $this, 'core_version_check_query_args' ) );
+			add_filter( 'core_version_check_query_args', [ $this, 'core_version_check_query_args' ] );
 
 			#	These next two filters are multisite only
-			add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
-			add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
+			add_filter( 'pre_site_option_blog_count', [ $this, 'pre_site_option_blog_count' ], 10, 3 );
+			add_filter( 'pre_site_option_user_count', [ $this, 'pre_site_option_user_count' ], 10, 3 );
 
-			add_filter( 'http_headers_useragent',     array( $this, 'http_headers_useragent' ),     10, 2 );
-			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
-			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
+			add_filter( 'http_headers_useragent',     [ $this, 'http_headers_useragent' ],     10, 2 );
+			add_filter( 'pre_http_request',           [ $this, 'pre_http_request' ],            2, 3 );
+			add_filter( 'http_request_args',          [ $this, 'http_request_args' ],          11, 2 );
 
-			add_filter( 'pre_set_site_transient_update_themes',  array( $this, 'themes_site_transient' ),  10, 2 );
-			add_filter( 'pre_set_transient_plugin_slugs',        array( $this, 'pre_set_transient_plugin_slugs' ), 10, 3 );
-			add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'plugins_site_transient' ), 10, 2 );
-			add_filter( 'site_transient_update_plugins',         array( $this, 'plugins_site_transient' ), 10, 2 );
+			add_filter( 'pre_set_site_transient_update_themes',  [ $this, 'themes_site_transient' ],  10, 2 );
+			add_filter( 'pre_set_transient_plugin_slugs',        [ $this, 'pre_set_transient_plugin_slugs' ], 10, 3 );
+			add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'plugins_site_transient' ], 10, 2 );
+			add_filter( 'site_transient_update_plugins',         [ $this, 'plugins_site_transient' ], 10, 2 );
+			add_filter( 'option_active_plugins',                 [ $this, 'option_active_plugins' ], 10, 2 );
 
 		}
 
@@ -230,7 +231,7 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log(0,$args,'stack');
 	}
 
 
-	/** Plugins  **/
+	/***   Plugins   ***/
 
 	protected function filter_plugins( $args, $url ) {
 $logit = false;
@@ -310,6 +311,7 @@ if ( $logit ) {
 	}
 
 	public function plugins_site_transient( $value, $transient ) {
+$logit = false;
 		if ( pmw()->was_called_by('get_site_transient') === false ) {
 			if ( $this->options['plugins'] === 'filter' ) {
 				foreach( $this->options['plugin_list'] as $plugin => $state ) {
@@ -320,6 +322,7 @@ if ( $logit ) {
 						if ( isset( $value->response[ $plugin ] ) ) {
 							unset( $value->response[ $plugin ] );
 pmw(1)->log($transient,$plugin);
+$logit = true;
 						}
 						if ( isset( $value->no_update[ $plugin ] ) ) {
 							unset( $value->no_update[ $plugin ] );
@@ -327,7 +330,11 @@ pmw(1)->log($transient,$plugin);
 					}
 				}
 			}
-pmw(1)->log($transient,$value,'stack');
+pmw(1)->log(
+	$transient,
+	$value,
+	( $logit ) ? 'full-stack' : 'stack'
+);
 		}
 		return $value;
 	}
@@ -345,6 +352,16 @@ pmw(1)->log('active plugins',$active);
 pmw(1)->log($transient,$value,$allowed,'stack');
 			return $allowed;
 		}
+		return $value;
+	}
+
+	public function option_active_plugins( $value, $option ) {
+		if ( $this->was_called_by( 'wp_update_plugins' ) ) {
+pmw(1)->log($option,$value);
+		}
+else {
+pmw(1)->log($option,$value,'stack');
+}
 		return $value;
 	}
 
