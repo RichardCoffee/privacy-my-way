@@ -194,7 +194,7 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log(0,$args,'stack');
 		if ( ! isset( $args['_pmw_privacy_strip_site'] ) || ( ! $args['_pmw_privacy_strip_site'] ) ) {
 			if ( $this->options['blog'] === 'no' ) {
 				if ( isset( $args['headers']['wp_blog'] ) ) {
-					unset( $args['headers']['wp_blog'] );
+					$args['headers']['wp_blog'] = $args['headers']['wp_install'];
 				}
 				if ( isset( $args['user-agent'] ) ) {
 					$args['user-agent'] = 'WordPress/' . get_bloginfo( 'version' );
@@ -319,7 +319,7 @@ if ( $logit ) {
 						}
 						if ( isset( $value->response[ $plugin ] ) ) {
 							unset( $value->response[ $plugin ] );
-pmw(1)->log($transient,$plugin,'stack');
+pmw(1)->log($transient,$plugin);
 						}
 						if ( isset( $value->no_update[ $plugin ] ) ) {
 							unset( $value->no_update[ $plugin ] );
@@ -327,17 +327,14 @@ pmw(1)->log($transient,$plugin,'stack');
 					}
 				}
 			}
-pmw(1)->log($transient,$value);
+pmw(1)->log($transient,$value,'stack');
 		}
 		return $value;
 	}
 
 	public function pre_set_transient_plugin_slugs( $value, $expiration, $transient ) {
-#		if ( $this->options['plugins'] === 'active' ) {
-#			$allowed = array();
 			$active = get_option('active_plugins');
-pmw(1)->log('active plugins');
-#		} else
+pmw(1)->log('active plugins',$active);
 		if ( $this->options['plugins'] === 'filter' ) {
 			$allowed = array();
 			foreach( $value as $plugin ) {
