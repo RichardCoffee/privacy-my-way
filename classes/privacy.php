@@ -71,7 +71,6 @@ class Privacy_My_Way {
 		if ( $args['blogs'] === 1 ) {
 			$args['multisite_enabled'] = 0;
 		}
-pmw(1)->log($args);
 		return $args;
 	}
 
@@ -356,7 +355,7 @@ pmw(1)->log($transient,$value,$allowed,'stack');
 	}
 
 	public function option_active_plugins( $value, $option ) {
-		if ( $this->was_called_by( 'wp_update_plugins' ) ) {
+		if ( pmw()->was_called_by( 'wp_update_plugins' ) ) {
 pmw(1)->log($option,$value);
 		}
 else {
