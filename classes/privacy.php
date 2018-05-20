@@ -41,7 +41,6 @@ class Privacy_My_Way {
 			add_filter( 'http_request_args',          [ $this, 'http_request_args' ],          11, 2 );
 
 			add_filter( 'pre_set_site_transient_update_themes',  [ $this, 'themes_site_transient' ],  10, 2 );
-			add_filter( 'pre_set_transient_plugin_slugs',        [ $this, 'pre_set_transient_plugin_slugs' ], 10, 3 );
 			add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'plugins_site_transient' ], 10, 2 );
 			add_filter( 'site_transient_update_plugins',         [ $this, 'plugins_site_transient' ], 10, 2 );
 			add_filter( 'option_active_plugins',                 [ $this, 'option_active_plugins' ], 10, 2 );
@@ -334,22 +333,6 @@ pmw(1)->log(
 	$value,
 	( $logit ) ? 'full-stack' : 'stack'
 );
-		}
-		return $value;
-	}
-
-	public function pre_set_transient_plugin_slugs( $value, $expiration, $transient ) {
-#		$active = get_option( 'active_plugins' );
-#pmw(1)->log('active plugins',$active);
-		if ( $this->options['plugins'] === 'filter' ) {
-			$allowed = array();
-			foreach( $value as $plugin ) {
-				if ( isset( $this->options['plugin_list'][ $plugin ] ) && ( ! ( $this->options['plugin_list'][ $plugin ] === 'no' ) ) ) {
-					$allowed[] = $plugin;
-				}
-			}
-pmw(1)->log($transient,$value,$allowed,'stack');
-			return $allowed;
 		}
 		return $value;
 	}
