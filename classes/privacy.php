@@ -24,8 +24,8 @@ class Privacy_My_Way {
 
 	public function __construct( $args = array() ) {
 
-		$this->logging_func = array( $this, 'log' );
 		$this->get_options();
+		$this->logging_func  = array( $this, 'log' );
 		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
 
 		if ( $this->options ) {  #  opt-in only
@@ -60,14 +60,14 @@ class Privacy_My_Way {
 			update_option( 'tcc_options_privacy', $options );
 		}
 		$this->options = $options;
-		add_filter( 'logging_debug_privacy', function( $debug ) {
-			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) ? true : false; //$debug;
+		add_filter( 'logging_debug_privacy', function( $debug = false ) {
+			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) ? true : (bool) $debug;
 		} );
 	}
 
 	public function core_version_check_query_args( $args ) {
-		$args['blogs'] = $this->pre_site_option_blog_count( $args['blogs'], null, null );
-		$args['users'] = $this->pre_site_option_user_count( $args['users'], null, null );
+		$args['blogs'] = $this->pre_site_option_blog_count( $args['blogs'], null );
+		$args['users'] = $this->pre_site_option_user_count( $args['users'], null );
 		if ( $args['blogs'] === 1 ) {
 			$args['multisite_enabled'] = 0;
 		}
@@ -235,7 +235,7 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log(0,$args,'stack');
 	protected function filter_plugins( $args, $url ) {
 $logit = false;
 pmw(1)->log($url);
-if ( ! ( stripos( $url, 'plugin' ) === false ) ) {
+if ( stripos( $url, 'plugin' ) !== false ) {
 	pmw(1)->log(0,$args);
 	$logit = true;
 }
