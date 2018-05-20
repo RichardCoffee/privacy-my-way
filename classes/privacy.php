@@ -338,12 +338,12 @@ pmw(1)->log(
 	}
 
 	public function option_active_plugins( $value, $option ) {
-		if ( pmw()->was_called_by( 'wp_update_plugins' ) ) {
+		if ( pmw()->was_called_by( 'is_plugin_active' ) ) {
+		} else if ( pmw()->was_called_by( 'wp_update_plugins' ) ) {
+pmw(1)->log($option,$value,'stack');
+		} else {
 pmw(1)->log($option,$value,'stack');
 		}
-else {
-pmw(1)->log($option,$value,'stack');
-}
 		return $value;
 	}
 
