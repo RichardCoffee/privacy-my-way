@@ -339,8 +339,8 @@ pmw(1)->log(
 	}
 
 	public function pre_set_transient_plugin_slugs( $value, $expiration, $transient ) {
-			$active = get_option('active_plugins');
-pmw(1)->log('active plugins',$active);
+#		$active = get_option( 'active_plugins' );
+#pmw(1)->log('active plugins',$active);
 		if ( $this->options['plugins'] === 'filter' ) {
 			$allowed = array();
 			foreach( $value as $plugin ) {
@@ -356,7 +356,7 @@ pmw(1)->log($transient,$value,$allowed,'stack');
 
 	public function option_active_plugins( $value, $option ) {
 		if ( pmw()->was_called_by( 'wp_update_plugins' ) ) {
-pmw(1)->log($option,$value);
+pmw(1)->log($option,$value,'stack');
 		}
 else {
 pmw(1)->log($option,$value,'stack');
