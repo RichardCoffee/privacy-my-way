@@ -10,7 +10,6 @@ abstract class PMW_Plugin_Plugin {
 	protected $setting  = '';    #  settings link
 	protected $state    = '';
 	protected $tab      = 'about';
-	public    $version  = '0.0.0';
 
 	use PMW_Trait_Magic;
 	use PMW_Trait_ParseArgs;

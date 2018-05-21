@@ -60,7 +60,7 @@ class Privacy_My_Way {
 		}
 		$this->options = $options;
 		add_filter( 'logging_debug_privacy', function( $debug = false ) {
-			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) ? true : (bool) $debug;
+			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) ? true : false; #(bool) $debug;
 		} );
 	}
 
