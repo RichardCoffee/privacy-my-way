@@ -39,6 +39,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 			'load-themes.php',
 			'load-update.php',
 			'load-update-core.php',
+			'plugins_loaded',
 			'wp_update_plugins',
 			'wp_update_themes',
 			'wp_version_check',
