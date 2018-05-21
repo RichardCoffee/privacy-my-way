@@ -56,6 +56,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		add_filter( 'all_plugins',                 [ $this, 'add_privacy_filters' ] );
 		add_filter( 'core_version_check_locale',   [ $this, 'add_privacy_filters' ] );
 		add_filter( 'cron_schedules',              [ $this, 'add_privacy_filters' ] );
+		add_filter( 'cron_request',                [ $this, 'add_privacy_filters' ] );
 		add_filter( 'fluidity_initialize_options', [ $this, 'add_privacy_options' ] );
 		$options = get_option( 'tcc_options_privacy', array() );
 		if ( isset( $options['autoupdate'] ) ) {
