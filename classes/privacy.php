@@ -331,7 +331,7 @@ $logit = true;
 pmw(1)->log(
 	$transient,
 	$value,
-	( $logit ) ? 'full-stack' : 'stack'
+	'stack' #( $logit ) ? 'full-stack' : 'stack'
 );
 		}
 		return $value;
