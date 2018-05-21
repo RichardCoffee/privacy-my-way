@@ -478,8 +478,8 @@ pmw(1)->log($option,$value,'stack');
 				$this->logg( $check, $trans );
 pmw(1)->log( pmw()->get_calling_function(), $check, $trans );
 if ( isset( $trans->response ) && isset( $trans->response['foogallery/foogallery.php'] ) ) {
-	pmw(1)->log('stack');
-#	delete_site_transient( $check );
+	pmw(1)->log('full-stack');
+	delete_site_transient( $check );
 }
 			}
 		}
