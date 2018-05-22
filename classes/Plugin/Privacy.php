@@ -9,7 +9,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	protected $privacy  = null;
 	protected $setting  = 'options-general.php?page=privacy-my-way';
 	protected $slug     = 'privacy-my-way';
-	protected $tab      = 'privacy';
+	protected $tab      = 'privacy-my-way';
 
 	use PMW_Trait_Singleton;
 
