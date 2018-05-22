@@ -30,6 +30,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 				}
 			}
 		}
+		$this->update_privacy_options();
 	}
 
 	public function add_actions() {
@@ -59,7 +60,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		add_filter( 'cron_schedules',              [ $this, 'add_privacy_filters' ] );
 		add_filter( 'cron_request',                [ $this, 'add_privacy_filters' ] );
 		add_filter( 'fluidity_initialize_options', [ $this, 'add_privacy_options' ] );
-		$options = get_option( 'tcc_options_privacy', array() );
+		$options = get_option( 'tcc_options_privacy-my-way', array() );
 		if ( isset( $options['autoupdate'] ) ) {
 			if ( $options['autoupdate'] === 'no' ) {
 				add_filter( 'automatic_updater_disabled', '__return_true' );
@@ -147,6 +148,14 @@ pmw(1)->log('stack');
 	public function site_transient_stack( $data, $transient ) {
 		pmw_log_entry( $transient, $data, 'stack' );
 		return $data;
+	}
+
+	private function update_privacy_options() {
+		$options = get_option( 'tcc_options_privacy', array() );
+		if ( ! empty( $options ) ) {
+			update_option( 'tcc_options_privacy-my-way', $options, false );
+			delete_option( 'tcc_options_privacy' );
+		}
 	}
 
 

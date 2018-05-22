@@ -4,7 +4,7 @@
 final class PMW_Options_Privacy extends PMW_Options_Options {
 
 	private   $active   = array();
-	protected $base     = 'privacy';
+	protected $base     = 'privacy-my-way';
 	private   $library;
 	private   $options  = array();
 	protected $priority = 550;  #  internal theme option
@@ -296,7 +296,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 
 	private function get_option( $option, $value = '' ) {
 		if ( empty( $this->options ) ) {
-			$this->options = get_option( 'tcc_options_privacy', array() );
+			$this->options = get_option( 'tcc_options_privacy-my-way', array() );
 		}
 		if ( isset( $this->options[ $option ] ) ) {
 			$value = $this->options[ $option ];

@@ -52,11 +52,11 @@ class Privacy_My_Way {
 	}
 
 	protected function get_options() {
-		$options = get_option( 'tcc_options_privacy', array() );
+		$options = get_option( 'tcc_options_privacy-my-way', array() );
 		if ( ! $options ) {
 			$privacy = new PMW_Options_Privacy;
 			$options = $privacy->get_default_options();
-			update_option( 'tcc_options_privacy', $options );
+			update_option( 'tcc_options_privacy-my-way', $options );
 		}
 		$this->options = $options;
 		add_filter( 'logging_debug_privacy', function( $debug = false ) {
