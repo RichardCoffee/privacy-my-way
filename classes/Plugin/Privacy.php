@@ -7,7 +7,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	private   $form     = null;
 	protected $github   = 'https://github.com/RichardCoffee/privacy-my-way/';
 	protected $privacy  = null;
-	protected $setting  = 'options-general.php?page=privacy';
+	protected $setting  = 'options-general.php?page=privacy-my-way';
 	protected $slug     = 'privacy-my-way';
 	protected $tab      = 'privacy';
 
