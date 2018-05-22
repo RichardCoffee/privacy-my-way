@@ -3,7 +3,7 @@
 class PMW_Form_Privacy extends PMW_Form_Admin {
 
 
-	protected $slug = 'privacy';
+	protected $slug = 'privacy-my-way';
 
 
 	public function __construct() {
