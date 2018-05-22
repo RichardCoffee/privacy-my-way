@@ -24,13 +24,11 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 			$this->add_actions();
 			$this->add_filters();
 			if ( WP_DEBUG ) {
-#				add_filter( 'pre_set_site_transient_update_themes', array( $this, 'site_transient_stack' ), 10, 2 );
 				if ( file_exists( WP_CONTENT_DIR . '/pmw-run-tests.flg' ) ) {
 					$this->run_tests();
 				}
 			}
 		}
-pmw(1)->log( plugin_basename( $this->slug ) );
 		$this->update_privacy_options();
 	}
 
@@ -146,11 +144,11 @@ pmw(1)->log('stack');
 		return compact( 'active', 'themes' );
 	}
 
-	public function site_transient_stack( $data, $transient ) {
-		pmw_log_entry( $transient, $data, 'stack' );
-		return $data;
-	}
-
+	/**
+	 * changed slug due to WP 4.9.6
+	 *
+	 * @since 20180522
+	 */
 	private function update_privacy_options() {
 		$options = get_option( 'tcc_options_privacy', array() );
 		if ( ! empty( $options ) ) {
