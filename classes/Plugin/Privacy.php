@@ -30,6 +30,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 				}
 			}
 		}
+pmw()->log( plugin_basename( $this->slug );
 		$this->update_privacy_options();
 	}
 
