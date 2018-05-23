@@ -232,12 +232,8 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log(0,$args,'stack');
 	/***   Plugins   ***/
 
 	protected function filter_plugins( $args, $url ) {
-$logit = false;
 pmw(1)->log($url);
-if ( stripos( $url, 'plugin' ) !== false ) {
-	pmw(1)->log(0,$args);
-	$logit = true;
-}
+$logit = ( stripos( $url, 'plugin' ) !== false );
 		if ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) !== false ) {
 			if ( ! isset( $args['_pmw_privacy_filter_plugins'] ) || ( ! $args['_pmw_privacy_filter_plugins'] ) ) {
 				if ( ! empty( $args['body']['plugins'] ) ) {
