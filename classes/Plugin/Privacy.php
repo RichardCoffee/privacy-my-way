@@ -91,7 +91,6 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		if ( ! $this->privacy ) {
 			include_once( $this->paths->dir . 'classes/privacy.php' );
 			$this->privacy = new Privacy_My_Way;
-pmw(1)->log('stack');
 		}
 	}
 
