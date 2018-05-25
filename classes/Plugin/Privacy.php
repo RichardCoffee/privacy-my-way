@@ -29,12 +29,12 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 				}
 			}
 		}
+		$this->privacy_setup();
 		$this->update_privacy_options();
-		pmw(1)->log('initialize');
 	}
 
 	public function add_actions() {
-		$actions = array(
+/*		$actions = array(
 			'admin_init',
 			'load-plugins.php',
 			'load-themes.php',
@@ -47,7 +47,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		);
 		foreach( $actions as $action ) {
 			add_action( $action, array( $this, 'privacy_setup' ), 1 );
-		}
+		} //*/
 		if ( is_admin() ) {
 			$this->form = new PMW_Form_Privacy;
 		}
@@ -55,10 +55,10 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	}
 
 	public function add_filters() {
-		add_filter( 'all_plugins',                 [ $this, 'add_privacy_filters' ] );
-		add_filter( 'core_version_check_locale',   [ $this, 'add_privacy_filters' ] );
-		add_filter( 'cron_schedules',              [ $this, 'add_privacy_filters' ] );
-		add_filter( 'cron_request',                [ $this, 'add_privacy_filters' ] );
+#		add_filter( 'all_plugins',                 [ $this, 'add_privacy_filters' ] );
+#		add_filter( 'core_version_check_locale',   [ $this, 'add_privacy_filters' ] );
+#		add_filter( 'cron_schedules',              [ $this, 'add_privacy_filters' ] );
+#		add_filter( 'cron_request',                [ $this, 'add_privacy_filters' ] );
 		add_filter( 'fluidity_initialize_options', [ $this, 'add_privacy_options' ] );
 		$options = get_option( 'tcc_options_privacy-my-way', array() );
 		if ( isset( $options['autoupdate'] ) ) {
@@ -92,7 +92,6 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		if ( ! $this->privacy ) {
 			include_once( $this->paths->dir . 'classes/privacy.php' );
 			$this->privacy = new Privacy_My_Way;
-		pmw(1)->log('initialize');
 		}
 	}
 
