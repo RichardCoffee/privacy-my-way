@@ -472,9 +472,8 @@ pmw(1)->log($option,$value,'stack');
 		foreach( $checks as $check ) {
 			if ( $trans = get_site_transient( $check ) ) {
 				$this->logg( $check, $trans );
-pmw(1)->log( pmw()->get_calling_function(), $check, $trans );
 if ( isset( $trans->response ) && isset( $trans->response['foogallery/foogallery.php'] ) ) {
-	pmw(1)->log('stack');
+	pmw(1)->log( pmw()->get_calling_function(), $check, $trans, 'stack' );
 	delete_site_transient( $check );
 }
 			}
