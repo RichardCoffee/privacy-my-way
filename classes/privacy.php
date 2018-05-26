@@ -43,7 +43,7 @@ class Privacy_My_Way {
 			add_filter( 'pre_set_site_transient_update_themes',  [ $this, 'themes_site_transient' ],  10, 2 );
 			add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'plugins_site_transient' ], 10, 2 );
 			add_filter( 'site_transient_update_plugins',         [ $this, 'plugins_site_transient' ], 10, 2 );
-			add_filter( 'option_active_plugins',                 [ $this, 'option_active_plugins' ], 10, 2 );
+#			add_filter( 'option_active_plugins',                 [ $this, 'option_active_plugins' ], 10, 2 );
 
 		}
 
