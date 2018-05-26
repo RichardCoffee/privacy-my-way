@@ -156,8 +156,7 @@ pmw(1)->log($url,$args);
 			&& ( stripos( $url, '://api.wordpress.org/themes/update-check/'  ) === false )
 #			&& ( stripos( $url, '://api.wordpress.org/translations/'         ) === false )
 			) {
-pmw(1)->log($url);
-if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log(0,$args,'stack'); }
+if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log($url,$args,'stack'); }
 			return $preempt;
 		}
 		$url  = $this->filter_url( $url );
