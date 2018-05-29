@@ -56,6 +56,16 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 				'no'   => __( 'Do not let them know what browser you use.', 'tcc-privacy' ),
 			),
 		);
+		$layout['location'] = array(
+			'default' => 'yes',
+			'label'   => __( 'Location', 'tcc-privacy' ),
+			'help'    => __( 'Disabling this option will cause Community Events to not work.', 'tcc-privacy' ),
+			'render'  => 'radio',
+			'source'  => array(
+				'yes'  => __( 'Let WordPress know your IP address, locale, and timezone. (default)', 'tcc-privacy' ),
+				'no'   => __( 'Do not let them know where you are at.', 'tcc-privacy' ),
+			),
+		);
 		if ( ( is_multisite() && is_main_site() ) || $all ) {
 			$layout['blog']['change'] = 'showhidePosi( this, ".privacy-blog-option", "yes" );';
 			$layout['blog']['showhide'] = array(

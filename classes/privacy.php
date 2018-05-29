@@ -152,7 +152,18 @@ pmw(1)->log($url,$args);
 		# do not tell wordpress.org what browser is being used
 		if ( $this->options['browser'] === 'no' ) {
 			if ( ! ( stripos( $url, '://api.wordpress.org/core/browse-happy' ) === false ) ) {
-				return true;
+				return new WP_Error(
+					'blocked-browser',
+					__( 'Report of browser used blocked by Privacy My Way plugin.', 'tcc-privacy' )
+				);
+			}
+		}
+		if ( $this->options['location'] === 'no' ) {
+			if ( ! ( stripos( $url, '://api.wordpress.org/events' ) === false ) ) {
+				return new WP_Error(
+					'blocked-location',
+					__( 'Report of current location blocked by Privacy My Way plugin.', 'tcc-privacy' )
+				);
 			}
 		}
 		# only act on requests to api.wordpress.org
