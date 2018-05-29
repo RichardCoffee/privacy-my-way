@@ -17,14 +17,14 @@ defined( 'ABSPATH' ) || exit;
 class Privacy_My_Way {
 
 
-	protected $options;      #  array --- privacy options
+	public $options;      #  array --- privacy options
 
 	use PMW_Trait_Logging;
 
 
 	public function __construct( $args = array() ) {
 
-		$this->get_options();
+		$this->options = $this->get_options();
 		$this->logging_func  = array( $this, 'log' );
 		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
 
@@ -52,16 +52,15 @@ class Privacy_My_Way {
 	}
 
 	protected function get_options() {
-		$options = get_option( 'tcc_options_privacy-my-way', array() );
-		if ( ! $options ) {
-			$privacy = new PMW_Options_Privacy;
-			$options = $privacy->get_default_options();
-			update_option( 'tcc_options_privacy-my-way', $options );
-		}
-		$this->options = $options;
+		$privacy  = new PMW_Options_Privacy;
+		$defaults = $privacy->get_default_options();
+		$current  = get_option( 'tcc_options_privacy-my-way', array() );
+		$options  = array_merge_recursive( $defaults, $current );
+		update_option( 'tcc_options_privacy-my-way', $options );
 		add_filter( 'logging_debug_privacy', function( $debug = false ) {
 			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) ? true : false; #(bool) $debug;
 		} );
+		return $options;
 	}
 
 	public function core_version_check_query_args( $args ) {
@@ -145,12 +144,18 @@ pmw(1)->log($url,$args);
 
 	public function pre_http_request( $preempt, $args, $url ) {
 pmw(1)->log($url,$args);
-		#	check if already preempted or if we have been here before
+		# check if already preempted or if we have been here before
 		if ( $preempt || isset( $args['_pmw_privacy_filter'] ) ) {
 			return $preempt;
 		}
 		$this->logg( 0, 'url: ' . $url );
-		#	only act on requests to api.wordpress.org
+		# do not tell wordpress.org what browser is being used
+		if ( $this->options['browser'] === 'no' ) {
+			if ( ! ( stripos( $url, '://api.wordpress.org/core/browse-happy' ) === false ) ) {
+				return true;
+			}
+		}
+		# only act on requests to api.wordpress.org
 		if (  ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/themes/update-check/'  ) === false )
@@ -159,6 +164,8 @@ pmw(1)->log($url,$args);
 if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log($url,$args,'stack'); }
 			return $preempt;
 		}
+
+
 		$url  = $this->filter_url( $url );
 		$args = $this->strip_site_url( $args );
 		$args = $this->filter_plugins( $args, $url );
@@ -180,12 +187,12 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log($url,$args,'stack
 	/**
 	 *  @brief  Strip site URL from headers & user-agent.
 	 *
-	 *		I would consider including the url in user-agent as a matter of courtesy.
-	 *		Besides, what is the point in not giving them your website url?  Don't
-	 *		you want more people to see it?  Privacy does not mean you shouldn't say
-	 *		hi to your neighbors. I really think this whole header section is a moot
-	 *		point.  Also, what if the devs at wordpress.org decide to cause the
-	 *		version check/update to fail because of no url?
+	 *  I would consider including the url in user-agent as a matter of courtesy.
+	 *  Besides, what is the point in not giving them your website url?  Don't
+	 *  you want more people to see it?  Privacy does not mean you shouldn't say
+	 *  hi to your neighbors. I really think this whole header section is a moot
+	 *  point.  Also, what if the devs at wordpress.org decide to cause the
+	 *  version check/update to fail because of no url?
 	 *
 	 */
 	protected function strip_site_url( $args ) {
@@ -223,7 +230,7 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log($url,$args,'stack
 				}
 			}
 			$args['_pmw_privacy_strip_site'] = true;
-		} #else { $this->logg( 'already been here', $args ); }
+		}
 		return $args;
 	}
 

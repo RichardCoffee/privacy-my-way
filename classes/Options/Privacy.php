@@ -47,6 +47,15 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			'extra_html' => $extra_html,
 			'divcss'     => 'privacy-blog-active',
 		); //*/
+		$layout['browser'] = array(
+			'default' => 'yes',
+			'label'   => __( 'Browser', 'tcc-privacy' ),
+			'render'  => 'radio',
+			'source'  => array(
+				'yes'  => __( 'Let WordPress know what browser is being used to view admin screens. (default)', 'tcc-privacy' ),
+				'no'   => __( 'Do not let them know what browser you use.', 'tcc-privacy' ),
+			),
+		);
 		if ( ( is_multisite() && is_main_site() ) || $all ) {
 			$layout['blog']['change'] = 'showhidePosi( this, ".privacy-blog-option", "yes" );';
 			$layout['blog']['showhide'] = array(
