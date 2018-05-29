@@ -55,7 +55,7 @@ class Privacy_My_Way {
 		$privacy  = new PMW_Options_Privacy;
 		$defaults = $privacy->get_default_options();
 		$current  = get_option( 'tcc_options_privacy-my-way', array() );
-		$options  = array_merge_recursive( $defaults, $current );
+		$options  = array_merge( $defaults, $current );
 		update_option( 'tcc_options_privacy-my-way', $options );
 		add_filter( 'logging_debug_privacy', function( $debug = false ) {
 			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) ? true : false; #(bool) $debug;
