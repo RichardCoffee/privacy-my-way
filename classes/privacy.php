@@ -249,25 +249,22 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log($url,$args,'stack
 	protected function filter_plugins( $args, $url ) {
 $logit = ( stripos( $url, 'plugin' ) !== false );
 		if ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) !== false ) {
-			if ( ! isset( $args['_pmw_privacy_filter_plugins'] ) || ( ! $args['_pmw_privacy_filter_plugins'] ) ) {
-				if ( ! empty( $args['body']['plugins'] ) ) {
-					$plugins = json_decode( $args['body']['plugins'], true );
-					switch ( $this->options['plugins'] ) {
-						case 'none':
-							$plugins = array();
-							break;
-						case 'active':
-							$plugins = $this->plugins_option_active( $plugins );
-							break;
-						case 'filter':
-							$plugins = $this->plugins_option_filter( $plugins );
-							break;
-						default:
-					}
-					$this->logg( 'plugins option:  ' . $this->options['plugins'], $plugins );
-					$args['body']['plugins'] = wp_json_encode( $plugins );
-					$args['_pmw_privacy_filter_plugins'] = true;
+			if ( ! empty( $args['body']['plugins'] ) ) {
+				$plugins = json_decode( $args['body']['plugins'], true );
+				switch ( $this->options['plugins'] ) {
+					case 'none':
+						$plugins = array();
+						break;
+					case 'active':
+						$plugins = $this->plugins_option_active( $plugins );
+						break;
+					case 'filter':
+						$plugins = $this->plugins_option_filter( $plugins );
+						break;
+					default:
 				}
+				$this->logg( 'plugins option:  ' . $this->options['plugins'], $plugins );
+				$args['body']['plugins'] = wp_json_encode( $plugins );
 			}
 		}
 if ( $logit ) {
