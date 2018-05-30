@@ -262,7 +262,7 @@ $logit = ( stripos( $url, 'plugin' ) !== false );
 						$plugins = $this->plugins_option_filter( $plugins );
 						break;
 					default:
-						pmw(1)->log('ERROR: option - ' . $this->options['plugins'] );
+						pmw(1)->log('ERROR: option - ' . $this->options['plugins'], $this );
 				}
 				$this->logg( 'plugins option:  ' . $this->options['plugins'], $plugins );
 				$args['body']['plugins'] = wp_json_encode( $plugins );
