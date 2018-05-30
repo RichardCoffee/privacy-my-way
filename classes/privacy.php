@@ -482,7 +482,7 @@ pmw(1)->log('case: else',$option,$value,'stack');
 				$this->logg( $check, $trans );
 if ( isset( $trans->response ) && isset( $trans->response['foogallery/foogallery.php'] ) ) {
 	pmw(1)->log( pmw()->get_calling_function(), $check, $trans, 'stack' );
-	delete_site_transient( $check );
+#	delete_site_transient( $check );
 }
 			}
 		}
