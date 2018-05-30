@@ -130,7 +130,6 @@ class Privacy_My_Way {
 	}
 
 	public function http_request_args( $args, $url ) {
-pmw(1)->log($url,$args);
 		#	only act on requests to api.wordpress.org
 		if ( stripos( $url, '://api.wordpress.org/' ) === false ) {
 			return $args;
@@ -143,7 +142,6 @@ pmw(1)->log($url,$args);
 	}
 
 	public function pre_http_request( $preempt, $args, $url ) {
-pmw(1)->log($url,$args);
 		# check if already preempted or if we have been here before
 		if ( $preempt || isset( $args['_pmw_privacy_filter'] ) ) {
 			return $preempt;
@@ -249,7 +247,6 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log($url,$args,'stack
 	/***   Plugins   ***/
 
 	protected function filter_plugins( $args, $url ) {
-pmw(1)->log($url);
 $logit = ( stripos( $url, 'plugin' ) !== false );
 		if ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) !== false ) {
 			if ( ! isset( $args['_pmw_privacy_filter_plugins'] ) || ( ! $args['_pmw_privacy_filter_plugins'] ) ) {
@@ -274,7 +271,7 @@ $logit = ( stripos( $url, 'plugin' ) !== false );
 			}
 		}
 if ( $logit ) {
-	pmw(1)->log(0,$args);
+	pmw(1)->log($url,$args);
 }
 		return $args;
 	}
@@ -322,7 +319,6 @@ if ( $logit ) {
 	}
 
 	public function plugins_site_transient( $value, $transient ) {
-$logit = false;
 		if ( pmw()->was_called_by('get_site_transient') === false ) {
 			if ( $this->options['plugins'] === 'filter' ) {
 				foreach( $this->options['plugin_list'] as $plugin => $state ) {
@@ -333,7 +329,6 @@ $logit = false;
 						if ( isset( $value->response[ $plugin ] ) ) {
 							unset( $value->response[ $plugin ] );
 pmw(1)->log($transient,$plugin);
-$logit = true;
 						}
 						if ( isset( $value->no_update[ $plugin ] ) ) {
 							unset( $value->no_update[ $plugin ] );
@@ -341,11 +336,6 @@ $logit = true;
 					}
 				}
 			}
-pmw(1)->log(
-	$transient,
-	$value,
-	'stack'
-);
 		}
 		return $value;
 	}
@@ -353,9 +343,9 @@ pmw(1)->log(
 	public function option_active_plugins( $value, $option ) {
 		if ( pmw()->was_called_by( 'is_plugin_active' ) ) {
 		} else if ( pmw()->was_called_by( 'wp_update_plugins' ) ) {
-pmw(1)->log($option,$value,'stack');
+pmw(1)->log('case: wp_update_plugins',$option,$value,'stack');
 		} else {
-pmw(1)->log($option,$value,'stack');
+pmw(1)->log('case: else',$option,$value,'stack');
 		}
 		return $value;
 	}
