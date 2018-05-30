@@ -269,6 +269,9 @@ $logit = ( stripos( $url, 'plugin' ) !== false );
 		}
 if ( $logit ) {
 	pmw(1)->log($url,$args);
+	if ( stripos( $args['body']['plugins'], 'foogallery' ) !== false ) {
+		pmw(1)->log(0,'stack');
+	}
 }
 		return $args;
 	}
