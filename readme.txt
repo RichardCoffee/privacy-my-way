@@ -1,7 +1,7 @@
 === Privacy My Way ===
 Contributors: richard.coffee
 Requires at least: 4.7
-Tested up to: 4.7.3
+Tested up to: 4.9.6
 Stable tag: 1.4.0
 License: MIT
 
@@ -48,6 +48,8 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 == Changelog ==
 
 = Next Release =
+* Enhancement:  added option to prevent browser disclosure.
+* Enhancement:  added option to prevent location info being sent to wordpress.org.
 * Upgrade:  updated base plugin classes.
 
 = 1.4.0 =

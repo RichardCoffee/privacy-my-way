@@ -3,10 +3,15 @@ This is beta code.  Not guaranteed to do anything more than take up space on you
 
 # Privacy My Way #
 **Contributors:** richard.coffee
+
 **Tags:** privacy, updates, plugins, themes, core, translations, law, eu
+
 **Requires at least:** 4.7
-**Tested up to:** 4.7.4
+
+**Tested up to:** 4.9.6
+
 **Stable tag:** 1.4.0
+
 **License:** MIT
 
 Control the information that your wordpress site is sending to wordpress.org
@@ -25,7 +30,7 @@ Please use [the latest release](https://github.com/RichardCoffee/privacy-my-way/
 
 When using the Upload option, be aware that Github includes the version number as part of the directory name inside the zip file.  You will
 need FTP or SSH access to around that.  Once you have the plugin actually installed, then upgrades via the admin dashboard will work just fine.
-If anyone knows how to get github not to do that, please let me know by opening an issue about it.
+If anyone knows how to get github not to add the version number, please let me know by opening an issue about it.
 
 ### Manual Installation
 
@@ -57,6 +62,8 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ## Changelog
 
 ### Next Release
+* Enhancement:  added option to prevent browser disclosure.
+* Enhancement:  added option to prevent location info being sent to wordpress.org.
 * Upgrade:  update base plugin classes.
 
 ### 1.4.0
