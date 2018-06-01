@@ -43,12 +43,9 @@ class Privacy_My_Way {
 			add_filter( 'pre_set_site_transient_update_themes',  [ $this, 'themes_site_transient' ],  10, 2 );
 			add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'plugins_site_transient' ], 10, 2 );
 			add_filter( 'site_transient_update_plugins',         [ $this, 'plugins_site_transient' ], 10, 2 );
-#			add_filter( 'option_active_plugins',                 [ $this, 'option_active_plugins' ], 10, 2 );
 
 		}
-
 		$this->logg( $this );
-		$this->check_transients();
 	}
 
 	protected function get_options() {
@@ -156,6 +153,7 @@ class Privacy_My_Way {
 				);
 			}
 		}
+		# disable revealing location
 		if ( $this->options['location'] === 'no' ) {
 			if ( ! ( stripos( $url, '://api.wordpress.org/events' ) === false ) ) {
 				return new WP_Error(
@@ -170,10 +168,8 @@ class Privacy_My_Way {
 			&& ( stripos( $url, '://api.wordpress.org/themes/update-check/'  ) === false )
 #			&& ( stripos( $url, '://api.wordpress.org/translations/'         ) === false )
 			) {
-if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log($url,$args,'stack'); }
 			return $preempt;
 		}
-
 
 		$url  = $this->filter_url( $url );
 		$args = $this->strip_site_url( $args );
@@ -247,7 +243,6 @@ if ( ! ( stripos( $url, 'plugin' ) === false ) ) { pmw(1)->log($url,$args,'stack
 	/***   Plugins   ***/
 
 	protected function filter_plugins( $args, $url ) {
-$logit = ( stripos( $url, 'plugin' ) !== false );
 		if ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) !== false ) {
 			if ( ! empty( $args['body']['plugins'] ) ) {
 				$plugins = json_decode( $args['body']['plugins'], true );
@@ -268,12 +263,6 @@ $logit = ( stripos( $url, 'plugin' ) !== false );
 				$args['body']['plugins'] = wp_json_encode( $plugins );
 			}
 		}
-if ( $logit ) {
-	pmw(1)->log($url,$args);
-	if ( ( isset( $args['body']['plugins'] ) ) && ( stripos( $args['body']['plugins'], 'foogallery' ) !== false ) ) {
-		pmw(1)->log(0,'stack');
-	}
-}
 		return $args;
 	}
 
@@ -329,7 +318,6 @@ if ( $logit ) {
 						}
 						if ( isset( $value->response[ $plugin ] ) ) {
 							unset( $value->response[ $plugin ] );
-pmw(1)->log($transient,$plugin);
 						}
 						if ( isset( $value->no_update[ $plugin ] ) ) {
 							unset( $value->no_update[ $plugin ] );
@@ -337,16 +325,6 @@ pmw(1)->log($transient,$plugin);
 					}
 				}
 			}
-		}
-		return $value;
-	}
-
-	public function option_active_plugins( $value, $option ) {
-		if ( pmw()->was_called_by( 'is_plugin_active' ) ) {
-		} else if ( pmw()->was_called_by( 'wp_update_plugins' ) ) {
-pmw(1)->log('case: wp_update_plugins',$option,$value,'stack');
-		} else {
-pmw(1)->log('case: else',$option,$value,'stack');
 		}
 		return $value;
 	}
@@ -471,23 +449,6 @@ pmw(1)->log('case: else',$option,$value,'stack');
 
 	/*  Debugging  */
 
-	private function check_transients() {
-		$checks = array(
-#			'update_core',
-			'update_plugins',
-#			'update_themes',
-		);
-		foreach( $checks as $check ) {
-			if ( $trans = get_site_transient( $check ) ) {
-				$this->logg( $check, $trans );
-if ( isset( $trans->response ) && isset( $trans->response['foogallery/foogallery.php'] ) ) {
-	pmw(1)->log( pmw()->get_calling_function(), $check, $trans, 'stack' );
-#	delete_site_transient( $check );
-}
-			}
-		}
-	}
-
 	public function run_tests( $args ) {
 		if ( isset( $args['plugins'] ) ) {
 			$test_data = $args['plugins'];
@@ -499,17 +460,6 @@ if ( isset( $trans->response ) && isset( $trans->response['foogallery/foogallery
 			$themes = $this->filter_themes( $test_data['args'], $test_data['url'] );
 			$this->logg( $test_data, $themes );
 		}
-	}
-
-	public function log_filter_arguments() {
-		$args = func_get_args();
-		pmw(1)->log( pmw()->get_calling_function(), current_filter(), $args );
-		if ( ( isset( $args[0]->response ) && isset( $args[0]->response['foogallery/foogallery.php'] ) )
-			|| ( isset( $args[0]->checked ) && isset( $args[0]->checked['foogallery/foogallery.php'] ) )
-			|| ( isset( $args[2] ) && ( $args[2] === 'plugin_slugs' ) ) ) {
-			pmw(1)->log('function stack','stack');
-		}
-		return $args[0];
 	}
 
 
