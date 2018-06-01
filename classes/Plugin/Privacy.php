@@ -34,20 +34,6 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	}
 
 	public function add_actions() {
-/*		$actions = array(
-			'admin_init',
-			'load-plugins.php',
-			'load-themes.php',
-			'load-update.php',
-			'load-update-core.php',
-			'plugins_loaded',
-			'wp_update_plugins',
-			'wp_update_themes',
-			'wp_version_check',
-		);
-		foreach( $actions as $action ) {
-			add_action( $action, array( $this, 'privacy_setup' ), 1 );
-		} //*/
 		if ( is_admin() ) {
 			$this->form = new PMW_Form_Privacy;
 		}
@@ -55,10 +41,6 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	}
 
 	public function add_filters() {
-#		add_filter( 'all_plugins',                 [ $this, 'add_privacy_filters' ] );
-#		add_filter( 'core_version_check_locale',   [ $this, 'add_privacy_filters' ] );
-#		add_filter( 'cron_schedules',              [ $this, 'add_privacy_filters' ] );
-#		add_filter( 'cron_request',                [ $this, 'add_privacy_filters' ] );
 		add_filter( 'fluidity_initialize_options', [ $this, 'add_privacy_options' ] );
 		$options = get_option( 'tcc_options_privacy-my-way', array() );
 		if ( isset( $options['autoupdate'] ) ) {
@@ -71,11 +53,6 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 			}
 		}
 		parent::add_filters();
-	}
-
-	public function add_privacy_filters( $arg = '' ) {
-		$this->privacy_setup();
-		return $arg;
 	}
 
 	# intended only for use with https://github.com/RichardCoffee/fluidity-theme
@@ -145,7 +122,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	}
 
 	/**
-	 * changed slug due to WP 4.9.6
+	 * changed slug due to potential conflict inflicted by WP 4.9.6
 	 *
 	 * @since 20180522
 	 */
