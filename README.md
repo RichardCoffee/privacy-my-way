@@ -65,6 +65,7 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 * Enhancement:  added option to prevent browser disclosure.
 * Enhancement:  added option to prevent location info being sent to wordpress.org.
 * Upgrade:  update base plugin classes.
+* Bugfix:  fixed issue with filtering plugins not always working properly.
 
 ### 1.4.0
 * Enhancement:  added options to prevent WordPress automatic updates, intended for developers.
