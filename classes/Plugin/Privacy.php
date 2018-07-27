@@ -3,7 +3,6 @@
 class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 
-	private   $checker  = null;
 	private   $form     = null;
 	protected $github   = 'https://github.com/RichardCoffee/privacy-my-way/';
 	protected $privacy  = null;
