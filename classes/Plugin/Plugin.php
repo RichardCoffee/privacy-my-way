@@ -18,7 +18,7 @@ abstract class PMW_Plugin_Plugin {
 
 	protected function __construct( $args = array() ) {
 		if ( ! empty( $args['file'] ) ) {
-			$data = get_file_data( $args['file'], array( 'ver' => 'Version' ) );
+			$data = get_file_data( $args['file'], [ 'ver' => 'Version' ] );
 			$defaults = array(
 				'dir'     => plugin_dir_path( $args['file'] ),
 				'plugin'  => dirname( plugin_basename( $args['file'] ) ),
@@ -40,8 +40,8 @@ abstract class PMW_Plugin_Plugin {
 	public function add_actions() { }
 
 	public function add_filters() {
-		add_filter( 'plugin_action_links', array( $this, 'settings_link' ), 10, 4 );
-		add_filter( 'network_admin_plugin_action_links', array( $this, 'settings_link' ), 10, 4 );
+		add_filter( 'plugin_action_links', [ $this, 'settings_link' ], 10, 4 );
+		add_filter( 'network_admin_plugin_action_links', [ $this, 'settings_link' ], 10, 4 );
 	} //*/
 
 
@@ -51,6 +51,13 @@ abstract class PMW_Plugin_Plugin {
 		$state = 'alone';
 		if ( is_readable( get_template_directory() . '/classes/Form/Admin.php' ) ) {
 			$state = 'theme';
+		} else {
+			if ( ! function_exists( 'is_plugin_active' ) ) {
+				include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+			}
+			if ( function_exists( 'is_plugin_active' ) && is_plugin_active( 'tcc-theme-options/tcc-theme-options.php' ) ) {
+				$state = 'plugin';
+			}
 		}
 		return $state;
 	}
@@ -58,12 +65,12 @@ abstract class PMW_Plugin_Plugin {
 	protected function schedule_initialize() {
 		switch ( $this->state ) {
 			case 'plugin':
-				add_action( 'tcc_theme_options_loaded', array( $this, 'initialize' ) );
+				add_action( 'tcc_theme_options_loaded', [ $this, 'initialize' ] );
 				break;
 			case 'alone':
 			case 'theme':
 			default:
-				add_action( 'plugins_loaded', array( $this, 'initialize' ), 100 );
+				add_action( 'plugins_loaded', [ $this, 'initialize' ], 100 );
 		}
 	}
 
@@ -99,7 +106,7 @@ abstract class PMW_Plugin_Plugin {
 		return $files;
 	}
 
-	public function get_stylesheet( $file = 'css/tcc-plugin.css', $path = '/' ) {
+	public function get_stylesheet( $file = 'css/privacy-my-way.css', $path = '/' ) {
 		return $this->paths->get_plugin_file_path( $file );
 	}
 
@@ -115,7 +122,7 @@ abstract class PMW_Plugin_Plugin {
 			unset( $links['edit'] );
 			if ( is_plugin_active( $file ) ) {
 				$url   = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
-				$links['settings'] = sprintf( '<a href="%s"> %s </a>', esc_url( $url ), esc_html__( 'Settings', 'rtc-privacy' ) );
+				$links['settings'] = sprintf( '<a href="%s"> %s </a>', esc_url( $url ), esc_html__( 'Settings', 'privacy-my-way' ) );
 			}
 		}
 		return $links;

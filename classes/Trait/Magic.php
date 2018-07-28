@@ -17,9 +17,9 @@ trait PMW_Trait_Magic {
 	# do not use is_callable() within this function
 	public function __call( $string, $args ) {
 		$return = 'non-callable function';
-		if ( isset( self::$magic__call[ $string ] ) ) {
-			$return = call_user_func_array( self::$magic__call[ $string ], $args );
-		} else if ( in_array( $string, self::$magic__call, true ) ) {
+		if ( isset( static::$magic__call[ $string ] ) ) {
+			$return = call_user_func_array( static::$magic__call[ $string ], $args );
+		} else if ( in_array( $string, static::$magic__call, true ) ) {
 			$return = call_user_func_array( $string, $args );
 		} else if ( property_exists( $this, $string ) ) {
 			$return = $this->$string;
@@ -41,10 +41,10 @@ trait PMW_Trait_Magic {
 	public function register__call( $method, $alias = false ) {
 		if ( is_callable( $method ) ) {
 			if ( $alias ) {
-				self::$magic__call[ $alias ] = $method;
+				static::$magic__call[ $alias ] = $method;
 			} else {
 				$key = ( is_array( $method ) ) ? $method[1] : $method;
-				self::$magic__call[ $key ] = $method;
+				static::$magic__call[ $key ] = $method;
 			}
 			return true;
 		}
@@ -52,7 +52,7 @@ trait PMW_Trait_Magic {
 	} //*/
 
 	public function set( $property, $value ) {
-		if ( self::$set__callable ) {
+		if ( static::$set__callable ) {
 			if ( ( ! empty( $property ) ) && ( ! empty( $value ) ) ) {
 				if ( property_exists( $this, $property ) ) {
 					$this->{$property} = $value;
@@ -61,4 +61,5 @@ trait PMW_Trait_Magic {
 		}
 	}
 
-                                                                                                            }
+
+}

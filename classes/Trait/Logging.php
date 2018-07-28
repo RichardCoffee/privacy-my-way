@@ -18,7 +18,7 @@ trait PMW_Trait_Logging {
 /***   Action functions   ***/
 
 	public function log() {
-		call_user_func_array( array( $this, 'logging_entry' ), func_get_args() );
+		call_user_func_array( [ $this, 'logging_entry' ], func_get_args() );
 	}
 
 	public function logg() {
@@ -30,7 +30,7 @@ trait PMW_Trait_Logging {
 
 	public function logobj( $object ) {
 		$reduced = $this->logging_reduce_object( $object );
-		call_user_func( array( $this, 'logging_entry' ), $reduced );
+		call_user_func( [ $this, 'logging_entry' ], $reduced );
 	}
 
 
@@ -58,6 +58,7 @@ trait PMW_Trait_Logging {
 			'log',
 			'logg',
 #			'logging',
+			'logging_log_deprecated',
 			'logobj'
 		);
 		$default = $file = $func = $line = 'n/a';
@@ -79,25 +80,26 @@ trait PMW_Trait_Logging {
 		}
 	}
 
-	public function logging_get_calling_function_name( $depth = 1 ) {
+	public function logging_get_calling_function_name( $depth = 4 ) {
 		$result = $this->logging_calling_location( max( $depth, 4 ) );
 		$trace  = array_map( 'trim', explode( '/', $result ) );
 		$result = $this->logging_calling_location( $trace[1] );
 		$trace  = array_map( 'trim', explode( ',', $result ) );
-		if ( $trace[1] === 'n/a' ) {
-			$trace  = array_map( 'trim', explode( '/', $result ) );
-			$result = $this->logging_calling_location( $trace[1] );
-			$trace  = array_map( 'trim', explode( ',', $result ) );
-		}
 		return $trace[1];
 	}
 
+	/**
+	 * locates a function name in the stack
+	 *
+	 * @param string $func
+	 * @return bool|numeric false or stack level
+	 */
 	public function logging_was_called_by( $func ) {
 		$call_trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
-		foreach( $call_trace as $current ) {
+		foreach( $call_trace as $key => $current ) {
 			if ( ! empty( $current['function'] ) ) {
 				if ( $current['function'] === $func ) {
-					return true;
+					return $key;
 				}
 			}
 		}

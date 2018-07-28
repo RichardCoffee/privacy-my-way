@@ -6,6 +6,7 @@
 /**
  * A trait that provides methods to generate html for tag attributes
  *
+ * @since 20170506
  * @link 4.9.5:wp-includes/general-template.php:2949
  */
 trait PMW_Trait_Attributes {
@@ -13,19 +14,26 @@ trait PMW_Trait_Attributes {
 	/**
 	 * alias for apply_attrs_element
 	 *
+	 * @since 20180426
+	 * @param string $tag
+	 * @param array $attrs
+	 * @param string $text
 	 */
 	public function element( $tag, $attrs, $text = '' ) {
 		$this->apply_attrs_element( $tag, $attrs, $text );
 	}
 
+#	 * @since 20180426
 	public function get_element( $tag, $attrs, $text = '' ) {
 		return $this->get_apply_attrs_element( $tag, $attrs, $text );
 }
 
+#	 * @since 20180426
 	public function tag( $tag, $attrs ) {
 		$this->apply_attrs_tag( $tag, $attrs );
 	}
 
+#	 * @since 20180426
 	public function get_tag( $tag, $attrs ) {
 		return $this->get_apply_attrs_tag( $tag, $attrs );
 	}
@@ -33,6 +41,7 @@ trait PMW_Trait_Attributes {
 	/**
 	 * echo the generated html attributes
 	 *
+	 * @since 20170506
 	 * @param array $attrs an associative array containing the attribute keys and values
 	 */
 	public function apply_attrs( $attrs ) {
@@ -42,22 +51,23 @@ trait PMW_Trait_Attributes {
 	/**
 	 * generates the html for the tag attributes
 	 *
+	 * @since 20170506
 	 * @param array $attrs contains attribute/value pairs
 	 * @return string
 	 */
 	public function get_apply_attrs( $attrs ) {
 
-		$is_allowed_no_value = array( 'itemscope', 'multiple', 'value' );
-/*		static $is_allowed_no_value;
-		if ( ! $is_allowed_no_value ) {
+/*		static $is_allowed_no_value = null;
+		if ( empty( $is_allowed_no_value ) ) {
 			$is_allowed_no_value = apply_filters( 'fluid_attr_is_allowed_no_value', [ 'itemscope', 'value' ] );
 		} //*/
+		$is_allowed_no_value = array( 'itemscope', 'multiple', 'value', 'required' );
 
-		$html = ' ';
+		$html = '';
 		foreach( $attrs as $attr => $value ) {
 			if ( empty( $value ) ) {
 				if ( in_array( $attr, $is_allowed_no_value, true ) ) {
-					$html .= $attr . '="" ';
+					$html .= "$attr ";
 				}
 				continue;
 			}
@@ -91,12 +101,13 @@ trait PMW_Trait_Attributes {
 	/**
 	 * applys the wordpress function sanitize_html_class to a string containing multiple css classes
 	 *
+	 * @since 20170510
 	 * @param string|array $classes css classes to be sanitized
 	 * @return string
 	 */
-	protected function sanitize_html_class( $classes ) {
+	public function sanitize_html_class( $classes ) {
 		if ( is_array( $classes ) ) {
-			// pack it down then blow it up - insure each element is a single class
+			// pack it down then blow it up - insure each item is a single class
 			$classes = explode( ' ', implode( ' ', $classes ) );
 		} else {
 			// convert string to an array
@@ -108,6 +119,7 @@ trait PMW_Trait_Attributes {
 	/**
 	 * echo the generated tag html
 	 *
+	 * @since 20170507
 	 * @param string $html_tag the tag to be generated
 	 * @param array $attrs an associative array containing the attribute keys and values
 	 */
@@ -118,6 +130,7 @@ trait PMW_Trait_Attributes {
 	/**
 	 * generates the initial html for the desired tag and attributes
 	 *
+	 * @since 20170506
 	 * @param string $html_tag tag to be generated
 	 * @param array $attrs contains attribute/value pairs
 	 * @return string
@@ -133,6 +146,7 @@ trait PMW_Trait_Attributes {
 	/**
 	 * checks for tags that are self closing
 	 *
+	 * @since 20170507
 	 * @param string $tag tag to check for
 	 * @return bool
 	 */
@@ -171,24 +185,19 @@ trait PMW_Trait_Attributes {
 		$html  = "<$element ";
 		$html .= $this->get_apply_attrs( $attrs );
 		if ( $this->is_tag_self_closing( $element ) ) {
-			$html .= ' />';
+			$html .= ' />' . esc_html( $text );
 		} else {
 			$html .= '>' . esc_html( $text ) . "</$element>";
 		}
 		return $html;
 	}
 
+#	 * @since 20180425
+#	 * @link https://www.hongkiat.com/blog/wordpress-rel-noopener/
 	public function filter_attributes_by_tag( $html_tag, $attrs ) {
 		if ( ( $html_tag === 'a' ) && isset( $attrs[ 'target' ] ) ) {
-			# @link https://www.hongkiat.com/blog/wordpress-rel-noopener/
-			$attrs['rel'] = ( ( isset( $attrs['rel'] ) ) ? $attrs['rel'] : '' ) . ' nofollow noopener';
-/*			$add_rel = ' nofollow noopener';
-			if ( isset( $attrs['rel'] ) ) {
-				$attrs['rel'] = $attrs['rel'] . $add_rel;
-			} else {
-				$attrs['rel'] = $add_rel;
-			} //*/
-#			$attrs['rel'] = apply_filters( 'fluid_filter_attributes_by_a_rel', $attrs['rel'] );
+			$attrs['rel'] = ( ( isset( $attrs['rel'] ) ) ? $attrs['rel'] . ' ' : '' ) . 'nofollow noopener';
+#			$attrs['rel'] = apply_filters( 'fluid_filter_attributes_by_a_rel', $attrs['rel'], $attrs );
 		}
 		return $attrs;
 	}
@@ -196,27 +205,27 @@ trait PMW_Trait_Attributes {
 
 /***   helper functions   ***/
 
-	# @since 20180424
+#	 * @since 20180424
 	public function checked( $attrs, $checked, $current = true ) {
 		return $this->checked_selected_helper( $attrs, $checked, $current, 'checked' );
 	}
 
-	# @since 20180424
+#	 * @since 20180424
 	public function disabled( $attrs, $disabled, $current = true ) {
 		return $this->checked_selected_helper( $attrs, $disabled, $current, 'disabled' );
 	}
 
-	# @since 20180424
+#	 * @since 20180424
 	public function readonly( $attrs, $readonly, $current = true ) {
 		return $this->checked_selected_helper( $attrs, $readonly, $current, 'readonly' );
 	}
 
-	# @since 20180424
+#	 * @since 20180424
 	public function selected( $attrs, $selected, $current = true ) {
 		return $this->checked_selected_helper( $attrs, $selected, $current, 'selected' );
 	}
 
-	# @since 20180424
+#	 * @since 20180424
 	protected function checked_selected_helper( $attrs, $helper, $current, $type ) {
 		if ( (string) $helper === (string) $current ) {
 			$attrs[ $type ] = $type;

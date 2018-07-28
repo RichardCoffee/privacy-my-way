@@ -3,7 +3,7 @@
 /*
  *  classes/Form/Admin.php
  *
- *  copyright 2014-2017, The Creative Collective, the-creative-collective.com
+ *  copyright 2014-2018, The Creative Collective, the-creative-collective.com
  *
  *  I sure hope that Fields API thing works out, cause then I can get rid of this monstrosity.
  */
@@ -32,7 +32,7 @@ abstract class PMW_Form_Admin {
 
 	protected function __construct() {
 		$this->screen_type();
-		add_action( 'admin_init', array( $this, 'load_form_page' ) );
+		add_action( 'admin_init', [ $this, 'load_form_page' ] );
 	}
 
 	public function load_form_page() {
@@ -60,14 +60,14 @@ abstract class PMW_Form_Admin {
 			$func = $this->register;
 			$this->$func();
 			do_action( 'tcc_load_form_page' );
-			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+			add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ] );
 		}
 	}
 
 	public function admin_enqueue_scripts( $hook_suffix ) {
 		wp_enqueue_media();
-		wp_enqueue_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), array( 'wp-color-picker' ) );
-		wp_enqueue_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js' ), array( 'jquery', 'wp-color-picker' ), false, true );
+		wp_enqueue_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), [ 'wp-color-picker' ] );
+		wp_enqueue_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js' ),   [ 'jquery', 'wp-color-picker' ], false, true );
 		$options = apply_filters( 'tcc_form_admin_options_localization', array() );
 		if ( $options ) {
 			$options = $this->normalize_options( $options, $options );
@@ -77,7 +77,7 @@ abstract class PMW_Form_Admin {
 
 	protected function normalize_options( $new, $old ) {
 		if ( isset( $old['showhide'] ) ) {
-			$new['showhide'] = array_map( array( $this, 'normalize_showhide' ), $old['showhide'] );
+			$new['showhide'] = array_map( [ $this, 'normalize_showhide' ], $old['showhide'] );
 		}
 		return $new;
 	}
@@ -98,20 +98,20 @@ abstract class PMW_Form_Admin {
 	private function form_text() {
 	$text = array(
 		'error'  => array(
-			'render'    => _x( 'ERROR: Unable to locate function %s', 'string - a function name', 'rtc-privacy' ),
-			'subscript' => _x( 'ERROR: Not able to locate form data subscript:  %s', 'placeholder will be an ASCII character string', 'rtc-privacy' )
+			'render'    => _x( 'ERROR: Unable to locate function %s', 'string - a function name', 'privacy-my-way' ),
+			'subscript' => _x( 'ERROR: Not able to locate form data subscript:  %s', 'placeholder will be an ASCII character string', 'privacy-my-way' )
 		),
 		'submit' => array(
-			'save'      => __( 'Save Changes', 'rtc-privacy' ),
-			'object'    => __( 'Form', 'rtc-privacy' ),
-			'reset'     => _x( 'Reset %s', 'placeholder is a noun, may be plural', 'rtc-privacy' ),
-			'subject'   => __( 'Form', 'rtc-privacy' ),
-			'restore'   => _x( 'Default %s options restored.', 'placeholder is a noun, probably singular', 'rtc-privacy' )
+			'save'      => __( 'Save Changes', 'privacy-my-way' ),
+			'object'    => __( 'Form', 'privacy-my-way' ),
+			'reset'     => _x( 'Reset %s', 'placeholder is a noun, may be plural', 'privacy-my-way' ),
+			'subject'   => __( 'Form', 'privacy-my-way' ),
+			'restore'   => _x( 'Default %s options restored.', 'placeholder is a noun, probably singular', 'privacy-my-way' )
 		),
 		'media'  => array(
-			'title'     => __( 'Assign/Upload Image', 'rtc-privacy' ),
-			'button'    => __( 'Assign Image', 'rtc-privacy' ),
-			'delete'    => __( 'Unassign Image', 'rtc-privacy' )
+			'title'     => __( 'Assign/Upload Image', 'privacy-my-way' ),
+			'button'    => __( 'Assign Image', 'privacy-my-way' ),
+			'delete'    => __( 'Unassign Image', 'privacy-my-way' )
 		)
 	);
 	$this->form_text = apply_filters( 'form_text_' . $this->slug, $text, $text );
@@ -128,10 +128,10 @@ abstract class PMW_Form_Admin {
 	}
 
 	public function register_single_form() {
-		register_setting( $this->current, $this->current, array( $this, $this->validate ) );
+		register_setting( $this->current, $this->current, [ $this, $this->validate ] );
 		$title = ( isset( $this->form['title']    ) ) ? $this->form['title']    : '';
 		$desc  = ( isset( $this->form['describe'] ) ) ? $this->form['describe'] : 'description';
-		$desc  = ( is_array( $desc ) ) ? $desc : ( ( method_exists( $this, $desc ) ) ? array( $this, $desc ) : $desc );
+		$desc  = ( is_array( $desc ) ) ? $desc : ( ( method_exists( $this, $desc ) ) ? [ $this, $desc ] : $desc );
 		add_settings_section( $this->current, $title, $desc, $this->current );
 		foreach( $this->form['layout'] as $item => $data ) {
 			if ( is_string( $data ) ) {
@@ -149,10 +149,10 @@ abstract class PMW_Form_Admin {
       $validate = (isset($section['validate'])) ? $section['validate'] : $validater;
       $current  = (isset($this->form[$key]['option'])) ? $this->form[$key]['option'] : $this->prefix.$key;
       #register_setting($this->slug,$current,array($this,$validate));
-      register_setting($current,$current,array($this,$validate));
+      register_setting($current,$current,[$this,$validate]);
       $title    = (isset($section['title']))    ? $section['title']    : '';
       $describe = (isset($section['describe'])) ? $section['describe'] : 'description';
-      $describe = (is_array($describe)) ? $describe : array($this,$describe);
+      $describe = (is_array($describe)) ? $describe : [$this,$describe];
       #add_settings_section($current,$title,$describe,$this->slug);
       add_settings_section($current,$title,$describe,$current);
       foreach($section['layout'] as $item=>$data) {
@@ -177,31 +177,26 @@ abstract class PMW_Form_Admin {
       $label = $this->field_label($itemID,$data);
       $args  = array('key'=>$key,'item'=>$itemID);
       #add_settings_field($itemID,$label,array($this,$this->options),$this->slug,$option,$args);
-      add_settings_field($itemID,$label,array($this,$this->options),$option,$option,$args);
+      add_settings_field($itemID,$label,[$this,$this->options],$option,$option,$args);
 #    }
   }
 
-  private function field_label($ID,$data) {
-    $html = '';
-    if (($data['render']==='display') || ($data['render']==='radio_multiple')) {
-      $html = '<span';
-      $html.= (isset($data['help']))  ? ' title="'.esc_attr($data['help']).'">' : '>';
-      $html.= (isset($data['label'])) ? esc_html($data['label']) : '';
-      $html.= '</span>';
-    } elseif ($data['render']==='title') {
-      $html = '<span';
-      $html.= ' class="form-title"';
-      $html.= (isset($data['help']))  ? ' title="'.esc_attr($data['help']).'">' : '>';
-      $html.= (isset($data['label'])) ? esc_html($data['label']) : '';
-      $html.= '</span>';
-    } else {
-      $html = '<label for="'.esc_attr($ID).'"';
-      $html.= (isset($data['help']))  ? ' title="'.esc_attr($data['help']).'">' : '>';
-      $html.= (isset($data['label'])) ? esc_html($data['label']) : '';
-      $html.= '</label>';
-    }
-    return $html;
-  }
+	private function field_label( $ID, $data ) {
+		$data  = array_merge( [ 'help' => '', 'label' => '' ], $data );
+		$attrs = array(
+			'title' => $data['help'],
+		);
+		if ( in_array( $data['render'], [ 'display', 'radio_multiple' ] ) ) {
+			return $this->get_element( 'span', $attrs, $data['label'] );
+		} else if ( $data['render'] === 'title' ) {
+			$attrs['class'] = 'form-title';
+			return $this->get_element( 'span', $attrs, $data['label'] );
+		} else {
+			$attrs['for'] = $ID;
+			return $this->get_element( 'label', $attrs, $data['label'] );
+		}
+		return '';
+	}
 
   private function sanitize_callback($option) {
     $valid_func = "validate_{$option['render']}";
@@ -400,7 +395,7 @@ abstract class PMW_Form_Admin {
 		$attrs['class'] = ( ! empty( $layout['divcss'] ) ) ? $layout['divcss'] : '';
 		$attrs['title'] = ( isset( $layout['help'] ) )     ? $layout['help']   : '';
 		if ( ! empty( $layout['showhide'] ) ) {
-			$state = array_merge( array( 'show' => null, 'hide' => null ), $layout['showhide'] );
+			$state = array_merge( [ 'show' => null, 'hide' => null ], $layout['showhide'] );
 			$attrs['data-item'] = ( isset( $state['item'] ) ) ? $state['item'] : $state['target'];
 			$attrs['data-show'] = $state['show'];
 			$attrs['data-hide'] = $state['hide'];
@@ -593,8 +588,8 @@ abstract class PMW_Form_Admin {
 				<?php e_esc_html( $pre_text ); ?>
 			</div>
 			<div class="radio-multiple-header">
-				<span class="radio-multiple-yes"><?php esc_html_e( 'Yes', 'rtc-privacy' ); ?></span>&nbsp;
-				<span class="radio-multiple-no" ><?php esc_html_e( 'No', 'rtc-privacy' ); ?></span>
+				<span class="radio-multiple-yes"><?php esc_html_e( 'Yes', 'privacy-my-way' ); ?></span>&nbsp;
+				<span class="radio-multiple-no" ><?php esc_html_e( 'No', 'privacy-my-way' ); ?></span>
 			</div><?php
 			foreach( $layout['source'] as $key => $text ) {
 				$check  = ( isset( $value[ $key ] ) ) ? $value[ $key ] : $preset; ?>
@@ -707,12 +702,13 @@ abstract class PMW_Form_Admin {
 		$this->render_colorpicker( $data );
 	}
 
-  private function render_title($data) {
-    extract($data);  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
-    if (!empty($layout['text'])) {
-      $data['layout']['text'] = "<b>{$layout['text']}</b>"; }
-    $this->render_display($data);
-  }
+	private function render_title( $data ) {
+		extract( $data );  #  array('ID'=>$item, 'value'=>$data[$item], 'layout'=>$layout[$item], 'name'=>$name)
+/*		if ( ! empty( $layout['text'] ) ) {
+			$data['layout']['text'] = "<b>{$layout['text']}</b>";
+		} */
+		$this->render_display( $data );
+	}
 
   /**  Validate functions  **/
 
