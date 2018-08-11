@@ -52,7 +52,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			'label'   => __( 'Browser', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
-				'yes'  => __( 'Let WordPress know what browser is being used to view admin screens. (default)', 'tcc-privacy' ),
+				'yes'  => __( 'Let WordPress know what browser is being used to view admin screens. (*)', 'tcc-privacy' ),
 				'no'   => __( 'Do not let them know what browser you use.', 'tcc-privacy' ),
 			),
 		);
@@ -62,7 +62,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			'help'    => __( 'Disabling this option will cause Community Events to not work.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
-				'yes'  => __( 'Let WordPress know your IP address, locale, and timezone. (default)', 'tcc-privacy' ),
+				'yes'  => __( 'Let WordPress know your IP address, locale, and timezone. (*)', 'tcc-privacy' ),
 				'no'   => __( 'Do not let them know where you are at.', 'tcc-privacy' ),
 			),
 		);
