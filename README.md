@@ -1,4 +1,4 @@
-This is beta code.  Not guaranteed to do anything more than take up space on your computer.
+Not guaranteed to do anything more than take up space on your computer.
 
 
 # Privacy My Way #
@@ -56,7 +56,7 @@ Support for [GitHub Updater](https://github.com/afragen/github-updater) is also 
 
 ## Warning
 
-This is beta code.  Use at your own risk.  I do not expect it to break your site, but if it does, then you get to keep the pieces.
+I no longer consider this beta code and I do not expect it to break your site, but if it does, then you get to keep the pieces.
 
 ## FAQ
 
