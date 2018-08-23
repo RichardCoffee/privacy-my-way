@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 4.9.6
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our
@@ -47,7 +47,7 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
-= Next Release =
+= 1.5.0 =
 * Enhancement:  added option to prevent browser disclosure.
 * Enhancement:  added option to prevent location info being sent to wordpress.org.
 * Upgrade:  updated base plugin classes.
