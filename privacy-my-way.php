@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Privacy My Way
  *
@@ -13,21 +12,27 @@
  * Plugin Name:       Privacy My Way
  * Plugin URI:        https://github.com/RichardCoffee/privacy-my-way
  * Description:       Control what your WordPress site phones home about.  Does WordPress.org =really= need to know how many users you have?
- * Version:           1.4.0
+ * Version:           1.5.0
  * Requires at least: 4.7.0
  * Requires WP:       4.7.0
- * Tested up to:      4.7.4
+ * Tested up to:      4.9.8
  * Requires PHP:      5.3.6
  * Author:            Richard Coffee
  * Author URI:        http://rtcenterprises.net
  * GitHub Plugin URI: https://github.com/RichardCoffee/privacy-my-way
  * License:           MIT
- * Text Domain:       tcc-privacy
+ * License URI:       https://opensource.org/licenses/MIT
+ * Text Domain:       privacy-my-way
  * Domain Path:       /languages
- * Tags:              privacy, updates, plugins, themes, core, translations, law, eu
+ * Tags:              privacy, updates, plugins, themes, core, translations
  */
 
-defined( 'ABSPATH' ) || exit;
+# https://github.com/helgatheviking/Nav-Menu-Roles/blob/master/nav-menu-roles.php
+if ( ! defined( 'ABSPATH' ) || ! function_exists( 'is_admin' ) ) {
+	header( 'Status: 403 Forbidden' );
+	header( 'HTTP/1.1 403 Forbidden' );
+	exit();
+}
 
 define( 'PMW_PRIVACY_DIR', plugin_dir_path( __FILE__ ) );
 

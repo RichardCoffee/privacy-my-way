@@ -4,7 +4,7 @@
 final class PMW_Options_Privacy extends PMW_Options_Options {
 
 	private   $active   = array();
-	protected $base     = 'privacy';
+	protected $base     = 'privacy-my-way';
 	private   $library;
 	private   $options  = array();
 	protected $priority = 550;  #  internal theme option
@@ -47,6 +47,25 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			'extra_html' => $extra_html,
 			'divcss'     => 'privacy-blog-active',
 		); //*/
+		$layout['browser'] = array(
+			'default' => 'yes',
+			'label'   => __( 'Browser', 'tcc-privacy' ),
+			'render'  => 'radio',
+			'source'  => array(
+				'yes'  => __( 'Let WordPress know what browser is being used to view admin screens. (*)', 'tcc-privacy' ),
+				'no'   => __( 'Do not let them know what browser you use.', 'tcc-privacy' ),
+			),
+		);
+		$layout['location'] = array(
+			'default' => 'yes',
+			'label'   => __( 'Location', 'tcc-privacy' ),
+			'help'    => __( 'Disabling this option will cause Community Events to not work.', 'tcc-privacy' ),
+			'render'  => 'radio',
+			'source'  => array(
+				'yes'  => __( 'Let WordPress know your IP address, locale, and timezone. (*)', 'tcc-privacy' ),
+				'no'   => __( 'Do not let them know where you are at.', 'tcc-privacy' ),
+			),
+		);
 		if ( ( is_multisite() && is_main_site() ) || $all ) {
 			$layout['blog']['change'] = 'showhidePosi( this, ".privacy-blog-option", "yes" );';
 			$layout['blog']['showhide'] = array(
@@ -180,7 +199,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			'text'    => __( 'Settings for the Privacy My Way plugin.', 'tcc-privacy' ),
 			'render'  => 'title',
 		);
-/*		if ( WP_DEBUG || $all ) {
+#		if ( WP_DEBUG || $all ) {
 			$layout['logging'] = array(
 				'default' => 'off',
 				'label'   => __( 'Logging', 'tcc-privacy' ),
@@ -191,7 +210,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 					'on'  => __( 'Log everything.', 'tcc-privacy' ),
 				),
 			);
-		} //*/
+#		} //*/
 		$layout['deledata'] = array(
 			'default' => ( WP_DEBUG ) ? 'nodelete' : 'uninstall',
 			'label'   => __( 'Data Deletion', 'tcc-privacy' ),
@@ -296,12 +315,20 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 
 	private function get_option( $option, $value = '' ) {
 		if ( empty( $this->options ) ) {
-			$this->options = get_option( 'tcc_options_privacy', array() );
+			$this->options = get_option( 'tcc_options_privacy-my-way', array() );
 		}
 		if ( isset( $this->options[ $option ] ) ) {
 			$value = $this->options[ $option ];
 		}
 		return $value;
+	}
+
+	protected function customizer_data() {
+		$data = array(
+			array(
+			),
+		);
+		return apply_filters( "fluid_{$this->base}_customizer_data", $data );
 	}
 
 }

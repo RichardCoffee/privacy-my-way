@@ -2,36 +2,36 @@
 
 class PMW_Plugin_Library {
 
+	use PMW_Trait_Attributes;
+	use PMW_Trait_Logging;
+	use PMW_Trait_Magic;
 
-	/**  attribute functions  **/
-
-	public function apply_attrs( $args ) {
-		echo $this->get_apply_attrs( $args );
+	public function __construct() {
+		$this->initialize();
+		$this->logging_check_function();
 	}
 
-	public function get_apply_attrs( $args ) {
-		$attrs = ' ';
-		foreach( $args as $attr => $value ) {
-			if ( empty( $value ) ) {
-				continue;
-			}
-			switch( $attr ) {
-				case 'href':
-				case 'src':
-					$value = esc_url( $value );
-					break;
-				case 'value':
-					$value = esc_html( $value );
-					break;
-				case 'aria-label':
-				case 'title':
-					$value = wp_strip_all_tags( $value );
-				default:
-					$value = esc_attr( $value );
-			}
-			$attrs .= $attr . '="' . $value . '" ';
+	protected function initialize() {
+		$this->register__call( [ $this, 'logging_calling_location' ],          'debug_calling_function' );
+		$this->register__call( [ $this, 'logging_get_calling_function_name' ], 'get_calling_function' );
+		$this->register__call( [ $this, 'logging_was_called_by' ],             'was_called_by' );
+		if ( WP_DEBUG && function_exists( 'add_action' ) ) {
+			add_action( 'deprecated_function_run',    [ $this, 'logging_log_deprecated' ], 10, 3 );
+			add_action( 'deprecated_constructor_run', [ $this, 'logging_log_deprecated' ], 10, 3 );
+			add_action( 'deprecated_file_included',   [ $this, 'logging_log_deprecated' ], 10, 4 );
+			add_action( 'deprecated_argument_run',    [ $this, 'logging_log_deprecated' ], 10, 3 );
+			add_action( 'deprecated_hook_run',        [ $this, 'logging_log_deprecated' ], 10, 4 );
+			add_action( 'doing_it_wrong_run',         [ $this, 'logging_log_deprecated' ], 10, 3 );
 		}
-		return $attrs;
+	}
+
+	#duplicated in PMW_Theme_Library
+	public function kses() {
+		return array(
+			'a'    => [ 'class' => [ ], 'href' => [ ], 'itemprop' => [ ], 'rel' => [ ], 'target' => [ ], 'title' => [ ], 'aria-label' => [ ] ],
+			'i'    => [ 'class' => [ ] ],
+			'span' => [ 'class' => [ ], 'itemprop' => [ ] ],
+		);
 	}
 
 

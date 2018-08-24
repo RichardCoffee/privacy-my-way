@@ -3,12 +3,12 @@
 class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 
-	private   $checker  = null;
+	private   $form     = null;
 	protected $github   = 'https://github.com/RichardCoffee/privacy-my-way/';
 	protected $privacy  = null;
-	protected $setting  = 'options-general.php?page=privacy';
+	protected $setting  = 'options-general.php?page=privacy-my-way';
 	protected $slug     = 'privacy-my-way';
-	protected $tab      = 'privacy';
+	protected $tab      = 'privacy-my-way';
 
 	use PMW_Trait_Singleton;
 
@@ -23,38 +23,25 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 			$this->add_actions();
 			$this->add_filters();
 			if ( WP_DEBUG ) {
-#				add_filter( 'pre_set_site_transient_update_themes', array( $this, 'site_transient_stack' ), 10, 2 );
 				if ( file_exists( WP_CONTENT_DIR . '/pmw-run-tests.flg' ) ) {
 					$this->run_tests();
 				}
 			}
 		}
+		$this->privacy_setup();
+		$this->update_privacy_options();
 	}
 
 	public function add_actions() {
-		$actions = array(
-			'admin_init',
-			'load-plugins.php',
-			'load-themes.php',
-			'load-update.php',
-			'load-update-core.php',
-			'wp_update_plugins',
-			'wp_update_themes',
-			'wp_version_check',
-		);
-		foreach( $actions as $action ) {
-			add_action( $action, array( $this, 'add_privacy_filters' ), 1 );
-		}
 		if ( is_admin() ) {
-			new PMW_Form_Privacy;
+			$this->form = new PMW_Form_Privacy;
 		}
 		parent::add_actions();
 	}
 
 	public function add_filters() {
-		add_filter( 'core_version_check_locale',     array( $this, 'add_privacy_filters' ) );
-		add_filter( 'fluidity_initialize_options',   array( $this, 'add_privacy_options' ) );
-		$options = get_option( 'tcc_options_privacy', array() );
+		add_filter( 'fluidity_initialize_options', [ $this, 'add_privacy_options' ] );
+		$options = get_option( 'tcc_options_privacy-my-way', array() );
 		if ( isset( $options['autoupdate'] ) ) {
 			if ( $options['autoupdate'] === 'no' ) {
 				add_filter( 'automatic_updater_disabled', '__return_true' );
@@ -67,21 +54,20 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		parent::add_filters();
 	}
 
-	public function add_privacy_filters( $locale = '' ) {
-		$this->privacy_setup();
-		return $locale;
-	}
-
+	# intended only for use with https://github.com/RichardCoffee/fluidity-theme
 	public function add_privacy_options( $options ) {
 		$this->setting = 'admin.php?page=fluidity_options&tab=privacy';
 		$options['Privacy'] = new PMW_Options_Privacy;
+		add_action( 'tcc_load_form_page', function() {
+			wp_enqueue_style( 'privacy-form.css', $this->paths->get_plugin_file_uri( 'css/pmw-admin-form.css' ), null, $this->paths->version );
+		} );
 		return $options;
 	}
 
 	private function privacy_setup() {
 		if ( ! $this->privacy ) {
 			include_once( $this->paths->dir . 'classes/privacy.php' );
-			$this->privacy = Privacy_My_Way::instance();
+			$this->privacy = new Privacy_My_Way;
 		}
 	}
 
@@ -134,9 +120,17 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		return compact( 'active', 'themes' );
 	}
 
-	public function site_transient_stack( $data, $transient ) {
-		pmw_log_entry( $transient, $data, 'stack' );
-		return $data;
+	/**
+	 * changed slug due to potential conflict inflicted by WP 4.9.6
+	 *
+	 * @since 20180522
+	 */
+	private function update_privacy_options() {
+		$options = get_option( 'tcc_options_privacy', array() );
+		if ( ! empty( $options ) ) {
+			update_option( 'tcc_options_privacy-my-way', $options, false );
+			delete_option( 'tcc_options_privacy' );
+		}
 	}
 
 

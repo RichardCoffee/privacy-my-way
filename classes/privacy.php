@@ -17,45 +17,55 @@ defined( 'ABSPATH' ) || exit;
 class Privacy_My_Way {
 
 
-	protected $options;      #  array --- privacy options
+	public $options;      #  array --- privacy options
 
 	use PMW_Trait_Logging;
-	use PMW_Trait_Singleton;
 
 
-	protected function __construct( $args = array() ) {
-		$this->logging_func = 'pmw_log_entry';
-		$this->get_options();
+	public function __construct( $args = array() ) {
+
+		$this->options = $this->get_options();
+		$this->logging_func  = array( $this, 'log' );
 		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
+
 		if ( $this->options ) {  #  opt-in only
-			add_filter( 'core_version_check_query_args', array( $this, 'core_version_check_query_args' ) );
+
+			add_filter( 'core_version_check_query_args', [ $this, 'core_version_check_query_args' ] );
+
 			#	These next two filters are multisite only
-			add_filter( 'pre_site_option_blog_count', array( $this, 'pre_site_option_blog_count' ), 10, 3 );
-			add_filter( 'pre_site_option_user_count', array( $this, 'pre_site_option_user_count' ), 10, 3 );
-			add_filter( 'http_headers_useragent',     array( $this, 'http_headers_useragent' ),     10, 2 );
-			add_filter( 'pre_http_request',           array( $this, 'pre_http_request' ),            2, 3 );
-			add_filter( 'http_request_args',          array( $this, 'http_request_args' ),          11, 2 );
-			add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'plugins_site_transient' ), 10, 2 );
-			add_filter( 'pre_set_site_transient_update_themes',  array( $this, 'themes_site_transient' ),  10, 2 );
+			add_filter( 'pre_site_option_blog_count', [ $this, 'pre_site_option_blog_count' ], 10, 3 );
+			add_filter( 'pre_site_option_user_count', [ $this, 'pre_site_option_user_count' ], 10, 3 );
+
+			add_filter( 'http_headers_useragent',     [ $this, 'http_headers_useragent' ],     10, 2 );
+			add_filter( 'pre_http_request',           [ $this, 'pre_http_request' ],            2, 3 );
+			add_filter( 'http_request_args',          [ $this, 'http_request_args' ],          11, 2 );
+
+			add_filter( 'pre_set_site_transient_update_themes',  [ $this, 'themes_site_transient' ],  10, 2 );
+			add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'plugins_site_transient' ], 10, 2 );
+			add_filter( 'site_transient_update_plugins',         [ $this, 'plugins_site_transient' ], 10, 2 );
+
 		}
-		$this->logging( $this );
-		$this->check_transients();
+		$this->logg( $this );
 	}
 
 	protected function get_options() {
-		$options = get_option( 'tcc_options_privacy', array() );
-		if ( ! $options ) {
-			$privacy = new PMW_Options_Privacy;
-			$options = $privacy->get_default_options();
-			update_option( 'tcc_options_privacy', $options );
-		}
-		$this->options = $options;
-		add_filter( 'logging_debug_privacy', function( $debug ) {
-			return ( $debug && isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) );
+		$privacy  = new PMW_Options_Privacy;
+		$defaults = $privacy->get_default_options();
+		$current  = get_option( 'tcc_options_privacy-my-way', array() );
+		$options  = array_merge( $defaults, $current );
+		update_option( 'tcc_options_privacy-my-way', $options );
+		add_filter( 'logging_debug_privacy', function( $debug = false ) {
+			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) ? true : false; #(bool) $debug;
 		} );
+		return $options;
 	}
 
 	public function core_version_check_query_args( $args ) {
+		$args['blogs'] = $this->pre_site_option_blog_count( $args['blogs'], null );
+		$args['users'] = $this->pre_site_option_user_count( $args['users'], null );
+		if ( $args['blogs'] === 1 ) {
+			$args['multisite_enabled'] = 0;
+		}
 		return $args;
 	}
 
@@ -89,7 +99,7 @@ class Privacy_My_Way {
 					break;
 				default:
 			}
-			$this->logging(
+			$this->logg(
 				'setting: ' . $this->options['users'],
 				compact( 'original', 'users', 'count', 'option', 'network_id' )
 			);
@@ -124,17 +134,35 @@ class Privacy_My_Way {
 		$args = $this->strip_site_url( $args );
 		$args = $this->filter_plugins( $args, $url );
 		$args = $this->filter_themes(  $args, $url );
-		$this->logging( $url, $args );
+		$this->logg( $url, $args );
 		return $args;
 	}
 
 	public function pre_http_request( $preempt, $args, $url ) {
-		#	check if already preempted or if we have been here before
+		# check if already preempted or if we have been here before
 		if ( $preempt || isset( $args['_pmw_privacy_filter'] ) ) {
 			return $preempt;
 		}
-		$this->logging( 0, 'url: ' . $url );
-		#	only act on requests to api.wordpress.org
+		$this->logg( 0, 'url: ' . $url );
+		# do not tell wordpress.org what browser is being used
+		if ( $this->options['browser'] === 'no' ) {
+			if ( ! ( stripos( $url, '://api.wordpress.org/core/browse-happy' ) === false ) ) {
+				return new WP_Error(
+					'blocked-browser',
+					__( 'Report of browser used blocked by Privacy My Way plugin.', 'tcc-privacy' )
+				);
+			}
+		}
+		# disable revealing location
+		if ( $this->options['location'] === 'no' ) {
+			if ( ! ( stripos( $url, '://api.wordpress.org/events' ) === false ) ) {
+				return new WP_Error(
+					'blocked-location',
+					__( 'Report of current location blocked by Privacy My Way plugin.', 'tcc-privacy' )
+				);
+			}
+		}
+		# only act on requests to api.wordpress.org
 		if (  ( stripos( $url, '://api.wordpress.org/core/version-check/'   ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) === false )
 			&& ( stripos( $url, '://api.wordpress.org/themes/update-check/'  ) === false )
@@ -142,6 +170,7 @@ class Privacy_My_Way {
 			) {
 			return $preempt;
 		}
+
 		$url  = $this->filter_url( $url );
 		$args = $this->strip_site_url( $args );
 		$args = $this->filter_plugins( $args, $url );
@@ -151,11 +180,11 @@ class Privacy_My_Way {
 		$response = wp_remote_request( $url, $args );	//	response really seems to have a lot of duplicated data in it.
 		if ( is_wp_error( $response ) ) {
 			$this->logging_force = true;  #  Log it.
-			$this->logging( 'response error', $url, $response );
+			$this->logg( 'response error', $url, $response );
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$body = json_decode( $body, true );
-			$this->logging( $url, $args, 'response body', $body );
+			$this->logg( $url, $args, 'response body', $body );
 		}
 		return $response;
 	}
@@ -163,19 +192,19 @@ class Privacy_My_Way {
 	/**
 	 *  @brief  Strip site URL from headers & user-agent.
 	 *
-	 *		I would consider including the url in user-agent as a matter of courtesy.
-	 *		Besides, what is the point in not giving them your website url?  Don't
-	 *		you want more people to see it?  Privacy does not mean you shouldn't say
-	 *		hi to your neighbors. I really think this whole header section is a moot
-	 *		point.  Also, what if the devs at wordpress.org decide to cause the
-	 *		version check/update to fail because of no url?
+	 *  I would consider including the url in user-agent as a matter of courtesy.
+	 *  Besides, what is the point in not giving them your website url?  Don't
+	 *  you want more people to see it?  Privacy does not mean you shouldn't say
+	 *  hi to your neighbors. I really think this whole header section is a moot
+	 *  point.  Also, what if the devs at wordpress.org decide to cause the
+	 *  version check/update to fail because of no url?
 	 *
 	 */
 	protected function strip_site_url( $args ) {
 		if ( ! isset( $args['_pmw_privacy_strip_site'] ) || ( ! $args['_pmw_privacy_strip_site'] ) ) {
 			if ( $this->options['blog'] === 'no' ) {
 				if ( isset( $args['headers']['wp_blog'] ) ) {
-					unset( $args['headers']['wp_blog'] );
+					$args['headers']['wp_blog'] = $args['headers']['wp_install'];
 				}
 				if ( isset( $args['user-agent'] ) ) {
 					$args['user-agent'] = 'WordPress/' . get_bloginfo( 'version' );
@@ -183,17 +212,17 @@ class Privacy_My_Way {
 				#	Next three checks taken from resources.  I have not seen these in testing...
 				if ( isset( $args['headers']['user-agent'] ) ) {
 					$args['headers']['user-agent'] = 'WordPress/' . get_bloginfo( 'version' );
-					$this->logging( 'header:user-agent has been seen.' );
+					$this->logg( 'header:user-agent has been seen.' );
 				}
 				#	Anybody seen this?
 				if ( isset( $args['headers']['User-Agent'] ) ) {
 					$args['headers']['User-Agent'] = 'WordPress/' . get_bloginfo( 'version' );
-					$this->logging( 'header:User-Agent has been seen.' );
+					$this->logg( 'header:User-Agent has been seen.' );
 				}
 				#	I have not seen it...
 				if ( isset( $args['headers']['Referer'] ) ) {
 					unset( $args['headers']['Referer'] );
-					$this->logging( 'headers:Referer has been deleted.' );
+					$this->logg( 'headers:Referer has been deleted.' );
 				}
 			}
 			if ( isset( $this->options['install'] ) && ( $this->options['install'] === 'no' ) ) {
@@ -206,34 +235,32 @@ class Privacy_My_Way {
 				}
 			}
 			$args['_pmw_privacy_strip_site'] = true;
-		} #else { $this->logging( 'already been here', $args ); }
+		}
 		return $args;
 	}
 
 
-	/** Plugins  **/
+	/***   Plugins   ***/
 
 	protected function filter_plugins( $args, $url ) {
 		if ( stripos( $url, '://api.wordpress.org/plugins/update-check/' ) !== false ) {
-			if ( ! isset( $args['_pmw_privacy_filter_plugins'] ) || ( ! $args['_pmw_privacy_filter_plugins'] ) ) {
-				if ( ! empty( $args['body']['plugins'] ) ) {
-					$plugins = json_decode( $args['body']['plugins'], true );
-					switch ( $this->options['plugins'] ) {
-						case 'none':
-							$plugins = array();
-							break;
-						case 'active':
-							$plugins = $this->plugins_option_active( $plugins );
-							break;
-						case 'filter':
-							$plugins = $this->plugins_option_filter( $plugins );
-							break;
-						default:
-					}
-					$this->logging( 'plugins option:  ' . $this->options['plugins'], $plugins );
-					$args['body']['plugins'] = wp_json_encode( $plugins );
-					$args['_pmw_privacy_filter_plugins'] = true;
+			if ( ! empty( $args['body']['plugins'] ) ) {
+				$plugins = json_decode( $args['body']['plugins'], true );
+				switch ( $this->options['plugins'] ) {
+					case 'none':
+						$plugins = array();
+						break;
+					case 'active':
+						$plugins = $this->plugins_option_active( $plugins );
+						break;
+					case 'filter':
+						$plugins = $this->plugins_option_filter( $plugins );
+						break;
+					default:
+						pmw(1)->log('ERROR: option - ' . $this->options['plugins'], $this );
 				}
+				$this->logg( 'plugins option:  ' . $this->options['plugins'], $plugins );
+				$args['body']['plugins'] = wp_json_encode( $plugins );
 			}
 		}
 		return $args;
@@ -282,18 +309,23 @@ class Privacy_My_Way {
 	}
 
 	public function plugins_site_transient( $value, $transient ) {
-		$initial = $value;
-		foreach( $this->options['plugin_list'] as $plugin => $state ) {
-			if ( $state === 'no' ) {
-				if ( isset( $value->checked[ $plugin ] ) ) {
-					unset( $value->checked[ $plugin ] );
-#$this->logging_force = $plugin;
+		if ( pmw()->was_called_by('get_site_transient') === false ) {
+			if ( $this->options['plugins'] === 'filter' ) {
+				foreach( $this->options['plugin_list'] as $plugin => $state ) {
+					if ( $state === 'no' ) {
+						if ( isset( $value->checked[ $plugin ] ) ) {
+							unset( $value->checked[ $plugin ] );
+						}
+						if ( isset( $value->response[ $plugin ] ) ) {
+							unset( $value->response[ $plugin ] );
+						}
+						if ( isset( $value->no_update[ $plugin ] ) ) {
+							unset( $value->no_update[ $plugin ] );
+						}
+					}
 				}
 			}
 		}
-if ( $this->logging_force ) {
-	$this->logging( $this->logging_force, $initial, $value );
-}
 		return $value;
 	}
 
@@ -305,7 +337,7 @@ if ( $this->logging_force ) {
 			if ( ! isset( $args['_pmw_privacy_filter_themes'] ) || ( ! $args['_pmw_privacy_filter_themes'] ) ) {
 				if ( ! empty( $args['body']['themes'] ) ) {
 					$themes = json_decode( $args['body']['themes'], true );
-					$this->logging( $url, $themes );
+					$this->logg( $url, $themes );
 					switch ( $this->options['themes'] ) {
 						case 'none':
 							$themes = array(
@@ -321,11 +353,11 @@ if ( $this->logging_force ) {
 							break;
 						default:
 					}
-					$this->logging( 'themes:  ' . $this->options['themes'], $themes );
+					$this->logg( 'themes:  ' . $this->options['themes'], $themes );
 					$args['body']['themes'] = wp_json_encode( $themes );
 					$args['_pmw_privacy_filter_themes'] = true;
 				}
-			} #else { $this->logging( 'already been here', $args ); }
+			} #else { $this->logg( 'already been here', $args ); }
 		}
 		return $args;
 	}
@@ -388,11 +420,11 @@ if ( $this->logging_force ) {
 		$original = $url;
 		#$keys = array( 'php', 'locale', 'mysql', 'local_package', 'blogs', 'users', 'multisite_enabled', 'initial_db_version',);
 		$url_array = wp_parse_url( $url );
-		$this->logging( $url_array );
+		$this->logg( $url_array );
 		#	Do we need to filter?
 		if ( isset( $url_array['query'] ) ) {
 			$arg_array = wp_parse_args( $url_array['query'] );
-			$this->logging( $arg_array );
+			$this->logg( $arg_array );
 			if ( is_multisite() ) {
 				#	I really think that fibbing on this is a bad idea, but my pro-choice stance dictates that I can't make other people's choices for them.
 				if ( isset( $arg_array['multisite_enabled'] ) && ( $this->options['blogs'] === 'no' ) ) {
@@ -409,7 +441,7 @@ if ( $this->logging_force ) {
 					$url   = add_query_arg( 'users', $users, $url );
 				}
 			}
-			$this->logging( compact( 'original', 'url' ) );
+			$this->logg( compact( 'original', 'url' ) );
 		}
 		return $url;
 	}
@@ -417,29 +449,16 @@ if ( $this->logging_force ) {
 
 	/*  Debugging  */
 
-	private function check_transients() {
-		$checks = array(
-			'update_core',
-			'update_plugins',
-			'update_themes',
-		);
-		foreach( $checks as $check ) {
-			if ( $trans = get_site_transient( $check ) ) {
-				$this->logging( $check, $trans );
-			}
-		}
-	}
-
 	public function run_tests( $args ) {
 		if ( isset( $args['plugins'] ) ) {
 			$test_data = $args['plugins'];
 			$plugins = $this->filter_plugins( $test_data['args'], $test_data['url'] );
-			$this->logging( $test_data, $plugins );
+			$this->logg( $test_data, $plugins );
 		}
 		if ( isset( $args['themes'] ) ) {
 			$test_data = $args['themes'];
 			$themes = $this->filter_themes( $test_data['args'], $test_data['url'] );
-			$this->logging( $test_data, $themes );
+			$this->logg( $test_data, $themes );
 		}
 	}
 

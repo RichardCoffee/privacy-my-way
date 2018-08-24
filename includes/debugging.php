@@ -1,6 +1,6 @@
 <?php
 /**
- *
+ *  DEPRECATED - use library functions instead
  */
 
 defined( 'ABSPATH' ) || exit;

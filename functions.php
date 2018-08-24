@@ -15,10 +15,33 @@ function pmw_privacy_class_loader( $class ) {
 }
 spl_autoload_register( 'pmw_privacy_class_loader' ); //*/
 
-function pmw_library() {
+function pmw( $force_log = false ) {
 	static $library;
 	if ( empty( $library ) ) {
 		$library = new PMW_Plugin_Library;
 	}
+	if ( $force_log ) {
+		$library->logging_force = true;
+	}
 	return $library;
+}
+
+/**
+ * Echo an escaped attribute string
+ *
+ * @since 1.0.0
+ *
+ * @param string $string
+ */
+if ( ! function_exists('e_esc_attr') ) {
+	function e_esc_attr( $string ) {
+		echo esc_attr( $string );
+	}
+}
+
+# http://stackoverflow.com/questions/14348470/is-ajax-in-wordpress
+if ( ! function_exists( 'is_ajax' ) ) {
+	function is_ajax() {
+		return ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ? true : false;
+	}
 }

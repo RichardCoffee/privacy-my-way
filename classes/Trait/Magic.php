@@ -14,11 +14,12 @@ trait PMW_Trait_Magic {
 	protected static $set__callable = false;
 
 
+	# do not use is_callable() within this function
 	public function __call( $string, $args ) {
-		$return = false;
-		if ( isset( self::$magic__call[ $string ] ) ) {
-			$return = call_user_func_array( self::$magic__call[ $string ], $args );
-		} else if ( in_array( $string, self::$magic__call, true ) ) {
+		$return = 'non-callable function';
+		if ( isset( static::$magic__call[ $string ] ) ) {
+			$return = call_user_func_array( static::$magic__call[ $string ], $args );
+		} else if ( in_array( $string, static::$magic__call, true ) ) {
 			$return = call_user_func_array( $string, $args );
 		} else if ( property_exists( $this, $string ) ) {
 			$return = $this->$string;
@@ -37,16 +38,21 @@ trait PMW_Trait_Magic {
 		return isset( $this->$name ); #  Allow read access to private/protected variables
 	} //*/
 
-	public static function register__call( $method, $alias = false ) {
-		if ( $alias ) {
-			self::$magic__call[ $alias ] = $method;
-		} else {
-			self::$magic__call[] = $method;
+	public function register__call( $method, $alias = false ) {
+		if ( is_callable( $method ) ) {
+			if ( $alias ) {
+				static::$magic__call[ $alias ] = $method;
+			} else {
+				$key = ( is_array( $method ) ) ? $method[1] : $method;
+				static::$magic__call[ $key ] = $method;
+			}
+			return true;
 		}
+		return false;
 	} //*/
 
 	public function set( $property, $value ) {
-		if ( self::$set__callable ) {
+		if ( static::$set__callable ) {
 			if ( ( ! empty( $property ) ) && ( ! empty( $value ) ) ) {
 				if ( property_exists( $this, $property ) ) {
 					$this->{$property} = $value;
@@ -55,4 +61,5 @@ trait PMW_Trait_Magic {
 		}
 	}
 
-                                                                                                            }
+
+}

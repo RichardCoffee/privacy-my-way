@@ -12,20 +12,12 @@
 trait PMW_Trait_Singleton {
 
 
-	protected static $abort__construct;
-	private   static $instance;
+	public  static $abort__construct = false;
+	private static $instance = null;
 
 
 	public static function instance() {
-		if ( ! ( self::$instance instanceof self ) ) {
-			$instance = new self();
-			if ( static::$abort__construct ) {
-				static::$abort__construct = false;
-			} else {
-				self::$instance = $instance;
-			}
-		}
-		return self::$instance;
+		return self::get_instance();
 	}
 
 	public static function get_instance( $args = array() ) {
@@ -44,10 +36,6 @@ trait PMW_Trait_Singleton {
 /*
 private static $instances = array();
 
-	public static function instance() {
-		return self::get_instance();
-	}
-
 	public static function get_instance( $args = array() ) {
 		$class = get_called_class();
 		if ( ! isset( self::$instances[ $class ] ) ) {
@@ -62,19 +50,19 @@ private static $instances = array();
 	} //*/
 
 	private function __clone() {
-		$message = __( 'This class can not be cloned.' , 'tcc-privacy' ) . ' * ' . debug_calling_function();
+		$message = __( 'This class can not be cloned.' , 'rtc-privacy' ) . ' * ' . debug_calling_function();
 		$version = ( isset( $this->version ) ) ? $this->version : '0.0.0';
 		_doing_it_wrong( __FUNCTION__, esc_html( $message ), esc_html( $version ) );
 	}
 
-	private function __sleep() {
-		$message = __( 'This class can not be serialized.' , 'tcc-privacy' ) . ' * ' . debug_calling_function();
+	public function __sleep() {
+		$message = __( 'This class can not be serialized.' , 'rtc-privacy' ) . ' * ' . debug_calling_function();
 		$version = ( isset( $this->version ) ) ? $this->version : '0.0.0';
 		_doing_it_wrong( __FUNCTION__, esc_html( $message ), esc_html( $version ) );
 	}
 
 	private function __wakeup() {
-		$message = __( 'This class can not be unserialized.' , 'tcc-privacy' ) . ' * ' . debug_calling_function();
+		$message = __( 'This class can not be unserialized.' , 'rtc-privacy' ) . ' * ' . debug_calling_function();
 		$version = ( isset( $this->version ) ) ? $this->version : '0.0.0';
 		_doing_it_wrong( __FUNCTION__, esc_html( $message ), esc_html( $version ) );
 	}

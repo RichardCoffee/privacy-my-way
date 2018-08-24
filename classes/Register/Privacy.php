@@ -12,12 +12,12 @@ class PMW_Register_Privacy extends PMW_Register_Register {
 	}
 
 	private static function initialize_options() {
-		$options = get_option( 'tcc_options_privacy', array() );
+		$options = get_option( 'tcc_options_privacy-my-way', array() );
 		if ( empty( $options ) ) {
 			$privacy = new PMW_Options_Privacy;
 			$options = $privacy->get_default_options();
 			$options['plugin_list']['privacy-my-way/privacy-my-way.php'] = 'no';
-			update_option( 'tcc_options_privacy', $options );
+			update_option( 'tcc_options_privacy-my-way', $options );
 		}
 	}
 

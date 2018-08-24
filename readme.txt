@@ -1,18 +1,20 @@
 === Privacy My Way ===
 Contributors: richard.coffee
 Requires at least: 4.7
-Tested up to: 4.7.3
-Stable tag: 1.4.0
+Tested up to: 4.9.6
+Stable tag: 1.5.0
 License: MIT
 
-Control the information that your wordpress site is sending to wordpress.org
+Control the information that your wordpress site is sending to wordpress.org.  View our
+[repository](https://github.com/RichardCoffee/privacy-my-way) on github.
 
 == Description ==
 
-This plugin will enable you to finely control all the information that the WordPress
+This plugin will enable you to finely control some of the information that the WordPress
 core code sends back to wordpress.org, including your site's url, the number of users
 you have, what plugins are installed and active, and what themes are installed and
-active.
+active.  It does not filter what PHP and MySQL versions your
+server is running, nor the language files installed.
 
 == Installation ==
 
@@ -24,7 +26,13 @@ active.
 4.  Go to the Plugins screen and click Activate.
 5.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
 
+Note:  If an error occurs when attempting to activate the plugin, then check the plugin directory and make sure that
+the plugin directory name does not have a version number.  If it does, you will need to remove the version number from the
+directory name before the plugin can be activated.
+
 = Manual =
+
+This is your best option, although if you have gotten this far you probably don't need these instructions.
 
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 2.  Copy the `privacy-my-way` directory into your WordPress plugin directory.  Remove the version number when doing so.
@@ -39,7 +47,13 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
-= 1.4.0
+= 1.5.0 =
+* Enhancement:  added option to prevent browser disclosure.
+* Enhancement:  added option to prevent location info being sent to wordpress.org.
+* Upgrade:  updated base plugin classes.
+* Bugfix:  fixed issue with filtering plugins not always working properly.
+
+= 1.4.0 =
 * Enhancement:  added options to prevent WordPress automatic updates, intended for developers.
 * Enhancement:  added code for 'core_version_check_query_args' filter.
 * Upgrade:  updated base plugin classes, added use of base Options class.

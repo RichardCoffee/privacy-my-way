@@ -1,28 +1,43 @@
-This is beta code.  Not guaranteed to do anything more than take up space on your computer.
+Not guaranteed to do anything more than take up space on your computer.
 
 
 # Privacy My Way #
+
 **Contributors:** richard.coffee
-**Tags:** privacy, updates, plugins, themes, core, translations, law, eu
+
+
+**Tags:** privacy, updates, plugins, themes, core, translations
+
+
 **Requires at least:** 4.7
-**Tested up to:** 4.7.4
-**Stable tag:** 1.4.0
+
+
+**Tested up to:** 4.9.8
+
+
+**Stable tag:** 1.5.0
+
+
 **License:** MIT
+
 
 Control the information that your wordpress site is sending to wordpress.org
 
 ## Description
 
-This plugin should enable you to control some of the information that the WordPress core code sends back to wordpress.org, such as
-the number of users you have and what plugins/themes are installed and active.  It does not filter what PHP and MySQL versions your
+This plugin will enable you to finely control some of the information that the WordPress
+core code sends back to wordpress.org, including your site's url, the number of users
+you have, what plugins are installed and active, and what themes are installed and
+active.  It does not filter what PHP and MySQL versions your
 server is running, nor the language files installed.
 
 ## Installation
 
 Please use [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 
-Do not use the Wordpress Upload option because Github includes the version number as part of the directory name inside the zip file.  This does not
-play well with Wordpress.  Once you have the plugin actually installed, then upgrades via the admin dashboard will work just fine.
+When using the Upload option, be aware that Github includes the version number as part of the directory name inside the zip file.  You will
+need FTP or SSH access to around that.  Once you have the plugin actually installed, then upgrades via the admin dashboard will work just fine.
+If anyone knows how to get github not to add the version number, please let me know by opening an issue about it.
 
 ### Manual Installation
 
@@ -33,13 +48,15 @@ This is your best option, although if you have gotten this far you probably don'
 3.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
 4.  Either click on the __Settings__ link, or go to __Dashboard -> Setting -> Privacy My Way__, to edit and save the options.
 
+### Upgrades
+
 Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
 Support for [GitHub Updater](https://github.com/afragen/github-updater) is also present.
 
 
-### Warning
+## Warning
 
-This is beta code.  Use at your own risk.  I do not expect it to break your site, but if it does, then you get to keep the pieces.  Please do not email them to me.
+I no longer consider this beta code and I do not expect it to break your site, but if it does, then you get to keep the pieces.
 
 ## FAQ
 
@@ -50,6 +67,12 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 Contributions are welcome - fork, fix and send pull requests against the `development` branch please.
 
 ## Changelog
+
+### 1.5.0
+* Enhancement:  added option to prevent browser disclosure.
+* Enhancement:  added option to prevent location info being sent to wordpress.org.
+* Upgrade:  update base plugin classes.
+* Bugfix:  fixed issue with filtering plugins not always working properly.
 
 ### 1.4.0
 * Enhancement:  added options to prevent WordPress automatic updates, intended for developers.
@@ -63,7 +86,6 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ### 1.3.1
 * Bugfix:  fixed missing index error.
-
 
 ### 1.3.0
 * Enhancement:  added pot file, along with en_US.po file.
@@ -87,7 +109,6 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 * Fix:  active theme not being reset properly when filtering themes.
 * Fix:  corrected variable reference left over from old code.
 * Minor:  changed some comment text.
-
 
 ### 1.1.0
 * add use of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker)
