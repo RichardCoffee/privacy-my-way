@@ -251,7 +251,10 @@ class Privacy_My_Way {
 						$plugins = array();
 						break;
 					case 'active':
-						$plugins = $this->plugins_option_active( $plugins );
+						// If the index does not exist, then the array is already the active plugins
+						if ( isset( $plugins['plugins'] ) ) {
+							$plugins = $this->plugins_option_active( $plugins );
+						}
 						break;
 					case 'filter':
 						$plugins = $this->plugins_option_filter( $plugins );
