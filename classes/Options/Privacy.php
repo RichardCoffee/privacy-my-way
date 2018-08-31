@@ -26,6 +26,10 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		return __( 'Privacy', 'tcc-privacy' );
 	}
 
+	protected function form_icon() {
+		return 'dashicons-admin-network';
+	}
+
 	public function describe_options() {
 		esc_html_e( 'Control the information that WordPress collects from your site.  The default settings, marked by a (*), duplicate what WordPress currently collects.', 'tcc-privacy' );
 	}

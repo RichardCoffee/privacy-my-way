@@ -47,6 +47,9 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
+= Next Release =
+* Upgrade:  updated base plugin classes.
+
 = 1.5.0 =
 * Enhancement:  added option to prevent browser disclosure.
 * Enhancement:  added option to prevent location info being sent to wordpress.org.

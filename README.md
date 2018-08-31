@@ -68,6 +68,9 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ## Changelog
 
+### Next Release
+* Upgrade:  update base plugin classes.
+
 ### 1.5.0
 * Enhancement:  added option to prevent browser disclosure.
 * Enhancement:  added option to prevent location info being sent to wordpress.org.
