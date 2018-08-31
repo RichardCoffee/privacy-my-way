@@ -2,6 +2,8 @@
 /**
  * classes/Trait/Attributes.php
  *
+ * @author Richard Coffee <richard.coffee@rtcenterprises.net>
+ * @copyright Copyright (c) 2018, Richard Coffee
  */
 /**
  * A trait that provides methods to generate html for tag attributes
@@ -12,28 +14,50 @@
 trait PMW_Trait_Attributes {
 
 	/**
-	 * alias for apply_attrs_element
+	 *  alias for apply_attrs_element method
 	 *
 	 * @since 20180426
 	 * @param string $tag
 	 * @param array $attrs
 	 * @param string $text
+	 * @param boolean $raw if true will prevent $text from being escaped when displayed
 	 */
-	public function element( $tag, $attrs, $text = '' ) {
-		$this->apply_attrs_element( $tag, $attrs, $text );
+	public function element( $tag, $attrs, $text = '', $raw = false ) {
+		echo $this->get_apply_attrs_element( $tag, $attrs, $text, $raw );
 	}
 
-#	 * @since 20180426
-	public function get_element( $tag, $attrs, $text = '' ) {
-		return $this->get_apply_attrs_element( $tag, $attrs, $text );
-}
+	/**
+	 *  alias for get_apply_attrs_element method
+	 *
+	 * @since 20180426
+	 * @param string $tag
+	 * @param array $attrs
+	 * @param string $text
+	 * @param boolean $raw if true will prevent $text from being escaped when displayed
+	 * @return string
+	 */
+	public function get_element( $tag, $attrs, $text = '', $raw = false ) {
+		return $this->get_apply_attrs_element( $tag, $attrs, $text, $raw );
+	}
 
-#	 * @since 20180426
+	/**
+	 *  alias for apply_attrs_tag method
+	 *
+	 * @since 20180426
+	 * @param string $tag
+	 * @param array $attrs
+	 */
 	public function tag( $tag, $attrs ) {
-		$this->apply_attrs_tag( $tag, $attrs );
+		echo $this->get_apply_attrs_tag( $tag, $attrs );
 	}
 
-#	 * @since 20180426
+	/**
+	 *  alias for get_apply_attrs_tag method
+	 * @since 20180426
+	 * @param string $tag
+	 * @param array $attrs
+	 * @return string
+	 */
 	public function get_tag( $tag, $attrs ) {
 		return $this->get_apply_attrs_tag( $tag, $attrs );
 	}
@@ -45,7 +69,7 @@ trait PMW_Trait_Attributes {
 	 * @param array $attrs an associative array containing the attribute keys and values
 	 */
 	public function apply_attrs( $attrs ) {
-		echo wp_kses( $this->get_apply_attrs( $attrs ), [ ] );
+		echo $this->get_apply_attrs( $attrs );
 	}
 
 	/**
@@ -64,7 +88,8 @@ trait PMW_Trait_Attributes {
 		$is_allowed_no_value = array( 'itemscope', 'multiple', 'value', 'required' );
 
 		$html = '';
-		foreach( $attrs as $attr => $value ) {
+		foreach( $attrs as $key => $value ) {
+			$attr = sanitize_key( $key );
 			if ( empty( $value ) ) {
 				if ( in_array( $attr, $is_allowed_no_value, true ) ) {
 					$html .= "$attr ";
@@ -90,10 +115,11 @@ trait PMW_Trait_Attributes {
 				case 'placeholder':
 				case 'title':
 					$value = esc_attr( wp_strip_all_tags( $value ) );
+					break;
 				default:
 					$value = esc_attr( $value );
 			}
-			$html .= $attr . '="' . $value . '" ';
+			$html .= ' ' . $attr . '="' . $value . '"';
 		}
 		return $html;
 	}
@@ -117,17 +143,6 @@ trait PMW_Trait_Attributes {
 	}
 
 	/**
-	 * echo the generated tag html
-	 *
-	 * @since 20170507
-	 * @param string $html_tag the tag to be generated
-	 * @param array $attrs an associative array containing the attribute keys and values
-	 */
-	public function apply_attrs_tag( $tag, $attrs ) {
-		echo $this->get_apply_attrs_tag( $tag, $attrs );
-	}
-
-	/**
 	 * generates the initial html for the desired tag and attributes
 	 *
 	 * @since 20170506
@@ -137,10 +152,23 @@ trait PMW_Trait_Attributes {
 	 */
 	public function get_apply_attrs_tag( $html_tag, $attrs ) {
 		$attrs = $this->filter_attributes_by_tag( $html_tag, $attrs );
-		$html  = "<$html_tag ";
+		$html  = '<' . $this->sanitize_tag( $html_tag );
 		$html .= $this->get_apply_attrs( $attrs );
 		$html .= ( $this->is_tag_self_closing( $html_tag ) ) ? ' />' : '>';
 		return $html;
+	}
+
+	/**
+	 *  sanitize element tag
+	 *
+	 * @since 20180829
+	 * @param string $tag
+	 * @return string
+	 */
+	protected function sanitize_tag( $tag ) {
+		$tag = strtolower( $tag );
+		$tag = preg_replace( '/[^a-z]/', '', $tag );
+		return $tag;
 	}
 
 	/**
@@ -178,22 +206,31 @@ trait PMW_Trait_Attributes {
 	 * @param string $element element to be generated
 	 * @param array $attrs contains attribute/value pairs
 	 * @param string $text content of html element
+	 * @param boolean $raw if true will prevent $text from being escaped when displayed
 	 * @return string
 	 */
-	public function get_apply_attrs_element( $element, $attrs, $text = '' ) {
-		$attrs = $this->filter_attributes_by_tag( $element, $attrs );
-		$html  = "<$element ";
-		$html .= $this->get_apply_attrs( $attrs );
+	public function get_apply_attrs_element( $element, $attrs, $text = '', $raw = false ) {
+		$element = $this->sanitize_tag( $element );
+		$attrs   = $this->filter_attributes_by_tag( $element, $attrs );
+		$html    = "<$element" . $this->get_apply_attrs( $attrs );
+		$inner   = ( $raw ) ? $text : esc_html( $text );
 		if ( $this->is_tag_self_closing( $element ) ) {
-			$html .= ' />' . esc_html( $text );
+			$html .= ' />' . $inner;
 		} else {
-			$html .= '>' . esc_html( $text ) . "</$element>";
+			$html .= '>' . $inner . "</$element>";
 		}
 		return $html;
 	}
 
-#	 * @since 20180425
-#	 * @link https://www.hongkiat.com/blog/wordpress-rel-noopener/
+	/**
+	 *  filter the attribute array by the html tag and the array subscript
+	 *
+	 * @since 20180425
+	 * @link https://www.hongkiat.com/blog/wordpress-rel-noopener/
+	 * @param string $html_tag
+	 * @param array $attrs
+	 * @return array
+	 */
 	public function filter_attributes_by_tag( $html_tag, $attrs ) {
 		if ( ( $html_tag === 'a' ) && isset( $attrs[ 'target' ] ) ) {
 			$attrs['rel'] = ( ( isset( $attrs['rel'] ) ) ? $attrs['rel'] . ' ' : '' ) . 'nofollow noopener';
@@ -205,27 +242,73 @@ trait PMW_Trait_Attributes {
 
 /***   helper functions   ***/
 
-#	 * @since 20180424
+	/**
+	 *  add the checked attribute to the attributes array
+	 *
+	 * @since 20180424
+	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
+	 * @param array $attrs
+	 * @param mixed $checked value to check
+	 * @param mixed $current base value to check against
+	 * @return array
+	 */
 	public function checked( $attrs, $checked, $current = true ) {
 		return $this->checked_selected_helper( $attrs, $checked, $current, 'checked' );
 	}
 
-#	 * @since 20180424
+	/**
+	 *  add the disabled attribute to the attributes array
+	 *
+	 * @since 20180424
+	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
+	 * @param array $attrs
+	 * @param mixed $disabled value to check
+	 * @param mixed $current base value to check against
+	 * @return array
+	 */
 	public function disabled( $attrs, $disabled, $current = true ) {
 		return $this->checked_selected_helper( $attrs, $disabled, $current, 'disabled' );
 	}
 
-#	 * @since 20180424
+	/**
+	 *  add the readonly attribute to the attributes array
+	 *
+	 * @since 20180424
+	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
+	 * @param array $attrs
+	 * @param mixed $readonly value to check
+	 * @param mixed $current base value to check against
+	 * @return array
+	 */
 	public function readonly( $attrs, $readonly, $current = true ) {
 		return $this->checked_selected_helper( $attrs, $readonly, $current, 'readonly' );
 	}
 
-#	 * @since 20180424
+	/**
+	 *  add the selected attribute to the attributes array
+	 *
+	 * @since 20180424
+	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
+	 * @param array $attrs
+	 * @param mixed $selected value to check
+	 * @param mixed $current base value to check against
+	 * @return array
+	 */
 	public function selected( $attrs, $selected, $current = true ) {
 		return $this->checked_selected_helper( $attrs, $selected, $current, 'selected' );
 	}
 
-#	 * @since 20180424
+	/**
+	 *  workhorse of the checked, disabled, readonly, and selected methods
+	 *
+	 * @since 20180424
+	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
+	 * @param array $attrs
+	 * @param mixed $checked value to check
+	 * @param mixed $current base value to check against
+	 * @param string $type attribute to add
+	 * @return array
+	 */
 	protected function checked_selected_helper( $attrs, $helper, $current, $type ) {
 		if ( (string) $helper === (string) $current ) {
 			$attrs[ $type ] = $type;
