@@ -1,4 +1,8 @@
-Not guaranteed to do anything more than take up space on your computer.
+WARNING:  The upgrade to 1.5.2 will have to be done manually.  Github lost the
+updater files, not sure how or when.  They were still showing up in the repo on
+my computer in both the master and development branches, but not on github on
+either branch.  The directory showed up, but had no files in it.
+
 
 
 # Privacy My Way #
@@ -15,7 +19,7 @@ Not guaranteed to do anything more than take up space on your computer.
 **Tested up to:** 4.9.8
 
 
-**Stable tag:** 1.5.0
+**Stable tag:** 1.5.2
 
 
 **License:** MIT
@@ -70,6 +74,10 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ### Next Release
 * Upgrade:  update base plugin classes.
+
+### 1.5.2
+* Bugfix:  forced update on the Plugin Update Checker.  Github lost it's files at some point, even though they still showed up in my own repo.
+* Bugfix:  updated a core plugin file classes/Trait/Attributes.
 
 ### 1.5.1
 * Bugfix: fixed issue where an array did not need to be passed through the function filtering active plugins.

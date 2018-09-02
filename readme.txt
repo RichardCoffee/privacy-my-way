@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 4.9.6
-Stable tag: 1.5.0
+Stable tag: 1.5.2
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our
@@ -49,6 +49,9 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 = Next Release =
 * Upgrade:  updated base plugin classes.
+
+= 1.5.2
+* Bugfix: update core file classes/Trait/Attributes.php, fixed issue with sanitizing tags.
 
 = 1.5.1 =
 * Bugfix: fixed issue where an array did not need to be passed through the function filtering active plugins.
