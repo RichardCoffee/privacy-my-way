@@ -11,7 +11,7 @@
  * @since 20170506
  * @link 4.9.5:wp-includes/general-template.php:2949
  */
-trait PMW_Trait_Attributes {
+trait TCC_Trait_Attributes {
 
 	/**
 	 *  alias for apply_attrs_element method
@@ -167,7 +167,7 @@ trait PMW_Trait_Attributes {
 	 */
 	protected function sanitize_tag( $tag ) {
 		$tag = strtolower( $tag );
-		$tag = preg_replace( '/[^a-z]/', '', $tag );
+		$tag = preg_replace( '/[^a-z0-9]/', '', $tag );
 		return $tag;
 	}
 
