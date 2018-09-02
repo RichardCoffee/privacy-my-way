@@ -11,7 +11,7 @@
  * @since 20170506
  * @link 4.9.5:wp-includes/general-template.php:2949
  */
-trait TCC_Trait_Attributes {
+trait PMW_Trait_Attributes {
 
 	/**
 	 *  alias for apply_attrs_element method

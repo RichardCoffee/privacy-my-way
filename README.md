@@ -1,7 +1,8 @@
-WARNING:  The upgrade to 1.5.2 will have to be done manually.  Github lost the
-updater files, not sure how or when.  They were still showing up in the repo on
-my computer in both the master and development branches, but not on github on
-either branch.  The directory showed up, but had no files in it.
+WARNING:  The upgrade to 1.5.3 will have to be done manually.  Github lost the
+updater files, not sure how but it seemed to happen with the 1.4.0 version.  They
+were still showing up in the repo on my computer in both the master and development
+branches, but not on github on either branch.  The directory showed up, but had
+no files in it.
 
 
 
@@ -19,7 +20,7 @@ either branch.  The directory showed up, but had no files in it.
 **Tested up to:** 4.9.8
 
 
-**Stable tag:** 1.5.2
+**Stable tag:** 1.5.3
 
 
 **License:** MIT
@@ -74,6 +75,9 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ### Next Release
 * Upgrade:  update base plugin classes.
+
+### 1.5.3
+* Bugfix:  The minor bugfix in the last release was itself broken.  I panicked about the missing updater, and well...
 
 ### 1.5.2
 * Bugfix:  forced update on the Plugin Update Checker.  Github lost it's files at some point, even though they still showed up in my own repo.
