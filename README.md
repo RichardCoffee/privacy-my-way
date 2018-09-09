@@ -20,7 +20,7 @@ no files in it.
 **Tested up to:** 4.9.8
 
 
-**Stable tag:** 1.5.3
+**Stable tag:** 1.5.4
 
 
 **License:** MIT
@@ -74,6 +74,9 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ## Changelog
 
 ### Next Release
+
+### 1.5.3
+* Bugfix:   added missing case in switch statement.
 * Upgrade:  update base plugin classes.
 
 ### 1.5.3

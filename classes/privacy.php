@@ -259,6 +259,8 @@ class Privacy_My_Way {
 					case 'filter':
 						$plugins = $this->plugins_option_filter( $plugins );
 						break;
+					case 'all':
+						break;
 					default:
 						pmw(1)->log('ERROR: option - ' . $this->options['plugins'], $this );
 				}

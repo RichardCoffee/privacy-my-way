@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 4.9.6
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our
@@ -48,12 +48,15 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 == Changelog ==
 
 = Next Release =
+
+= 1.5.4 =
+* Bugfix:   added missing case in switch statement.
 * Upgrade:  updated base plugin classes.
 
-= 1.5.3
+= 1.5.3 =
 * Bugfix:  The minor bugfix in the last release was itself broken.  I panicked about the missing updater, and well...
 
-= 1.5.2
+= 1.5.2 =
 * Bugfix:  forced update on the Plugin Update Checker.  Github lost it's files at some point, even though they still showed up in my own repo.
 * Bugfix:  update core file classes/Trait/Attributes.php, fixed issue with sanitizing tags.
 
