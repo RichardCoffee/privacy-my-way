@@ -2,7 +2,7 @@ WARNING:  The upgrade to 1.5.3 will have to be done manually.  Github lost the
 updater files, not sure how but it seemed to happen with the 1.4.0 version.  They
 were still showing up in the repo on my computer in both the master and development
 branches, but not on github on either branch.  The directory showed up, but had
-no files in it.
+no files in it.  If anyone has a notion as to what may have happened, please contact me.
 
 
 
@@ -17,10 +17,10 @@ no files in it.
 **Requires at least:** 4.7
 
 
-**Tested up to:** 4.9.8
+**Tested up to:** 5.2.1
 
 
-**Stable tag:** 1.5.4
+**Stable tag:** 1.5.5
 
 
 **License:** MIT
@@ -42,14 +42,16 @@ Please use [the latest release](https://github.com/RichardCoffee/privacy-my-way/
 
 When using the Upload option, be aware that Github includes the version number as part of the directory name inside the zip file.  You will
 need FTP or SSH access to around that.  Once you have the plugin actually installed, then upgrades via the admin dashboard will work just fine.
-If anyone knows how to get github not to add the version number, please let me know by opening an issue about it.
+If anyone knows how to get github not to add the version number to the tarball's internal directory, please let me.
 
 ### Manual Installation
 
 This is your best option, although if you have gotten this far you probably don't need these instructions.
 
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
-2.  Copy the `privacy-my-way` directory into your WordPress plugin directory.  Remove the version number when doing so.
+2.  Upload the master.zip file to your site via the Upload Plugin button on the __Plugins -> Add New__ admin page,
+    or if using ftp, unzip the file into a temp directory and copy the `privacy-my-way` directory into your WordPress
+    plugin directory.  Remove the version number when doing so.
 3.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
 4.  Either click on the __Settings__ link, or go to __Dashboard -> Setting -> Privacy My Way__, to edit and save the options.
 
@@ -65,7 +67,7 @@ I no longer consider this beta code and I do not expect it to break your site, b
 
 ## FAQ
 
-See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Open an issue if you can't find the info you need.
+See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Open an issue if you can't find the info you need.  Please.
 
 ### Contributions
 
@@ -74,6 +76,9 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ## Changelog
 
 ### Next Release
+
+### 1.5.5
+* Bugfix:  fixed compatibility issue with fluidity-theme admin options page.
 
 ### 1.5.4
 * Bugfix:   added missing case in switch statement.
