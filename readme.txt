@@ -36,9 +36,9 @@ This is your best option, although if you have gotten this far you probably don'
 
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 2.  Unzip the master.zip file into a temp directory in your local harddrive.
-2.  Using FTP, copy the `privacy-my-way` directory into your site's WordPress plugin directory.  Remove the version number when doing so.
-3.  Go to your WordPress Admin Dashboard -> Plugins screen and activate the plugin.
-4.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
+3.  Using FTP, copy the `privacy-my-way` directory into your site's WordPress plugin directory.  Remove the version number when doing so.
+4.  Go to your WordPress Admin Dashboard -> Plugins screen and activate the plugin.
+5.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
 
 = Upgrades =
 
@@ -50,17 +50,19 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
-= 1.5.5
+= Next Release =
+
+= 1.5.5 =
 * Bugfix:  fixed compatibility issue with fluidity-theme admin options page.
 
-= 1.5.4
+= 1.5.4 =
 * Bugfix:   added missing case in switch statement.
 * Upgrade:  updated base plugin classes.
 
-= 1.5.3
+= 1.5.3 =
 * Bugfix:  The minor bugfix in the last release was itself broken.  I panicked about the missing updater, and well...
 
-= 1.5.2
+= 1.5.2 =
 * Bugfix:  forced update on the Plugin Update Checker.  Github lost it's files at some point, even though they still showed up in my own repo.
 * Bugfix:  update core file classes/Trait/Attributes.php, fixed issue with sanitizing tags.
 
