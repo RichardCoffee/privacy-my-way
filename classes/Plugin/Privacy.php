@@ -56,7 +56,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
 	# intended only for use with https://github.com/RichardCoffee/fluidity-theme
 	public function add_privacy_options( $options ) {
-		$this->setting = 'admin.php?page=fluidity_options&tab=privacy';
+		$this->setting = 'admin.php?page=fluidity_options&tab=' . $this->tab;
 		$options['Privacy'] = new PMW_Options_Privacy;
 		add_action( 'tcc_load_form_page', function() {
 			wp_enqueue_style( 'privacy-form.css', $this->paths->get_plugin_file_uri( 'css/pmw-admin-form.css' ), null, $this->paths->version );

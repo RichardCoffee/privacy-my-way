@@ -1,8 +1,8 @@
 === Privacy My Way ===
 Contributors: richard.coffee
 Requires at least: 4.7
-Tested up to: 4.9.6
-Stable tag: 1.5.4
+Tested up to: 5.2.1
+Stable tag: 1.5.5
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our
@@ -26,18 +26,21 @@ server is running, nor the language files installed.
 4.  Go to the Plugins screen and click Activate.
 5.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
 
-Note:  If an error occurs when attempting to activate the plugin, then check the plugin directory and make sure that
-the plugin directory name does not have a version number.  If it does, you will need to remove the version number from the
-directory name before the plugin can be activated.
+Note:  If an error occurs when attempting to activate the plugin, then manually check your site's plugin directory and
+make sure that the plugin directory name does not end with a version number.  If it does, you will need to remove the
+version number from the directory name before the plugin can be activated.
 
 = Manual =
 
 This is your best option, although if you have gotten this far you probably don't need these instructions.
 
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
-2.  Copy the `privacy-my-way` directory into your WordPress plugin directory.  Remove the version number when doing so.
-3.  Go to your WordPress Dashboard -> Plugins screen and activate the plugin.
-4.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
+2.  Unzip the master.zip file into a temp directory in your local harddrive.
+3.  Using FTP, copy the `privacy-my-way` directory into your site's WordPress plugin directory.  Remove the version number when doing so.
+4.  Go to your WordPress Admin Dashboard -> Plugins screen and activate the plugin.
+5.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
+
+= Upgrades =
 
 Release updates are handled using [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker), so everything should work the WordPress way.
 
@@ -48,6 +51,9 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 == Changelog ==
 
 = Next Release =
+
+= 1.5.5 =
+* Bugfix:  fixed compatibility issue with fluidity-theme admin options page.
 
 = 1.5.4 =
 * Bugfix:   added missing case in switch statement.
