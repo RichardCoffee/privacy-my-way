@@ -263,13 +263,17 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			);
 			$title  = '<a ' . $this->library->get_apply_attrs( $title_attrs ) . '>' . esc_html( $plugin['Name'] ) . '</a>';
 			$status = ( in_array( $key, $this->active ) ) ? $active : $inactive;
-			$author_attrs = array(
-				'href'   => $plugin['AuthorURI'],
-				'target' => sanitize_title( $plugin['Author'] ),
-				'title'  => $author_label,
-				'aria-label' => $author_label,
-			);
-			$author = '<a ' . $this->library->get_apply_attrs( $author_attrs ) . '>' . esc_html( $plugin['Author'] ) . '</a>';
+			if ( empty( $plugin['AuthorURI'] ) ) {
+				$author = wp_strip_all_tags( $plugin['Author'] );
+			} else {
+				$author_attrs = array(
+					'href'   => $plugin['AuthorURI'],
+					'target' => sanitize_title( $plugin['Author'] ),
+					'title'  => $author_label,
+					'aria-label' => $author_label,
+				);
+				$author = '<a ' . $this->library->get_apply_attrs( $author_attrs ) . '>' . esc_html( $plugin['Author'] ) . '</a>';
+			}
 			$plugin_list[ $key ] = sprintf( $format, $title, $status, $author );
 		}
 		return $plugin_list;
