@@ -45,7 +45,7 @@ class Privacy_My_Way {
 			add_filter( 'site_transient_update_plugins',         [ $this, 'plugins_site_transient' ], 10, 2 );
 
 		}
-		$this->logg( $this );
+#		$this->logg( $this );
 	}
 
 	protected function get_options() {
