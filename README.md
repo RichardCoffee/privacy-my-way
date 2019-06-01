@@ -76,7 +76,7 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ## Changelog
 
 ### Next Release
-* Enhancement: Allow for blank or missing Author URI in description when filtering plugins.
+* Enhancement: Allow for blank or missing Plugin/Author URI in description when filtering plugins.
 
 ### 1.5.5
 * Bugfix:  fixed compatibility issue with fluidity-theme admin options page.

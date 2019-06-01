@@ -255,13 +255,17 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$inactive = sprintf( '<span class="pmw-plugin-inactive">(%s)</span>', esc_html__( 'inactive', 'tcc-privacy' ) );
 		$format   = esc_html_x( '%1$s %2$s by %3$s', '1: plugin title, 2: plugin active/inactive status, 3: plugin author name', 'tcc-privacy' );
 		foreach ( $this->plugins as $key => $plugin ) {
-			$title_attrs = array(
-				'href'   => $plugin['PluginURI'],
-				'target' => $key,
-				'title'  => $title_label,
-				'aria-label' => $title_label,
-			);
-			$title  = '<a ' . $this->library->get_apply_attrs( $title_attrs ) . '>' . esc_html( $plugin['Name'] ) . '</a>';
+			if ( empty( $plugin['PluginURI'] ) ) {
+				$title = wp_strip_all_tags( $plugin['Name'] );
+			} else {
+				$title_attrs = array(
+					'href'   => $plugin['PluginURI'],
+					'target' => $key,
+					'title'  => $title_label,
+					'aria-label' => $title_label,
+				);
+				$title  = '<a ' . $this->library->get_apply_attrs( $title_attrs ) . '>' . esc_html( $plugin['Name'] ) . '</a>';
+			}
 			$status = ( in_array( $key, $this->active ) ) ? $active : $inactive;
 			if ( empty( $plugin['AuthorURI'] ) ) {
 				$author = wp_strip_all_tags( $plugin['Author'] );
