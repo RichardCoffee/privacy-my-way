@@ -42,7 +42,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$layout['blog'] = array(
 			'default' => 'yes',
 			'label'   => __( 'Blog URL', 'tcc-privacy' ),
-#			'text'    => __( 'I would suggest that you not change this setting.', 'tcc-privacy' ),
+			'text'    => __( 'I would suggest that you not change this setting.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
 				'yes'  => __( "Let WordPress know your site's url. (*)", 'tcc-privacy' ),
@@ -54,6 +54,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$layout['browser'] = array(
 			'default' => 'yes',
 			'label'   => __( 'Browser', 'tcc-privacy' ),
+			'text'    => __( 'Turning this off prevents wordpress.org from informing you if your browser is considered unsecure or outdated.', 'tcc-privacy'),
 			'render'  => 'radio',
 			'source'  => array(
 				'yes'  => __( 'Let WordPress know what browser is being used to view admin screens. (*)', 'tcc-privacy' ),
@@ -63,7 +64,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$layout['location'] = array(
 			'default' => 'yes',
 			'label'   => __( 'Location', 'tcc-privacy' ),
-			'text'    => __( 'Disabling this option will cause Community Events to not work.', 'tcc-privacy' ),
+			'text'    => __( 'Disabling this option will cause the Community Events Dashboard widget to not automatically display nearby events.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
 				'yes'  => __( 'Let WordPress know your IP address, locale, and timezone. (*)', 'tcc-privacy' ),
@@ -109,6 +110,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$layout['users'] = array(
 			'default' => 'all',
 			'label'   => __( 'Users', 'tcc-privacy' ),
+			'text'    => __( 'Be aware that every server between you and wordpress.org gets to see this information.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
 				'all'  => __( 'Accurately report to WordPress how many users you have. (*)', 'tcc-privacy' ),
@@ -174,11 +176,6 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			'postext' => __( 'The WordPress twenty* themes that are installed will always be reported.', 'tcc-privacy' ),
 			'help'    => __( 'This plugin does not filter default WordPress themes.', 'tcc-privacy' ),
 			'render'  => 'radio_multiple',
-/*			'titles'  => array(
-				__( 'On', 'tcc-privacy' ),
-				__( 'Off', 'tcc-privacy' ),
-				__( 'Description', 'tcc-privacy' ),
-			), //*/
 			'source'  => $this->get_theme_list(),
 			'divcss'  => 'privacy-theme-filter',
 		); //*/
