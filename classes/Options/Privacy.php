@@ -63,7 +63,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$layout['location'] = array(
 			'default' => 'yes',
 			'label'   => __( 'Location', 'tcc-privacy' ),
-			'help'    => __( 'Disabling this option will cause Community Events to not work.', 'tcc-privacy' ),
+			'text'    => __( 'Disabling this option will cause Community Events to not work.', 'tcc-privacy' ),
 			'render'  => 'radio',
 			'source'  => array(
 				'yes'  => __( 'Let WordPress know your IP address, locale, and timezone. (*)', 'tcc-privacy' ),
