@@ -79,6 +79,8 @@ class Privacy_My_Way {
 
 	#	Filter triggered on multisite installs, called internally for single site
 	public function pre_site_option_user_count( $count, $option, $network_id = 1 ) {
+		static $called = false;  //  recursion flag
+		if ( $called && $count ) return $count;
 		$privacy = $this->options['users'];
 		if ( $privacy ) {
 			$original = $count;
@@ -104,6 +106,7 @@ class Privacy_My_Way {
 				compact( 'original', 'users', 'count', 'option', 'network_id' )
 			);
 		}
+		$called = true;
 		return $count;
 	}
 
