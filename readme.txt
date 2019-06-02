@@ -52,6 +52,7 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 = Next Release =
 * Enhancement: Allow for blank or missing Plugin/Author URI in description when filtering plugins.
+* Bugfix: Prevent a recursion issue with user count.
 
 = 1.5.5 =
 * Bugfix:  fixed compatibility issue with fluidity-theme admin options page.
