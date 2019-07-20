@@ -152,7 +152,7 @@ class Privacy_My_Way {
 			if ( ! ( stripos( $url, '://api.wordpress.org/core/browse-happy' ) === false ) ) {
 				return new WP_Error(
 					'blocked-browser',
-					__( 'Report of browser used blocked by Privacy My Way plugin.', 'tcc-privacy' )
+					__( 'Report of browser used blocked by Privacy My Way plugin.', 'privacy-my-way' )
 				);
 			}
 		}
@@ -161,7 +161,7 @@ class Privacy_My_Way {
 			if ( ! ( stripos( $url, '://api.wordpress.org/events' ) === false ) ) {
 				return new WP_Error(
 					'blocked-location',
-					__( 'Report of current location blocked by Privacy My Way plugin.', 'tcc-privacy' )
+					__( 'Report of current location blocked by Privacy My Way plugin.', 'privacy-my-way' )
 				);
 			}
 		}

@@ -33,7 +33,7 @@ class PMW_Register_Privacy extends PMW_Register_Register {
 
 	private static function get_required_version( $request ) {
 		if ( empty( self:: $versions ) ) {
-			static::$title = __( 'Privacy My Way', 'tcc-privacy' );
+			static::$title = __( 'Privacy My Way', 'privacy-my-way' );
 			$file = WP_PLUGIN_DIR . '/' . self::$plugin_file;
 			$need = array(
 				'PHP' => 'Required PHP',

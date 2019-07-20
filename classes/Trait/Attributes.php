@@ -35,6 +35,7 @@ trait PMW_Trait_Attributes {
 	 * @param string $text
 	 * @param boolean $raw if true will prevent $text from being escaped when displayed
 	 * @return string
+	 * @used-by PMW_Form_Admin::field_label()
 	 */
 	public function get_element( $tag, $attrs, $text = '', $raw = false ) {
 		return $this->get_apply_attrs_element( $tag, $attrs, $text, $raw );
