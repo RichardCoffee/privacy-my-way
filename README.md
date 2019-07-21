@@ -77,6 +77,8 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ### Next Release
 * Enhancement: Allow for blank or missing Plugin/Author URI in description when filtering plugins.
+* Upgrade:  upgraded to version 4.7 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
+* Upgrade:  updated core Trait classes.
 * Bugfix: Prevent a recursion issue with user count.
 
 ### 1.5.5
