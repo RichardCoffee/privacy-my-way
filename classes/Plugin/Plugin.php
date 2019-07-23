@@ -1,21 +1,46 @@
 <?php
-
+/**
+ *   Supplies basic plugin functions
+ *
+ * @package Privacy_My_Way
+ * @subpackage Plugin_Core
+ * @since 20170111
+ * @author Richard Coffee <richard.coffee@rtcenterprises.net>
+ * @copyright Copyright (c) 2017, Richard Coffee
+ * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Plugin/Plugin.php
+ */
+defined( 'ABSPATH' ) || exit;
+/**
+ *  Abstract class that contains helper functions for a plugin.
+ *
+ * @since 20170214
+ */
 abstract class PMW_Plugin_Plugin {
 
+#	 * @since 20170111
 	protected $admin    = null;
+#	 * @since 20170111
 	public    $dbvers   = '0';
+#	 * @since 20170325
 	protected $github   = '';    #  'https://github.com/MyGithubName/my-plugin-name/';
+#	 * @since 20170113
 	public    $paths    = null;  #  PMW_Plugin_Paths object
+#	 * @since 20170111
 	public    $plugin   = 'plugin-slug';
+#	 * @since 20170207
 	protected $setting  = '';    #  settings link
+#	 * @since 20170207
 	protected $state    = '';
+#	 * @since 20170111
 	protected $tab      = 'about';
 
 	use PMW_Trait_Magic;
 	use PMW_Trait_ParseArgs;
 
+#	 * @since 20170214
 	abstract public function initialize();
 
+#	 * @since 20170111
 	protected function __construct( $args = array() ) {
 		if ( ! empty( $args['file'] ) ) {
 			$data = get_file_data( $args['file'], [ 'ver' => 'Version' ] );
@@ -37,8 +62,10 @@ abstract class PMW_Plugin_Plugin {
 		}
 	}
 
+#	 * @since 20170111
 	public function add_actions() { }
 
+#	 * @since 20170111
 	public function add_filters() {
 		add_filter( 'plugin_action_links', [ $this, 'settings_link' ], 10, 4 );
 		add_filter( 'network_admin_plugin_action_links', [ $this, 'settings_link' ], 10, 4 );
@@ -47,6 +74,7 @@ abstract class PMW_Plugin_Plugin {
 
 	/**  General functions  **/
 
+#	 * @since 20170207
 	public function state_check() {
 		$state = 'alone';
 		if ( is_readable( get_template_directory() . '/classes/Form/Admin.php' ) ) {
@@ -62,6 +90,7 @@ abstract class PMW_Plugin_Plugin {
 		return $state;
 	}
 
+#	 * @since 20170227
 	protected function schedule_initialize() {
 		switch ( $this->state ) {
 			case 'plugin':
@@ -74,7 +103,8 @@ abstract class PMW_Plugin_Plugin {
 		}
 	}
 
-	#	https://github.com/schemapress/Schema
+#	 * @since 20170325
+#	 * @link https://github.com/schemapress/Schema
 	private function load_textdomain() {
 		$args = array(
 			'text_domain' => 'Text Domain',
@@ -93,6 +123,7 @@ abstract class PMW_Plugin_Plugin {
 		}
 	}
 
+#	 * @since 20170409
 	private function determine_textdomain_filenames( $data ) {
 		$lang_def = ( empty( $data['lang_dir'] ) ) ? '/languages' : $data['lang_dir'];
 		#	$lang_dir
@@ -106,7 +137,12 @@ abstract class PMW_Plugin_Plugin {
 		return $files;
 	}
 
+#	 * @since 20170111
 	public function get_stylesheet( $file = 'css/privacy-my-way.css', $path = '/' ) {
+		return $this->paths->get_plugin_file_path( $file );
+	}
+
+	/*
 		return $this->paths->get_plugin_file_path( $file );
 	}
 
@@ -114,13 +150,14 @@ abstract class PMW_Plugin_Plugin {
 	 *  Removes 'Edit' option from plugin page entry
 	 *  Adds 'Settings' option to plugin page entry
 	 *
+	 * @since 20170111
 	 *  sources:  http://code.tutsplus.com/tutorials/integrating-with-wordpress-ui-the-basics--wp-26713
 	 *            https://hugh.blog/2012/07/27/wordpress-add-plugin-settings-link-to-plugins-page/
 	 */
 	public function settings_link( $links, $file, $data, $context ) {
 		if ( strpos( $file, $this->plugin ) !== false ) {
 			unset( $links['edit'] );
-			if ( is_plugin_active( $file ) ) {
+			if ( is_plugin_active( $file ) && ! ( $this->tab === 'about' ) ) {
 				$url   = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
 				$links['settings'] = sprintf( '<a href="%s"> %s </a>', esc_url( $url ), esc_html__( 'Settings', 'privacy-my-way' ) );
 			}
@@ -132,6 +169,7 @@ abstract class PMW_Plugin_Plugin {
   /** Update functions **/
 
 
+#	 * @since 20170325
 	private function load_update_checker() {
 		if ( $this->github ) {
 			$puc_file = $this->paths->dir . $this->paths->vendor . 'plugin-update-checker/plugin-update-checker.php';
@@ -143,6 +181,7 @@ abstract class PMW_Plugin_Plugin {
 	}
 
 /*
+#	 * @since 20170111
   public function check_update() {
     $addr = 'tcc_options_'.$this->tab;
     $data = get_option($addr);
@@ -151,6 +190,7 @@ abstract class PMW_Plugin_Plugin {
     $this->perform_update($addr);
   }
 
+#	 * @since 20170111
   private function perform_update($addr) {
     $option = get_option($addr);
     $dbvers = intval($option['dbvers'],10);

@@ -2,7 +2,7 @@
 /**
  *  Display admin forms
  *
- * @package Fluidity
+ * @package Privacy_My_Way
  * @subpackage Admin
  * @since 20150323
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>

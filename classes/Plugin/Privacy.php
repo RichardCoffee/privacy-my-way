@@ -2,8 +2,8 @@
 /**
  *  Handles setup tasks for the plugin.
  *
- * @package Privacy My Way
- * @subpackage Plugin
+ * @package Privacy_My_Way
+ * @subpackage Plugin_Core
  * @since 20170221
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright Copyright (c) 2018, Richard Coffee
