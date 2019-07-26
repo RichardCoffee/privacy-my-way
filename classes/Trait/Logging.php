@@ -4,24 +4,31 @@
  * @subpackage Traits
  * @requires PHP 5.3.6
  */
-
 defined( 'WP_DEBUG' ) || exit;
-
+/**
+ * @since 20170325
+ */
 trait PMW_Trait_Logging {
 
+#	 * @since 20170325
 	public $logging_debug  =  WP_DEBUG; #  boolean  - enable/disable logging
+#	 * @since 20170325
 	public $logging_force  =  false;    #  boolean  - can be used to force a single log entry
+#	 * @since 20170325
 	public $logging_func;               #  callable - logging function: must be able to accept a variable number of parameters
+#	 * @since 20180317
 	public $logging_prefix = 'rtc';     #  string   - log file prefix
 
 
 /***   Action functions   ***/
 
+#	 * @since 20170529
 	public function log() {
 		call_user_func_array( [ $this, 'logging_entry' ], func_get_args() );
 	}
 
-# * @used-by PMW_Form_Admin::get_defaults()
+#	 * @since 20170325
+#	 * @used-by PMW_Form_Admin::get_defaults()
 	public function logg() {
 		if ( is_callable( $this->logging_func ) && ( $this->logging_debug || $this->logging_force ) ) {
 			call_user_func_array( $this->logging_func, func_get_args() );
@@ -29,6 +36,12 @@ trait PMW_Trait_Logging {
 		}
 	}
 
+	/**
+	 *  Callable wrapper for logging_reduce_object method.
+	 *
+	 * @since 20180501
+	 * @param object $object
+	 */
 	public function logobj( $object ) {
 		$reduced = $this->logging_reduce_object( $object );
 		call_user_func( [ $this, 'logging_entry' ], $reduced );
@@ -43,6 +56,7 @@ trait PMW_Trait_Logging {
 	 * Retrieve information from the calling function/file, while also
 	 * selectively skipping parts of the stack.
 	 *
+	 * @since 20170529
 	 * @link http://php.net/debug_backtrace
 	 * @param numeric $depth
 	 * @return string
@@ -75,12 +89,14 @@ trait PMW_Trait_Logging {
 	}
 
 	# generally only called in library classes
+#	 * @since 20170325
 	protected function logging_check_function() {
 		if ( ! is_callable( $this->logging_func ) ) {
 			$this->logging_func = array( $this, 'log' );
 		}
 	}
 
+#	 * @since 20180410
 	public function logging_get_calling_function_name( $depth = 4 ) {
 		$result = $this->logging_calling_location( max( $depth, 4 ) );
 		$trace  = array_map( 'trim', explode( '/', $result ) );
@@ -92,6 +108,7 @@ trait PMW_Trait_Logging {
 	/**
 	 * locates a function name in the stack
 	 *
+#	 * @since 20180410
 	 * @param string $func
 	 * @return bool|numeric false or stack level
 	 */
@@ -107,6 +124,7 @@ trait PMW_Trait_Logging {
 		return false;
 	}
 
+#	 * @since 20180410
 	# see classes/Plugin/Library.php or classes/Theme/Library.php for usage
 	public function logging_log_deprecated() {
 		$args = func_get_args();
@@ -116,6 +134,7 @@ trait PMW_Trait_Logging {
 
 /***  Task functions   ***/
 
+#	 * @since 20170529
 	public function logging_entry() {
 		if ( ( ! $this->logging_force ) && defined( 'DOING_AJAX' ) && DOING_AJAX ) { return; }
 		if ( $this->logging_debug || $this->logging_force ) {
@@ -136,6 +155,7 @@ trait PMW_Trait_Logging {
 		}
 	}
 
+#	 * @since 20170529
 	protected function logging_write_destination( $log_file = 'error_log' ) {
 		$destination = $log_file;
 		if ( defined( 'WP_CONTENT_DIR' ) ) {
@@ -150,6 +170,7 @@ trait PMW_Trait_Logging {
 		return $destination; // apply_filters( 'logging_write_destination', $destination );
 	}
 
+#	 * @since 20170529
 	public function logging_write_entry( $log_me, $log_file = 'error_log' ) {
 		static $destination = '';
 		if ( empty( $destination ) ) {
@@ -169,9 +190,26 @@ trait PMW_Trait_Logging {
 
 /***   Helper functions   ***/
 
+	/**
+	 *  Remove object references on an object, object is returned as an array.
+	 *
+	 * @since 20180501
+	 * @param object $object
+	 * @return array
+	 */
 	public function logging_reduce_object( $object ) {
-		$reduced = array();
+		if ( ! is_object( $object ) ) return $object;
+		$classes = array( get_class( $object ) );
+		$parents = class_parents( $object, false );
+		if ( $parents ) $classes = array_merge( $classes, $parents );
+		$reduced = array( 'class:name' => $classes[0] );
 		foreach ( (array)$object as $key => $value ) {
+			if ( $key[0] === "\0" ) {
+				$key = str_replace( "\0*\0", 'protected:', $key );
+				foreach( $classes as $class ) {
+					$key = str_replace( "\0$class\0", "private:$class:", $key );
+				}
+			}
 			if ( is_object( $value ) ) {
 				$reduced[ $key ] = 'object ' . get_class( $value );
 			} else {

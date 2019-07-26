@@ -705,7 +705,7 @@ abstract class PMW_Form_Admin {
 			'value' => 'yes',
 			'onchange' => ( isset( $layout['change'] ) ) ? $layout['change'] : '',
 		);
-		$attrs = $this->checked( $attrs, $value, 'yes' ); ?>
+		$this->checked( $attrs, $value, 'yes' ); ?>
 		<label>
 			<?php $this->tag( 'input', $attrs ); ?>&nbsp;
 			<span>
@@ -741,7 +741,7 @@ abstract class PMW_Form_Admin {
 				'value' => $key,
 			);
 			$check = isset( $value[ $key ] ) ? true : false;
-			$attrs = $this->checked( $attrs, $check ); ?>
+			$this->checked( $attrs, $check ); ?>
 			<div>
 				<label>
 					<?php $this->tag( 'input', $attrs ); ?>&nbsp;
@@ -817,7 +817,7 @@ abstract class PMW_Form_Admin {
 		$this->tag( 'select', $attrs );
 			foreach( $layout['source'] as $key => $text ) {
 				$attrs = [ 'value' => $key ];
-				$attrs = $this->selected( $attrs, $key, $value );
+				$this->selected( $attrs, $key, $value );
 				$this->element( 'option', $attrs, ' ' . $key . ' ' );
 			} ?>
 		</select><?php
@@ -883,7 +883,7 @@ abstract class PMW_Form_Admin {
 			}
 			foreach( $layout['source'] as $key => $text ) {
 				$radio_attrs['value'] = $key;
-				$attrs = $this->checked( $radio_attrs, $value, $key ); ?>
+				$this->checked( $radio_attrs, $value, $key ); ?>
 				<div>
 					<label><?php
 						$this->tag( 'input', $attrs );
@@ -987,7 +987,7 @@ abstract class PMW_Form_Admin {
 			if ( is_array( $source_func ) ) {
 				foreach( $source_func as $key => $text ) {
 					$attrs = [ 'value' => $key ];
-					$attrs = $this->selected( $attrs, $key, $value );
+					$this->selected( $attrs, $key, $value );
 					$this->element( 'option', $attrs, ' ' . $text . ' ' );
 				}
 			} elseif ( method_exists( $this, $source_func ) ) {
