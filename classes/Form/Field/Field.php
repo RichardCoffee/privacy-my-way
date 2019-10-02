@@ -31,7 +31,7 @@ abstract class PMW_Form_Field_Field {
 	 */
 	protected $id = '';
 	/**
-	 *  Element name attribute.
+	 *  Element name attribute, will be used for the element ID if the ID property is empty.
 	 *
 	 * @since 20170211
 	 * @var string
@@ -51,6 +51,20 @@ abstract class PMW_Form_Field_Field {
 	 * @var string
 	 */
 	protected $placeholder = '';
+	/**
+	 *  Indicates the tabindex attribute.
+	 *
+	 * @since 20190726
+	 * @var integer
+	 */
+	protected $tabindex = 0;
+	/**
+	 *  Element tag.
+	 *
+	 * @since 20190726
+	 * @var string
+	 */
+	protected $tag = 'input';
 	/**
 	 *  Element title attribute.
 	 *
@@ -79,7 +93,7 @@ abstract class PMW_Form_Field_Field {
 	 *  Flag to indicate that bootstrap css classes are to be used.
 	 *
 	 * @since 20180413
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $bootstrap = true;
 	/**
@@ -104,12 +118,19 @@ abstract class PMW_Form_Field_Field {
 	 */
 	protected $label_css = '';
 	/**
+	 *  Indicates this is a required field on the form.
+	 *
+	 * @since 20190726
+	 * @var bool
+	 */
+	protected $required = false;
+	/**
 	 *  Default sanitization method.
 	 *
 	 * @since 20170211
 	 * @var string
 	 */
-	protected $sanitize = 'esc_html';
+	protected $sanitize = 'sanitize_text_field';
 	/**
 	 *  Whether or not to show the element label.
 	 *
@@ -157,11 +178,22 @@ abstract class PMW_Form_Field_Field {
 #		}
 		$args = $this->convert_args( $args );
 		$this->parse_args( $args );
-		if ( ( empty( $this->placeholder ) ) && ( ! empty( $this->description ) ) ) {
-			$this->placeholder = $this->description;
+		if ( empty( $this->placeholder ) ) {
+			if ( empty( $this->description ) ) {
+				$this->placeholder = ( $this->required ) ? __( 'Required Field', 'privacy-my-way' ) : '';
+			} else {
+				$this->placeholder = $this->description . ( ( $this->required ) ? ( ' ' . __( '(required field)', 'privacy-my-way' ) ) : '' );
+			}
 		}
 		if ( empty( $this->id ) ) {
 			$this->id = $this->name;
+		}
+		if ( $this->required ) {
+			if ( empty( $this->title ) ) {
+				$this->title = __( 'Required Field', 'privacy-my-way' );
+			} else {
+				$this->title .= ' ' . __( '(required field)', 'privacy-my-way' );
+			}
 		}
 		if ( $this->bootstrap ) {
 			$this->add_form_control_css();
@@ -186,7 +218,7 @@ abstract class PMW_Form_Field_Field {
 			'form_control' => 'bootstrap'
 		);
 		foreach( $check as $old => $new ) {
-			if ( isset( $args[ $old ] ) ) {
+			if ( array_key_exists( $old, $args ) ) {
 				$args[ $new ] = $args[ $old ];
 			}
 		}
@@ -209,7 +241,7 @@ abstract class PMW_Form_Field_Field {
 	 * @since 20170211
 	 */
 	public function input() {
-		$this->element( 'input', $this->get_input_attributes() );
+		$this->element( $this->tag, $this->get_input_attributes() );
 	}
 
 	/**
@@ -219,27 +251,23 @@ abstract class PMW_Form_Field_Field {
 	 * @return string
 	 */
 	public function get_input() {
-		return $this->get_element( 'input', $this->get_input_attributes() );
+		return $this->get_element( $this->tag, $this->get_input_attributes() );
 	}
 
 	/**
 	 *  Creates the array that controls the element's behavior.
 	 *
-	 *  Please note that any empty value will not get built into the element.
-	 *
 	 * @since 20180426
 	 * @return array
 	 */
 	protected function get_input_attributes() {
-		$attrs = array(
-			'id'          => $this->id,
-			'type'        => $this->type,
-			'class'       => $this->class,
-			'name'        => $this->name,
-			'value'       => $this->value,
-			'placeholder' => $this->placeholder,
-			'onchange'    => $this->onchange,
-		);
+		$attrs    = array();
+		$possible = array( 'id', 'type', 'class', 'name', 'value', 'placeholder', 'title', 'onchange', 'tabindex' );
+		foreach( $possible as $attribute ) {
+			if ( ! empty( $this->$attribute ) ) {
+				$attrs[ $attribute ] = $this->$attribute;
+			}
+		}
 		return $attrs;
 	}
 
@@ -262,7 +290,7 @@ abstract class PMW_Form_Field_Field {
 	 * @since 20190726
 	 */
 	protected function label_tag() {
-		$this->tag( 'label', $this->get_label_attributes(), $this->description );
+		$this->tag( 'label', $this->get_label_attributes() );
 	}
 
 	/**
@@ -276,8 +304,10 @@ abstract class PMW_Form_Field_Field {
 		return $this->get_element( 'label', $this->get_label_attributes(), $this->description );
 	}
 
+#	 *  Builds and returns the label tag.  Calling code is responsible for closing the tag.
+#	 * @since 20190726
 	protected function get_label_tag() {
-		return $this->get_tag( 'label', $this->get_label_attributes(), $this->description );
+		return $this->get_tag( 'label', $this->get_label_attributes() );
 	}
 
 	/**
@@ -292,6 +322,7 @@ abstract class PMW_Form_Field_Field {
 			'id'    => $this->id . '_label',
 			'class' => $this->label_css . ( $this->see_label ) ? '' : " $srt",
 			'for'   => $this->id,
+			'title' => $this->title,
 		);
 		return $attrs;
 	}

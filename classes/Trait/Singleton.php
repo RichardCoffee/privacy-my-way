@@ -38,7 +38,7 @@ trait PMW_Trait_Singleton {
 
 	public static function get_instance( $args = array() ) {
 		$class = get_called_class();
-		if ( ! isset( self::$instances[ $class ] ) ) {
+		if ( ! array_key_exists( $class, self::$instances ) ) {
 			$instance = new $class( $args );
 			if ( static::$abort__construct ) {
 				static::$abort__construct = false;
@@ -46,7 +46,7 @@ trait PMW_Trait_Singleton {
 				self::$instances[ $class ] = $instance;
 			}
 		}
-		return ( isset( self::$instances[ $class ] ) ) ? self::$instances[ $class ] : null;
+		return ( array_key_exists( $class, self::$instances ) ) ? self::$instances[ $class ] : null;
 	} //*/
 
 	private function __clone() {

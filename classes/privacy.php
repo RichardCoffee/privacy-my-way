@@ -55,7 +55,7 @@ class Privacy_My_Way {
 		$options  = array_merge( $defaults, $current );
 		update_option( 'tcc_options_privacy-my-way', $options );
 		add_filter( 'logging_debug_privacy', function( $debug = false ) {
-			return ( isset( $this->options['logging'] ) && ( $this->options['logging'] === 'on' ) ) ? true : false; #(bool) $debug;
+			return ( array_key_exists( 'logging', $this->options ) && ( $this->options['logging'] === 'on' ) ) ? true : false; #(bool) $debug;
 		} );
 		return $options;
 	}
@@ -71,7 +71,7 @@ class Privacy_My_Way {
 
 	#	Filter triggered on multisite installs, called internally for single site
 	public function pre_site_option_blog_count( $count, $option, $network_id = 1 ) {
-		if ( isset( $this->options['blogs'] ) && ( $this->options['blogs'] === 'no' ) ) {
+		if ( array_key_exists( 'blogs', $this->options ) && ( $this->options['blogs'] === 'no' ) ) {
 			$count = 1;
 		}
 		return $count;
@@ -143,7 +143,7 @@ class Privacy_My_Way {
 
 	public function pre_http_request( $preempt, $args, $url ) {
 		# check if already preempted or if we have been here before
-		if ( $preempt || isset( $args['_pmw_privacy_filter'] ) ) {
+		if ( $preempt || array_key_exists( '_pmw_privacy_filter', $args ) ) {
 			return $preempt;
 		}
 		$this->logg( 0, 'url: ' . $url );
@@ -204,35 +204,35 @@ class Privacy_My_Way {
 	 *
 	 */
 	protected function strip_site_url( $args ) {
-		if ( ! isset( $args['_pmw_privacy_strip_site'] ) || ( ! $args['_pmw_privacy_strip_site'] ) ) {
+		if ( ! array_key_exists( '_pmw_privacy_strip_site', $args ) || ( ! $args['_pmw_privacy_strip_site'] ) ) {
 			if ( $this->options['blog'] === 'no' ) {
-				if ( isset( $args['headers']['wp_blog'] ) ) {
+				if ( array_key_exists( 'wp_blog', $args['headers'] ) ) {
 					$args['headers']['wp_blog'] = $args['headers']['wp_install'];
 				}
-				if ( isset( $args['user-agent'] ) ) {
+				if ( array_key_exists( 'user-agent', $args ) ) {
 					$args['user-agent'] = 'WordPress/' . get_bloginfo( 'version' );
 				}
 				#	Next three checks taken from resources.  I have not seen these in testing...
-				if ( isset( $args['headers']['user-agent'] ) ) {
+				if ( array_key_exists( 'user-agent', $args['headers'] ) ) {
 					$args['headers']['user-agent'] = 'WordPress/' . get_bloginfo( 'version' );
 					$this->logg( 'header:user-agent has been seen.' );
 				}
 				#	Anybody seen this?
-				if ( isset( $args['headers']['User-Agent'] ) ) {
+				if ( array_key_exists( 'User-Agent', $args['headers'] ) ) {
 					$args['headers']['User-Agent'] = 'WordPress/' . get_bloginfo( 'version' );
 					$this->logg( 'header:User-Agent has been seen.' );
 				}
 				#	I have not seen it...
-				if ( isset( $args['headers']['Referer'] ) ) {
+				if ( array_key_exists( 'Referer', $args['headers'] ) ) {
 					unset( $args['headers']['Referer'] );
 					$this->logg( 'headers:Referer has been deleted.' );
 				}
 			}
-			if ( isset( $this->options['install'] ) && ( $this->options['install'] === 'no' ) ) {
-				if ( isset( $args['headers']['wp_install'] ) ) {
+			if ( array_key_exists( 'install', $this->options ) && ( $this->options['install'] === 'no' ) ) {
+				if ( array_key_exists( 'wp_install', $args['headers'] ) ) {
 					if ( $this->options['blog'] === 'no' ) {
 						unset( $args['headers']['wp_install'] );
-					} else if ( isset( $args['headers']['wp_blog'] ) ) {
+					} else if ( array_key_exists( 'wp_blog', $args['headers'] ) ) {
 						$args['headers']['wp_install'] = $args['headers']['wp_blog'];
 					}
 				}
@@ -255,7 +255,7 @@ class Privacy_My_Way {
 						break;
 					case 'active':
 						// If the index does not exist, then the array is already the active plugins
-						if ( isset( $plugins['plugins'] ) ) {
+						if ( array_key_exists( 'plugins', $plugins ) ) {
 							$plugins = $this->plugins_option_active( $plugins );
 						}
 						break;
@@ -288,18 +288,18 @@ class Privacy_My_Way {
 		$installed = get_plugins();
 		foreach ( $this->options['plugin_list'] as $plugin => $status ) {
 			if ( ( $status === 'no' ) ) {
-				if ( isset( $plugins['plugins'][ $plugin ] ) ) {
+				if ( array_key_exists( $plugin, $plugins['plugins'] ) ) {
 					unset( $plugins['plugins'][ $plugin ] );
 				}
 			}
-			if ( isset( $installed[ $plugin ] ) ) {
+			if ( array_key_exists( $plugin, $installed ) ) {
 				unset( $installed[ $plugin ] );
 			}
 		}
 		#	Check for newly installed plugins
 		if ( $installed && ( $this->options['install_default'] === 'no' ) ) {
 			foreach( $installed as $key => $plugin ) {
-				if ( isset( $plugins['plugins'][ $key ] ) ) {
+				if ( array_key_exists( $key, $plugins['plugins'] ) ) {
 					unset( $plugins['plugins'][ $key ] );
 				}
 			}
@@ -308,7 +308,7 @@ class Privacy_My_Way {
 		$count  = 1;
 		$active = array();
 		foreach( $plugins['active'] as $key => $plugin ) {
-			if ( isset( $plugins['plugins'][ $plugin ] ) ) {
+			if ( array_key_exists( $plugin, $plugins['plugins'] ) ) {
 				$active[ $count++ ] = $plugin;
 			}
 		}
@@ -321,13 +321,13 @@ class Privacy_My_Way {
 			if ( $this->options['plugins'] === 'filter' ) {
 				foreach( $this->options['plugin_list'] as $plugin => $state ) {
 					if ( $state === 'no' ) {
-						if ( isset( $value->checked[ $plugin ] ) ) {
+						if ( array_key_exists( $plugin, $value->checked ) ) {
 							unset( $value->checked[ $plugin ] );
 						}
-						if ( isset( $value->response[ $plugin ] ) ) {
+						if ( array_key_exists( $plugin, $value->response ) ) {
 							unset( $value->response[ $plugin ] );
 						}
-						if ( isset( $value->no_update[ $plugin ] ) ) {
+						if ( array_key_exists( $plugin, $value->no_update ) ) {
 							unset( $value->no_update[ $plugin ] );
 						}
 					}
@@ -342,7 +342,7 @@ class Privacy_My_Way {
 
 	protected function filter_themes( $args, $url ) {
 		if ( stripos( $url, '://api.wordpress.org/themes/update-check/' ) !== false ) {
-			if ( ! isset( $args['_pmw_privacy_filter_themes'] ) || ( ! $args['_pmw_privacy_filter_themes'] ) ) {
+			if ( ! array_key_exists( '_pmw_privacy_filter_themes', $args ) || ( ! $args['_pmw_privacy_filter_themes'] ) ) {
 				if ( ! empty( $args['body']['themes'] ) ) {
 					$themes = json_decode( $args['body']['themes'], true );
 					$this->logg( $url, $themes );
@@ -389,7 +389,7 @@ class Privacy_My_Way {
 		#	Loop through our filter list
 		foreach ( $filter as $theme => $status ) {
 			#	Is theme still installed?
-			if ( isset( $themes['themes'][ $theme ] ) ) {
+			if ( array_key_exists( $theme, $themes['themes'] ) ) {
 				#	Is the theme being filtered?
 				if ( ( $status === 'no' ) ) {
 					unset( $themes['themes'][ $theme ] );
@@ -416,7 +416,7 @@ class Privacy_My_Way {
 	public function themes_site_transient( $value, $transient ) {
 		foreach( $this->options['theme_list'] as $theme => $state ) {
 			if ( $state === 'no' ) {
-				if ( isset( $value->checked[ $theme ] ) ) {
+				if ( array_key_exists( $theme, $value->checked ) ) {
 					unset( $value->checked[ $theme ] );
 				}
 			}
@@ -430,21 +430,21 @@ class Privacy_My_Way {
 		$url_array = wp_parse_url( $url );
 		$this->logg( $url_array );
 		#	Do we need to filter?
-		if ( isset( $url_array['query'] ) ) {
+		if ( array_key_exists( 'query', $url_array ) ) {
 			$arg_array = wp_parse_args( $url_array['query'] );
 			$this->logg( $arg_array );
 			if ( is_multisite() ) {
 				#	I really think that fibbing on this is a bad idea, but my pro-choice stance dictates that I can't make other people's choices for them.
-				if ( isset( $arg_array['multisite_enabled'] ) && ( $this->options['blogs'] === 'no' ) ) {
+				if ( array_key_exists( 'multisite_enabled', $arg_array ) && ( $this->options['blogs'] === 'no' ) ) {
 					$url = add_query_arg( 'multisite_enabled', '0', $url );
 				}
 			} else {
 				#	Need this for single site. If multisite then these have already been filtered
-				if ( isset( $arg_array['blogs'] ) ) {
+				if ( array_key_exists( 'blogs', $arg_array ) ) {
 					$blogs = $this->pre_site_option_blog_count( $arg_array['blogs'], 'pmw_blog_count' );
 					$url   = add_query_arg( 'blogs', $blogs, $url );
 				}
-				if ( isset( $arg_array['users'] ) ) {
+				if ( array_key_exists( 'users', $arg_array ) ) {
 					$users = $this->pre_site_option_user_count( $arg_array['users'], 'pmw_user_count' );
 					$url   = add_query_arg( 'users', $users, $url );
 				}
@@ -458,12 +458,12 @@ class Privacy_My_Way {
 	/*  Debugging  */
 
 	public function run_tests( $args ) {
-		if ( isset( $args['plugins'] ) ) {
+		if ( array_key_exists( 'plugins', $args ) ) {
 			$test_data = $args['plugins'];
 			$plugins = $this->filter_plugins( $test_data['args'], $test_data['url'] );
 			$this->logg( $test_data, $plugins );
 		}
-		if ( isset( $args['themes'] ) ) {
+		if ( array_key_exists( 'themes', $args ) ) {
 			$test_data = $args['themes'];
 			$themes = $this->filter_themes( $test_data['args'], $test_data['url'] );
 			$this->logg( $test_data, $themes );

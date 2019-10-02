@@ -158,7 +158,7 @@ abstract class PMW_Plugin_Plugin {
 		if ( strpos( $file, $this->plugin ) !== false ) {
 			unset( $links['edit'] );
 			if ( is_plugin_active( $file ) && ! ( $this->tab === 'about' ) ) {
-				$url   = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
+				$url = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
 				$links['settings'] = sprintf( '<a href="%s"> %s </a>', esc_url( $url ), esc_html__( 'Settings', 'privacy-my-way' ) );
 			}
 		}
@@ -185,7 +185,7 @@ abstract class PMW_Plugin_Plugin {
   public function check_update() {
     $addr = 'tcc_options_'.$this->tab;
     $data = get_option($addr);
-    if (!isset($data['dbvers'])) return;
+    if ( ! array_key_exists( 'dbvers', $data ) ) return;
     if (intval($data['dbvers'],10)>=intval($this->dbvers)) return;
     $this->perform_update($addr);
   }

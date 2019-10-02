@@ -41,7 +41,7 @@ class PMW_Register_Privacy extends PMW_Register_Register {
 			);
 			self::$versions = get_file_data( $file, $need );
 		}
-		if ( isset( self::$versions[ $request ] ) ) {
+		if ( array_key_exists( $request, self::$versions ) ) {
 			return self::$versions[ $request ];
 		}
 		return false;

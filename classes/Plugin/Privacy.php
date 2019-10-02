@@ -97,7 +97,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	public function add_filters() {
 		add_filter( 'fluidity_initialize_options', [ $this, 'add_privacy_options' ] );
 		$options = get_option( 'tcc_options_privacy-my-way', array() );
-		if ( isset( $options['autoupdate'] ) ) {
+		if ( array_key_exists( 'autoupdate', $options ) ) {
 			if ( $options['autoupdate'] === 'no' ) {
 				add_filter( 'automatic_updater_disabled', '__return_true' );
 			} else if ( $options['autoupdate'] === 'core' ) {

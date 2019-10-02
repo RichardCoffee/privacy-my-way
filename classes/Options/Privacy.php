@@ -233,7 +233,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$options = $this->get_option( 'plugin_list', array() );
 		$preset  = $this->get_option( 'install_default', 'yes' );
 		foreach( $this->plugins as $key => $plugin ) {
-			if ( ! isset( $options[ $key ] ) || empty( $options[ $key ] ) ) {
+			if ( ! array_key_exists( $key, $options ) || empty( $options[ $key ] ) ) {
 				#	Load missing items with the default value, with new actives getting an automatic 'yes'
 				$options[ $key ] = ( in_array( $key, $this->active ) ) ? 'yes' : $preset;
 				if ( strpos( $key, 'privacy-my-way' ) === 0 ) {
@@ -287,7 +287,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$options = $this->get_option( 'theme_list', array() );
 		$preset  = $this->get_option( 'install_default', 'yes' );
 		foreach( $this->themes as $key => $theme ) {
-			if ( ! isset( $options[ $key ] ) || empty( $options[ $key ] ) ) {
+			if ( ! array_key_exists( $key, $options ) || empty( $options[ $key ] ) ) {
 				$options[ $key ] = ( stripos( $key, 'twenty' ) === false ) ? $preset : 'yes';
 			}
 		}
@@ -326,7 +326,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		if ( empty( $this->options ) ) {
 			$this->options = get_option( 'tcc_options_privacy-my-way', array() );
 		}
-		if ( isset( $this->options[ $option ] ) ) {
+		if ( array_key_exists( $option, $this->options ) ) {
 			$value = $this->options[ $option ];
 		}
 		return $value;

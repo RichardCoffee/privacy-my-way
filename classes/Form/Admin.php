@@ -3,7 +3,7 @@
  *  Display admin forms
  *
  * @package Privacy_My_Way
- * @subpackage Admin
+ * @subpackage Forms
  * @since 20150323
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright Copyright (c) 2018, Richard Coffee
@@ -138,9 +138,9 @@ abstract class PMW_Form_Admin {
 		global $plugin_page;
 		if ( ( $plugin_page === $this->slug ) || ( ( $refer = wp_get_referer() ) && ( strpos( $refer, $this->slug ) ) ) ) {
 			if ( $this->type === 'tabbed' ) {
-				if ( isset( $_POST['tab'] ) ) {
+				if ( array_key_exists( 'tab', $_POST ) ) {
 					$this->tab = sanitize_key( $_POST['tab'] );
-				} else if ( isset( $_GET['tab'] ) )  {
+				} else if ( array_key_exists( 'tab', $_GET ) )  {
 					$this->tab = sanitize_key( $_GET['tab'] );
 				} else if ( $trans = get_transient( 'PMW_TAB' ) ) {
 					$this->tab = $trans;
@@ -151,7 +151,7 @@ abstract class PMW_Form_Admin {
 			}
 			$this->form_text();
 			$this->form = $this->form_layout();
-			if ( ( $this->type === 'tabbed' ) && ! isset( $this->form[ $this->tab ] ) ) {
+			if ( ( $this->type === 'tabbed' ) && ! array_key_exists( $this->tab, $this->form ) ) {
 				$this->tab = 'about';
 			}
 			$this->determine_option();
@@ -194,7 +194,7 @@ abstract class PMW_Form_Admin {
 	 * @return array
 	 */
 	protected function normalize_options( $new, $old ) {
-		if ( isset( $old['showhide'] ) ) {
+		if ( array_key_exists( 'showhide', $old ) ) {
 			$new['showhide'] = array_map( [ $this, 'normalize_showhide' ], $old['showhide'] );
 		}
 		return $new;
@@ -273,8 +273,8 @@ abstract class PMW_Form_Admin {
 	 */
 	public function register_single_form() {
 		register_setting( $this->current, $this->current, [ $this, $this->validate ] );
-		$title = ( isset( $this->form['title']    ) ) ? $this->form['title']    : '';
-		$desc  = ( isset( $this->form['describe'] ) ) ? $this->form['describe'] : 'description';
+		$title = ( array_key_exists( 'title',    $this->form ) ) ? $this->form['title']    : '';
+		$desc  = ( array_key_exists( 'describe', $this->form ) ) ? $this->form['describe'] : 'description';
 		$desc  = ( is_array( $desc ) ) ? $desc : ( ( method_exists( $this, $desc ) ) ? [ $this, $desc ] : $desc );
 		add_settings_section( $this->current, $title, $desc, $this->current );
 		foreach( $this->form['layout'] as $item => $data ) {
@@ -293,17 +293,17 @@ abstract class PMW_Form_Admin {
 	 * @see add_settings_section()
 	 */
 	public function register_tabbed_form() {
-		$validater = ( isset( $this->form['validate'] ) ) ? $this->form['validate'] : $this->validate;
+		$validater = ( array_key_exists( 'validate', $this->form ) ) ? $this->form['validate'] : $this->validate;
 		foreach( $this->form as $key => $section ) {
 			if ( ! ( (array)$section === $section ) )
 				continue; // skip string variables
 			if ( ! ( $section['option'] === $this->current ) )
 				continue; // skip all but current screen
-			$validate = ( isset( $section['validate'] ) ) ? $section['validate'] : $validater;
-			$current  = ( isset( $this->form[ $key ]['option'] ) ) ? $this->form[ $key ]['option'] : $this->prefix . $key;
+			$validate = ( array_key_exists( 'validate', $section ) ) ? $section['validate'] : $validater;
+			$current  = ( array_key_exists( 'option', $this->form[ $key ] ) ) ? $this->form[ $key ]['option'] : $this->prefix . $key;
 			register_setting( $current, $current, [ $this, $validate ] );
-			$title    = ( isset( $section['title'] ) )    ? $section['title']    : '';
-			$describe = ( isset( $section['describe'] ) ) ? $section['describe'] : 'description';
+			$title    = ( array_key_exists( 'title',    $section ) ) ? $section['title']    : '';
+			$describe = ( array_key_exists( 'describe', $section ) ) ? $section['describe'] : 'description';
 			$describe = ( is_array( $describe ) ) ? $describe : [ $this, $describe ];
 			add_settings_section( $current, $title, $describe, $current );
 			foreach( $section['layout'] as $item => $data ) {
@@ -321,7 +321,7 @@ abstract class PMW_Form_Admin {
 	private function register_field( $option, $key, $itemID, $data ) {
 		if ( is_string( $data ) )
 			return; // skip string variables
-		if ( ! isset( $data['render'] ) )
+		if ( ! array_key_exists( 'render', $data ) )
 			return; // skip variables without render data
 		if ( $data['render'] === 'skip' )
 			return; // skip variable when needed
@@ -401,7 +401,7 @@ abstract class PMW_Form_Admin {
 		if ( $this->type === 'single' ) {
 			$this->current = $this->prefix . $this->slug;
 		} else if ( $this->type === 'tabbed' ) {
-			if ( isset( $this->form[ $this->tab ]['option'] ) ) {
+			if ( array_key_exists( 'option', $this->form[ $this->tab ] ) ) {
 				$this->current = $this->form[ $this->tab ]['option'];
 			} else {
 				$this->current = $this->prefix . $this->tab;
@@ -430,7 +430,7 @@ abstract class PMW_Form_Admin {
 				$defaults[ $ID ] = $item['default'];
 			}
 		} else {  //  tabbed page
-			if ( isset( $this->form[ $option ] ) ) {
+			if ( array_key_exists( $option, $this->form ) ) {
 				foreach( $this->form[ $option ]['layout'] as $key => $item ) {
 					if ( empty( $item['default'] ) ) {
 						continue;
@@ -521,7 +521,7 @@ abstract class PMW_Form_Admin {
 			</h2>
 			<form method="post" action="options.php">
 				<input type='hidden' name='tab' value='<?php e_esc_attr( $this->tab ); ?>'><?php
-				$current = ( isset( $this->form[ $this->tab ]['option'] ) ) ? $this->form[ $this->tab ]['option'] : $this->prefix . $this->tab;
+				$current = ( array_key_exists( 'option', $this->form[ $this->tab ] ) ) ? $this->form[ $this->tab ]['option'] : $this->prefix . $this->tab;
 				do_action( "form_admin_pre_display_{$this->tab}" );
 				settings_fields( $current );
 				do_settings_sections( $current );
@@ -539,7 +539,7 @@ abstract class PMW_Form_Admin {
 	 * @see submit_button()
 	 */
 	private function submit_buttons( $title = '' ) {
-		if ( ! isset( $this->form_text['submit'] ) ) { pmw()->log( 'stack' ); $this->form_text(); } // track down erratic bug
+		if ( ! array_key_exists( 'submit', $this->form_text ) ) { pmw()->log( 'stack' ); $this->form_text(); } // track down erratic bug
 		$buttons = $this->form_text['submit']; ?>
 		<p><?php
 			submit_button( $buttons['save'], 'primary', 'submit', false ); ?>
@@ -570,11 +570,11 @@ abstract class PMW_Form_Admin {
 			} else {
 				$func  = 'render_' . $layout[ $item ]['render'];
 				$name  = $this->current . '[' . $item . ']';
-				$value = ( isset( $data[ $item ] ) ) ? $data[ $item ] : '';
+				$value = ( array_key_exists( $item, $data ) ) ? $data[ $item ] : '';
 				if ( $layout[ $item ]['render'] === 'array' ) {
 					$name .= '[' . $num . ']';
 					#if ( isset( $add ) && $add ) { $layout[ $item ]['add'] = true; }
-					$value = ( isset( $data[ $item ][ $num ] ) ) ? $data[ $item ][ $num ] : '';
+					$value = ( array_key_exists( $num, $data[ $item ] ) ) ? $data[ $item ][ $num ] : '';
 				}
 				$field = str_replace( array( '[', ']' ), array( '_', '' ), $name );
 				$fargs = array(
@@ -613,7 +613,7 @@ abstract class PMW_Form_Admin {
 		} else {
 			$func = "render_{$layout[$item]['render']}";
 			$name = $this->current . "[$item]";
-			if ( ! isset( $data[ $item ] ) ) {
+			if ( ! array_key_exists( $item, $data ) ) {
 				$data[ $item ] = ( empty( $layout[ $item ]['default'])) ? '' : $layout[ $item ]['default'];
 			}
 			$fargs = array(
@@ -652,10 +652,10 @@ abstract class PMW_Form_Admin {
 	private function render_attributes( $layout ) {
 		$attrs = array();
 		$attrs['class'] = ( ! empty( $layout['divcss'] ) ) ? $layout['divcss'] : '';
-		$attrs['title'] = ( isset( $layout['help'] ) )     ? $layout['help']   : '';
+		$attrs['title'] = ( array_key_exists( 'help', $layout ) )     ? $layout['help']   : '';
 		if ( ! empty( $layout['showhide'] ) ) {
 			$state = array_merge( [ 'show' => null, 'hide' => null ], $layout['showhide'] );
-			$attrs['data-item'] = ( isset( $state['item'] ) ) ? $state['item'] : $state['target'];
+			$attrs['data-item'] = ( array_key_exists( 'item', $state ) ) ? $state['item'] : $state['target'];
 			$attrs['data-show'] = $state['show'];
 			$attrs['data-hide'] = $state['hide'];
 		}
@@ -679,7 +679,7 @@ abstract class PMW_Form_Admin {
 	 */
 	private function render_array( $data ) {
 		extract( $data );  #  array( 'ID' => $item, 'value' => $data[ $item ], 'layout' => $layout[ $item ], 'name' => $name )
-		if ( ! isset( $layout['type'] ) ) { $layout['type'] = 'text'; }
+		if ( ! array_key_exists( 'type', $layout ) ) { $layout['type'] = 'text'; }
 		if ( $layout['type'] === 'image' ) {
 			$this->render_image( $data );
 		} else {
@@ -703,7 +703,7 @@ abstract class PMW_Form_Admin {
 			'id'   => $ID,
 			'name' => $name,
 			'value' => 'yes',
-			'onchange' => ( isset( $layout['change'] ) ) ? $layout['change'] : '',
+			'onchange' => ( array_key_exists( 'change', $layout ) ) ? $layout['change'] : '',
 		);
 		$this->checked( $attrs, $value, 'yes' ); ?>
 		<label>
@@ -740,7 +740,7 @@ abstract class PMW_Form_Admin {
 				'name'  => $name . '[' . $key . ']',
 				'value' => $key,
 			);
-			$check = isset( $value[ $key ] ) ? true : false;
+			$check = array_key_exists( $key, $value ) ? true : false;
 			$this->checked( $attrs, $check ); ?>
 			<div>
 				<label>
@@ -787,7 +787,7 @@ abstract class PMW_Form_Admin {
 	 */
 	private function render_display( $data ) {
 		extract( $data );  #  array( 'ID' => $item, 'value' => $data[ $item ], 'layout' => $layout[ $item ], 'name' => $name )
-		if ( isset( $layout['default'] ) && ! empty( $value ) ) {
+		if ( array_key_exists( 'default', $layout ) && ! empty( $value ) ) {
 			e_esc_html( $value );
 		}
 		if ( ! empty( $layout['text'] ) ) {
@@ -811,7 +811,7 @@ abstract class PMW_Form_Admin {
 			'name'     => "{$name}[]",
 			'multiple' => ''
 		);
-		if ( isset( $layout['change'] ) ) {
+		if ( array_key_exists( 'change', $layout ) ) {
 			$attrs['onchange'] = $layout['change'];
 		}
 		$this->tag( 'select', $attrs );
@@ -840,7 +840,7 @@ abstract class PMW_Form_Admin {
 		$media   = $this->form_text['media'];
 		$img_css = 'form-image-container' . ( ( empty( $value ) ) ? ' hidden' : '');
 		$btn_css = 'form-image-delete' . ( ( empty( $value ) ) ? ' hidden' : '');
-		if ( isset( $layout['media'] ) ) { $media = array_merge( $media, $layout['media'] ); } ?>
+		if ( array_key_exists( 'media', $layout ) ) { $media = array_merge( $media, $layout['media'] ); } ?>
 		<div data-title="<?php e_esc_attr( $media['title'] ); ?>"
 			  data-button="<?php e_esc_attr( $media['button'] ); ?>" data-field="<?php e_esc_attr( $ID ); ?>">
 			<button type="button" class="form-image">
@@ -873,10 +873,10 @@ abstract class PMW_Form_Admin {
 		$radio_attrs = array(
 			'type'     => 'radio',
 			'name'     => $name,
-			'onchange' => ( isset( $layout['change'] ) ) ? $layout['change'] : '',
+			'onchange' => ( array_key_exists( 'change', $layout ) ) ? $layout['change'] : '',
 		); ?>
 		<div><?php
-			if ( isset( $layout['text'] ) ) {
+			if ( array_key_exists( 'text', $layout ) ) {
 				$uniq = uniqid();
 				$this->element( 'div', [ 'id' => $uniq ], $layout['text'] );
 				$radio_attrs['aria-describedby'] = $uniq;
@@ -886,19 +886,19 @@ abstract class PMW_Form_Admin {
 				$this->checked( $radio_attrs, $value, $key ); ?>
 				<div>
 					<label><?php
-						$this->tag( 'input', $attrs );
-						if ( isset( $layout['src-html'] ) ) {
+						$this->tag( 'input', $radio_attrs );
+						if ( array_key_exists( 'src-html', $layout ) ) {
 							echo wp_kses( $text, pmw()->kses() );
 						} else {
 							e_esc_html( $text );
 						}
-						if ( isset( $layout['extra_html'][ $key ] ) ) {
+						if ( array_key_exists( $key, $layout['extra_html'] ) ) {
 							echo wp_kses( $layout['extra_html'][ $key ], pmw()->kses() );
 						} ?>
 					</label>
 				</div><?php
 			}
-			if ( isset( $layout['postext'] ) ) { ?>
+			if ( array_key_exists( 'postext', $layout ) ) { ?>
 				<div>
 					<?php e_esc_html( $layout['postext'] ) ; ?>
 				</div><?php
@@ -923,10 +923,10 @@ abstract class PMW_Form_Admin {
 		extract( $data );   #   associative array: keys are 'ID', 'value', 'layout', 'name'
 		if ( empty( $layout['source'] ) )
 			return;
-		$pre_css   = ( isset( $layout['textcss'] ) ) ? $layout['textcss'] : '';
-		$pre_text  = ( isset( $layout['text'] ) )    ? $layout['text']    : '';
-		$post_text = ( isset( $layout['postext'] ) ) ? $layout['postext'] : '';
-		$preset    = ( isset( $layout['preset'] ) )  ? $layout['preset']  : 'no'; ?>
+		$pre_css   = ( array_key_exists( 'textcss', $layout ) ) ? $layout['textcss'] : '';
+		$pre_text  = ( array_key_exists( 'text',    $layout ) ) ? $layout['text']    : '';
+		$post_text = ( array_key_exists( 'postext', $layout ) ) ? $layout['postext'] : '';
+		$preset    = ( array_key_exists( 'preset',  $layout ) ) ? $layout['preset']  : 'no'; ?>
 		<div class="radio-multiple-div">
 			<?php $this->element( 'div', [ 'class' => $pre_css ], $pre_text ); ?>
 			<div class="radio-multiple-header">
@@ -934,7 +934,7 @@ abstract class PMW_Form_Admin {
 				<span class="radio-multiple-no" ><?php esc_html_e( 'No', 'privacy-my-way' ); ?></span>
 			</div><?php
 			foreach( $layout['source'] as $key => $text ) {
-				$check  = ( isset( $value[ $key ] ) ) ? $value[ $key ] : $preset; ?>
+				$check  = ( array_key_exists( $key, $value ) ) ? $value[ $key ] : $preset; ?>
 				<div class="radio-multiple-list-item">
 					<label>
 						<input type="radio" value="yes" class="radio-multiple-list radio-multiple-list-yes"
@@ -979,7 +979,7 @@ abstract class PMW_Form_Admin {
 		if ( ! ( strpos( '[]', $name ) === false ) ) {
 			$attrs['multiple'] = 'multiple';
 		}
-		if ( isset( $layout['change'] ) ) {
+		if ( array_key_exists( 'change', $layout ) ) {
 			$attrs['onchange'] = $layout['change'];
 		}
 		$this->tag( 'select', $attrs );
@@ -1048,12 +1048,12 @@ abstract class PMW_Form_Admin {
 		$attrs = array(
 			'type'  => 'text',
 			'id'    => $ID,
-			'class' => ( isset( $layout['class'] ) )  ? $layout['class'] : 'regular-text',
+			'class' => ( array_key_exists( 'class', $layout ) )  ? $layout['class'] : 'regular-text',
 			'name'  => $name,
 			'value' => $value,
-			'title' => ( isset( $layout['help'] ) )   ? $layout['help']  : '',
-			'placeholder' => ( isset( $layout['place'] ) ) ? $layout['place'] : '',
-			'onchange'    => ( isset( $layout['change'] ) ) ? $layout['change']  : '',
+			'title' => ( array_key_exists( 'help', $layout ) )   ? $layout['help']  : '',
+			'placeholder' => ( array_key_exists( 'place',  $layout ) ) ? $layout['place'] : '',
+			'onchange'    => ( array_key_exists( 'change', $layout ) ) ? $layout['change']  : '',
 		);
 		$this->element( 'input', $attrs );
 		if ( ! empty( $layout['stext'] ) ) {
@@ -1075,7 +1075,7 @@ abstract class PMW_Form_Admin {
 		$basic = explode( '[', $data['name'] );
 		$index = substr( $basic[1], 0, -1 ) . '_color';
 		$data['name']  = $basic[0] . '[' . $index . ']';
-		$data['value'] = ( isset( $this->form_opts[ $index ] ) ) ? $this->form_opts[ $index ] : $data['layout']['color'];
+		$data['value'] = ( array_key_exists( $index, $this->form_opts ) ) ? $this->form_opts[ $index ] : $data['layout']['color'];
 		$data['layout']['default'] = $data['layout']['color'];
 		$data['layout']['text']    = '';
 		$this->render_colorpicker( $data );
@@ -1109,8 +1109,8 @@ abstract class PMW_Form_Admin {
 	 */
 	public function validate_single_form( $input ) {
 		$output = $this->get_defaults();
-		if ( isset( $_POST['reset'] ) ) {
-			$object = ( isset( $this->form['title'] ) ) ? $this->form['title'] : $this->form_test['submit']['object'];
+		if ( array_key_exists( 'reset', $_POST ) ) {
+			$object = ( array_key_exists( 'title', $this->form ) ) ? $this->form['title'] : $this->form_test['submit']['object'];
 			$string = sprintf( $this->form_text['submit']['restore'], $object );
 			add_settings_error( $this->slug, 'restore_defaults', $string, 'updated fade' );
 			return $output;
@@ -1119,7 +1119,7 @@ abstract class PMW_Form_Admin {
 			$item = $this->form['layout'][ $ID ];
 			$multiple = array( 'array', 'radio_multiple' );
 			if ( in_array( $item['render'], $multiple ) ) {
-				$item['render'] = ( isset( $item['type'] ) ) ? $item['type'] : 'text';
+				$item['render'] = ( array_key_exists( 'type', $item ) ) ? $item['type'] : 'text';
 				$vals = array();
 				foreach( $data as $key => $indiv ) {
 					$vals[ $key ] = $this->do_validate_function( $indiv, $item );
@@ -1131,7 +1131,7 @@ abstract class PMW_Form_Admin {
 		}
 		// check for required fields FIXME: notify user
 		foreach( $this->form['layout'] as $ID => $item ) {
-			if ( is_array( $item ) && isset( $item['require'] ) ) {
+			if ( is_array( $item ) && array_key_exists( 'require', $item ) && $item['require'] ) {
 				if ( empty( $output[ $ID ] ) ) {
 					$output[ $ID ] = $item['default'];
 				}
@@ -1153,14 +1153,14 @@ abstract class PMW_Form_Admin {
 	public function validate_tabbed_form( $input ) {
 		$option = sanitize_key( $_POST['tab'] );
 		$output = $this->get_defaults( $option );
-		if ( isset( $_POST['reset'] ) ) {
-			$object = ( isset( $this->form[ $option ]['title'] ) ) ? $this->form[ $option ]['title'] : $this->form_test['submit']['object'];
+		if ( array_key_exists( 'reset', $_POST ) ) {
+			$object = ( array_key_exists( 'title', $this->form[ $option ] ) ) ? $this->form[ $option ]['title'] : $this->form_test['submit']['object'];
 			$string = sprintf( $this->form_text['submit']['restore'], $object );
 			add_settings_error( $this->slug, 'restore_defaults', $string, 'updated fade' );
 			return $output;
 		}
 		foreach( $input as $key => $data ) {
-			$item = ( isset( $this->form[ $option ]['layout'][ $key ] ) ) ? $this->form[ $option ]['layout'][ $key ] : array();
+			$item = ( array_key_exists( $key, $this->form[ $option ]['layout'] ) ) ? $this->form[ $option ]['layout'][ $key ] : array();
 			if ( (array)$data === $data ) {
 				foreach( $data as $ID => $subdata ) {
 					$output[ $key ][ $ID ] = $this->do_validate_function( $subdata, $item );
@@ -1184,7 +1184,7 @@ abstract class PMW_Form_Admin {
 		if ( empty( $item['render'] ) ) {
 			$item['render'] = 'non_existing_render_type';
 		}
-		$func = ( isset( $item['validate'] ) ) ? $item['validate'] : 'validate_' . $item['render'];
+		$func = ( array_key_exists( 'validate', $item ) ) ? $item['validate'] : 'validate_' . $item['render'];
 		if ( method_exists( $this, $func ) ) {
 			$output = $this->$func( $input );
 		} elseif ( function_exists( $func ) ) {

@@ -194,7 +194,7 @@ class PMW_Register_Register {
 		$opt_slug = static::$prefix . $option;
 		$options  = ( is_multisite() ) ? get_blog_option( $blog_id, $opt_slug, array() ) : get_option( $opt_slug, array() );
 		if ( $options ) {
-			if ( isset( $options['deledata'] ) && ( $options['deledata'] === $action ) ) {
+			if ( array_key_exists( 'deledata', $options ) && ( $options['deledata'] === $action ) ) {
 				if ( is_multisite() ) {
 					delete_blog_option( $blog_id, $opt_slug );
 				} else {
@@ -208,7 +208,7 @@ class PMW_Register_Register {
 		$opt_slug = static::$prefix . $option;
 		$options  = get_site_option( $opt_slug, array() );
 		if ( $options ) {
-			if ( isset( $options['deledata'] ) && ( $options['deledata'] === $action ) ) {
+			if ( array_key_exists( 'deledata', $options ) && ( $options['deledata'] === $action ) ) {
 				delete_site_option( $opt_slug );
 			}
 		}

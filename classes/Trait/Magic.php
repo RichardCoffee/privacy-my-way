@@ -17,7 +17,7 @@ trait PMW_Trait_Magic {
 	# do not use is_callable() within this function
 	public function __call( $string, $args ) {
 		$return = "non-callable function '$string'";
-		if ( isset( static::$magic__call[ $string ] ) ) {
+		if ( array_key_exists( $string, static::$magic__call ) ) {
 			$return = call_user_func_array( static::$magic__call[ $string ], $args );
 		} else if ( in_array( $string, static::$magic__call, true ) ) {
 			$return = call_user_func_array( $string, $args );

@@ -47,10 +47,10 @@ class PMW_Plugin_Paths {
 		}
 	}
 
-	public function get_plugin_file_path( $file ) {
+	public function get_plugin_file_path( $file, $force = false ) {
 		$file_path   = false;
 		$theme_check = get_theme_file_path( $file );
-		if ( $theme_check && is_readable( $theme_check ) ) {
+		if ( ( ! $force ) && $theme_check && is_readable( $theme_check ) ) {
 			$file_path = $theme_check;
 		} else if ( is_readable( $this->dir . $file ) ) {
 			$file_path = $this->dir . $file;
@@ -58,10 +58,10 @@ class PMW_Plugin_Paths {
 		return $file_path;
 	}
 
-	public function get_plugin_file_uri( $file ) {
+	public function get_plugin_file_uri( $file, $force = false ) {
 		$file_uri    = false;
 		$theme_check = get_theme_file_path( $file );
-		if ( $theme_check && is_readable( $theme_check ) ) {
+		if ( ( ! $force ) && $theme_check && is_readable( $theme_check ) ) {
 			$file_uri = get_theme_file_uri( $file );
 		} else if ( is_readable( $this->dir . $file ) ) {
 			$file_uri = plugins_url( $file, $this->file );

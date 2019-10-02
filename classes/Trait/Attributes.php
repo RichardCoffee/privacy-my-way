@@ -235,8 +235,8 @@ trait PMW_Trait_Attributes {
 	 * @return array
 	 */
 	public function filter_attributes_by_tag( $html_tag, $attrs ) {
-		if ( ( $html_tag === 'a' ) && isset( $attrs[ 'target' ] ) ) {
-			$attrs['rel'] = ( ( isset( $attrs['rel'] ) ) ? $attrs['rel'] . ' ' : '' ) . 'nofollow noopener';
+		if ( ( $html_tag === 'a' ) && array_key_exists( 'target', $attrs ) ) {
+			$attrs['rel'] = ( ( array_key_exists( 'rel', $attrs ) ) ? $attrs['rel'] . ' ' : '' ) . 'nofollow noopener';
 #			$attrs['rel'] = apply_filters( 'fluid_filter_attributes_by_a_rel', $attrs['rel'], $attrs );
 		}
 		return $attrs;
