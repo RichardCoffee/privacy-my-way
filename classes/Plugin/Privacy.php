@@ -1,15 +1,70 @@
 <?php
-
+/**
+ *  Handles setup tasks for the plugin.
+ *
+ * @package Privacy_My_Way
+ * @subpackage Plugin_Core
+ * @since 20170221
+ * @author Richard Coffee <richard.coffee@rtcenterprises.net>
+ * @copyright Copyright (c) 2018, Richard Coffee
+ * @link https://github.com/RichardCoffee/privacy-my-way/blob/master/classes/Plugin/Privacy.php
+ */
+defined( 'ABSPATH' ) || exit;
+/**
+ *  Class that provides functionality for specific plugin tasks.
+ *
+ * @since 20170221
+ */
 class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 
+	/**
+	 *  Admin form object.
+	 *
+	 * @since 20170510
+	 * @var PMW_Form_Privacy
+	 */
+	private $form = null;
+	/**
+	 *  GitHub link to this plugin.
+	 *
+	 * @since 20170324
+	 * @var string
+	 */
+	protected $github = 'https://github.com/RichardCoffee/privacy-my-way/';
+	/**
+	 *  Handles privacy tasks for plugin.
+	 *
+	 * @since 20170309
+	 * @var Privacy_My_Way
+	 */
+	protected $privacy = null;
+	/**
+	 *  Path to plugin options page, used on the WP Dashboard Plugins page
+	 *
+	 * @since 20170221
+	 * @var string
+	 */
+	protected $setting = 'options-general.php?page=privacy-my-way';
+	/**
+	 *  Used as a plugin identifier.
+	 *
+	 * @since 20170324
+	 * @var string
+	 */
+	protected $slug = 'privacy-my-way';
+	/**
+	 *  Used for compatibility with fluidity-theme admin options screen.
+	 *
+	 * @since 20170221
+	 * @var string
+	 */
+	protected $tab = 'privacy-my-way';
 
-	private   $form     = null;
-	protected $github   = 'https://github.com/RichardCoffee/privacy-my-way/';
-	protected $privacy  = null;
-	protected $setting  = 'options-general.php?page=privacy-my-way';
-	protected $slug     = 'privacy-my-way';
-	protected $tab      = 'privacy-my-way';
-
+	/**
+	 *  Forces singleton class.
+	 *
+	 * @since 20170221
+	 */
 	use PMW_Trait_Singleton;
 
 
@@ -42,7 +97,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	public function add_filters() {
 		add_filter( 'fluidity_initialize_options', [ $this, 'add_privacy_options' ] );
 		$options = get_option( 'tcc_options_privacy-my-way', array() );
-		if ( isset( $options['autoupdate'] ) ) {
+		if ( array_key_exists( 'autoupdate', $options ) ) {
 			if ( $options['autoupdate'] === 'no' ) {
 				add_filter( 'automatic_updater_disabled', '__return_true' );
 			} else if ( $options['autoupdate'] === 'core' ) {
@@ -54,7 +109,16 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		parent::add_filters();
 	}
 
-	# intended only for use with https://github.com/RichardCoffee/fluidity-theme
+	/**
+	 *  Adds some compatibility with fluidity-theme.
+	 *
+	 * @param array $options
+	 * @uses add_action()
+	 * @uses wp_enqueue_style()
+	 * @uses get_plugin_file_uri()
+	 * @return array
+	 * @link https://github.com/RichardCoffee/fluidity-theme
+	 */
 	public function add_privacy_options( $options ) {
 		$this->setting = 'admin.php?page=fluidity_options&tab=' . $this->tab;
 		$options['Privacy'] = new PMW_Options_Privacy;

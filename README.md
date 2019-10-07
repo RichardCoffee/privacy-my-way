@@ -20,7 +20,7 @@ no files in it.  If anyone has a notion as to what may have happened, please con
 **Tested up to:** 5.2.1
 
 
-**Stable tag:** 1.5.5
+**Stable tag:** 1.6.0
 
 
 **License:** MIT
@@ -76,6 +76,13 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ## Changelog
 
 ### Next Release
+
+### 1.6.0
+* Enhancement: Allow for blank or missing Plugin/Author URI in description when filtering plugins.
+* Upgrade:  upgraded to version 4.8 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
+* Upgrade:  updated core files.
+* Bugfix: Prevent a recursion issue with user count.
+* Minor:  Replace isset calls with array_key_exists.
 
 ### 1.5.5
 * Bugfix:  fixed compatibility issue with fluidity-theme admin options page.

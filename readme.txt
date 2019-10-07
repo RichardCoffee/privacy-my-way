@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 5.2.1
-Stable tag: 1.5.5
+Stable tag: 1.6.0
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our
@@ -51,6 +51,13 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 == Changelog ==
 
 = Next Release =
+
+= 1.6.0 =
+* Enhancement: allow for blank or missing Plugin/Author URI in description when filtering plugins.
+* Upgrade:  upgraded to version 4.8 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
+* Upgrade:  updated core files.
+* Bugfix: fix a recursion issue with user count.
+* Minor:  Replace isset calls with array_key_exists.
 
 = 1.5.5 =
 * Bugfix:  fixed compatibility issue with fluidity-theme admin options page.

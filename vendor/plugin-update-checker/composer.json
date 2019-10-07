@@ -17,6 +17,11 @@
 		"php": ">=5.2.0"
 	},
 	"autoload": {
-		"files": ["plugin-update-checker.php"]
+		"psr-0": {
+			"Puc_v4p8_" : "",
+			"Puc_v4_" : "",
+			"PucReadmeParser" : "vendor/",
+			"Parsedown" : "vendor/"
+		}
 	}
 }

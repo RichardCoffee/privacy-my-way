@@ -2,6 +2,8 @@
 /**
  * classes/Trait/Attributes.php
  *
+ * @package Privacy_My_Way
+ * @subpackage Traits
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright Copyright (c) 2018, Richard Coffee
  */
@@ -35,6 +37,7 @@ trait PMW_Trait_Attributes {
 	 * @param string $text
 	 * @param boolean $raw if true will prevent $text from being escaped when displayed
 	 * @return string
+	 * @used-by PMW_Form_Admin::field_label()
 	 */
 	public function get_element( $tag, $attrs, $text = '', $raw = false ) {
 		return $this->get_apply_attrs_element( $tag, $attrs, $text, $raw );
@@ -232,8 +235,8 @@ trait PMW_Trait_Attributes {
 	 * @return array
 	 */
 	public function filter_attributes_by_tag( $html_tag, $attrs ) {
-		if ( ( $html_tag === 'a' ) && isset( $attrs[ 'target' ] ) ) {
-			$attrs['rel'] = ( ( isset( $attrs['rel'] ) ) ? $attrs['rel'] . ' ' : '' ) . 'nofollow noopener';
+		if ( ( $html_tag === 'a' ) && array_key_exists( 'target', $attrs ) ) {
+			$attrs['rel'] = ( ( array_key_exists( 'rel', $attrs ) ) ? $attrs['rel'] . ' ' : '' ) . 'nofollow noopener';
 #			$attrs['rel'] = apply_filters( 'fluid_filter_attributes_by_a_rel', $attrs['rel'], $attrs );
 		}
 		return $attrs;
@@ -247,13 +250,12 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180424
 	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
-	 * @param array $attrs
+	 * @param array $attrs Accepted as reference.
 	 * @param mixed $checked value to check
 	 * @param mixed $current base value to check against
-	 * @return array
 	 */
-	public function checked( $attrs, $checked, $current = true ) {
-		return $this->checked_selected_helper( $attrs, $checked, $current, 'checked' );
+	public function checked( &$attrs, $checked, $current = true ) {
+		$this->checked_selected_helper( $attrs, $checked, $current, 'checked' );
 	}
 
 	/**
@@ -261,13 +263,12 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180424
 	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
-	 * @param array $attrs
+	 * @param array $attrs Accepted as reference.
 	 * @param mixed $disabled value to check
 	 * @param mixed $current base value to check against
-	 * @return array
 	 */
-	public function disabled( $attrs, $disabled, $current = true ) {
-		return $this->checked_selected_helper( $attrs, $disabled, $current, 'disabled' );
+	public function disabled( &$attrs, $disabled, $current = true ) {
+		$this->checked_selected_helper( $attrs, $disabled, $current, 'disabled' );
 	}
 
 	/**
@@ -275,13 +276,12 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180424
 	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
-	 * @param array $attrs
+	 * @param array $attrs Accepted as reference.
 	 * @param mixed $readonly value to check
 	 * @param mixed $current base value to check against
-	 * @return array
 	 */
-	public function readonly( $attrs, $readonly, $current = true ) {
-		return $this->checked_selected_helper( $attrs, $readonly, $current, 'readonly' );
+	public function readonly( &$attrs, $readonly, $current = true ) {
+		$this->checked_selected_helper( $attrs, $readonly, $current, 'readonly' );
 	}
 
 	/**
@@ -289,13 +289,12 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180424
 	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
-	 * @param array $attrs
+	 * @param array $attrs Accepted as reference.
 	 * @param mixed $selected value to check
 	 * @param mixed $current base value to check against
-	 * @return array
 	 */
-	public function selected( $attrs, $selected, $current = true ) {
-		return $this->checked_selected_helper( $attrs, $selected, $current, 'selected' );
+	public function selected( &$attrs, $selected, $current = true ) {
+		$this->checked_selected_helper( $attrs, $selected, $current, 'selected' );
 	}
 
 	/**
@@ -303,17 +302,15 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180424
 	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
-	 * @param array $attrs
+	 * @param array $attrs Accepted as reference.
 	 * @param mixed $checked value to check
 	 * @param mixed $current base value to check against
 	 * @param string $type attribute to add
-	 * @return array
 	 */
-	protected function checked_selected_helper( $attrs, $helper, $current, $type ) {
+	protected function checked_selected_helper( &$attrs, $helper, $current, $type ) {
 		if ( (string) $helper === (string) $current ) {
 			$attrs[ $type ] = $type;
 		}
-		return $attrs;
 	}
 
 

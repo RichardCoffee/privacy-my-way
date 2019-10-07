@@ -17,14 +17,14 @@ class PMW_Form_Field_Admin extends PMW_Form_Field_Field {
 
 	public function __construct( $args ) {
 		parent::__construct( $args );
-		if ( empty( $this->field_value ) ) {
-			$possible = get_option( $this->field_name );
+		if ( empty( $this->value ) ) {
+			$possible = get_option( $this->name );
 			if ( $possible ) {
-				$this->field_value = $possible;
+				$this->field = $possible;
 			}
 		}
-		if ( empty( $this->field_value) && ! empty( $this->default ) ) {
-			$this->field_value = $this->default;
+		if ( empty( $this->value) && ! empty( $this->default ) ) {
+			$this->value = $this->default;
 		}
 		if ( empty( $this->callback ) ) {
 			$this->callback = array( $this, 'input' );
@@ -42,12 +42,12 @@ class PMW_Form_Field_Admin extends PMW_Form_Field_Field {
 				'show_in_rest'      => $this->show_in_rest,
 				'default'           => $this->default,
 			);
-			register_setting( $this->group, $this->field_name, $args );
+			register_setting( $this->group, $this->name, $args );
 			$opts = array();
 			if ( empty( $this->label_css ) ) {
 				#  use wordpress to create label
 				$label = $this->description;
-				$opts['label_for'] = $this->field_id;
+				$opts['label_for'] = $this->id;
 			} else {
 				#  create our own label
 				$label = $this->get_label();
@@ -55,7 +55,7 @@ class PMW_Form_Field_Admin extends PMW_Form_Field_Field {
 			if ( ! empty( $this->tr_class) ) {
 				$opts['class'] = $this->tr_class;
 			}
-			add_settings_field( $this->field_name, $label, $this->callback, $this->group, $this->section, $opts );
+			add_settings_field( $this->name, $label, $this->callback, $this->group, $this->section, $opts );
 		}
 	}
 
