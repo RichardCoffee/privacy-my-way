@@ -892,7 +892,7 @@ abstract class PMW_Form_Admin {
 						} else {
 							e_esc_html( $text );
 						}
-						if ( array_key_exists( $key, $layout['extra_html'] ) ) {
+						if ( array_key_exists( 'extra_html', $layout ) && array_key_exists( $key, $layout['extra_html'] ) ) {
 							echo wp_kses( $layout['extra_html'][ $key ], pmw()->kses() );
 						} ?>
 					</label>

@@ -51,6 +51,7 @@ abstract class PMW_Options_Options {
 		}
 		$options = ( ! empty( $this->screen['layout'] ) ) ? $this->screen['layout'] : $this->options_layout();
 		foreach( $options as $key => $item ) {
+			if ( ! is_array( $item ) ) continue;
 			if ( array_key_exists( 'showhide', $item ) ) {
 				$data['showhide'][] = $item['showhide'];
 			}
