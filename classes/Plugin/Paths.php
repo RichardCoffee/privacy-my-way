@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! function_exists( 'plugin_paths' ) ) {
 	function plugin_paths() {
 		static $instance = null;

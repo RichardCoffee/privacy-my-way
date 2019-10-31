@@ -9,6 +9,8 @@
  * @copyright Copyright (c) 2017, Richard Coffee
  * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Plugin/Library.php
  */
+defined( 'ABSPATH' ) || exit;
+
 class PMW_Plugin_Library {
 
 	use PMW_Trait_Attributes;

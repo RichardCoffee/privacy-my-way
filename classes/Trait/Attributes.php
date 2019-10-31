@@ -7,6 +7,7 @@
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright Copyright (c) 2018, Richard Coffee
  */
+defined( 'ABSPATH' ) || exit;
 /**
  * A trait that provides methods to generate html for tag attributes
  *
@@ -230,14 +231,15 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180425
 	 * @link https://www.hongkiat.com/blog/wordpress-rel-noopener/
+	 * @link https://support.performancefoundry.com/article/186-noopener-noreferrer-on-my-links
 	 * @param string $html_tag
 	 * @param array $attrs
 	 * @return array
 	 */
 	public function filter_attributes_by_tag( $html_tag, $attrs ) {
 		if ( ( $html_tag === 'a' ) && array_key_exists( 'target', $attrs ) ) {
-			$attrs['rel'] = ( ( array_key_exists( 'rel', $attrs ) ) ? $attrs['rel'] . ' ' : '' ) . 'nofollow noopener';
-#			$attrs['rel'] = apply_filters( 'fluid_filter_attributes_by_a_rel', $attrs['rel'], $attrs );
+			$attrs['rel'] = ( ( array_key_exists( 'rel', $attrs ) ) ? $attrs['rel'] : '' ) . ' nofollow noopener noreferrer';
+			$attrs['rel'] = $this->sanitize_html_class( $attrs['rel'] );
 		}
 		return $attrs;
 	}

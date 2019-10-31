@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 class PMW_Form_Field_Radio extends PMW_Form_Field_Field {
 
 	public    $choices =  array();

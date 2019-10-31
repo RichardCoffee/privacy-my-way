@@ -1,9 +1,9 @@
 <?php
-
 /*
  *  File:   classes/Form/Field/Admin.php
  *
  */
+defined( 'ABSPATH' ) || exit;
 
 class PMW_Form_Field_Admin extends PMW_Form_Field_Field {
 
