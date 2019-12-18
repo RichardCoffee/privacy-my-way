@@ -11,6 +11,8 @@
  * @copyright Copyright (c) 2017, Richard Coffee
  * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Form/Field/Field.php
  */
+defined( 'ABSPATH' ) || exit;
+
 abstract class PMW_Form_Field_Field {
 
 	/**

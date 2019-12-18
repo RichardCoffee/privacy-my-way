@@ -7,13 +7,36 @@
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright Copyright (c) 2018, Richard Coffee
  */
+defined( 'ABSPATH' ) || exit;
 /**
  * A trait that provides methods to generate html for tag attributes
  *
  * @since 20170506
  * @link 4.9.5:wp-includes/general-template.php:2949
+ * @link https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/HTML5_Security_Cheat_Sheet.md
  */
 trait PMW_Trait_Attributes {
+
+
+	/***  Properties  ***/
+
+	/**
+	 *  flag to force sandbox attribute for iframes tag
+	 *
+	 * @since 20191213
+	 * @var boolean
+	 */
+	protected static $attr_iframe_sandbox = false;
+	/**
+	 *  flag for double quote replacement in attribute values
+	 *
+	 * @since 20191118
+	 * @var boolean
+	 */
+	protected static $attr_quote_replacement = false;
+
+
+	/***  Methods  ***/
 
 	/**
 	 *  alias for apply_attrs_element method
@@ -88,7 +111,7 @@ trait PMW_Trait_Attributes {
 		if ( empty( $is_allowed_no_value ) ) {
 			$is_allowed_no_value = apply_filters( 'fluid_attr_is_allowed_no_value', [ 'itemscope', 'value' ] );
 		} //*/
-		$is_allowed_no_value = array( 'itemscope', 'multiple', 'value', 'required' );
+		$is_allowed_no_value = array( 'itemscope', 'multiple', 'value', 'required', 'sandbox' );
 
 		$html = '';
 		foreach( $attrs as $key => $value ) {
@@ -122,6 +145,7 @@ trait PMW_Trait_Attributes {
 				default:
 					$value = esc_attr( $value );
 			}
+			if ( static::$attr_quote_replacement ) $value = str_replace( '"', "'", $value );
 			$html .= ' ' . $attr . '="' . $value . '"';
 		}
 		return $html;
@@ -230,14 +254,19 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180425
 	 * @link https://www.hongkiat.com/blog/wordpress-rel-noopener/
+	 * @link https://support.performancefoundry.com/article/186-noopener-noreferrer-on-my-links
 	 * @param string $html_tag
 	 * @param array $attrs
 	 * @return array
 	 */
 	public function filter_attributes_by_tag( $html_tag, $attrs ) {
 		if ( ( $html_tag === 'a' ) && array_key_exists( 'target', $attrs ) ) {
-			$attrs['rel'] = ( ( array_key_exists( 'rel', $attrs ) ) ? $attrs['rel'] . ' ' : '' ) . 'nofollow noopener';
-#			$attrs['rel'] = apply_filters( 'fluid_filter_attributes_by_a_rel', $attrs['rel'], $attrs );
+			$attrs['rel'] = ( ( array_key_exists( 'rel', $attrs ) ) ? $attrs['rel'] : '' ) . ' nofollow noopener noreferrer';
+		}
+		if ( ( $html_tag === 'iframe' ) && static::$attr_iframe_sandbox ) {
+			if ( ! array_key_exists( 'sandbox', $attrs ) ) {
+				$attrs['sandbox'] = '';
+			}
 		}
 		return $attrs;
 	}
@@ -311,6 +340,71 @@ trait PMW_Trait_Attributes {
 		if ( (string) $helper === (string) $current ) {
 			$attrs[ $type ] = $type;
 		}
+	}
+
+	/**
+	 *  Add attributes for Personal Identifiable Information input fields
+	 *
+	 * @since 20191213
+	 * @param array element/tag attributes
+	 * @return array
+	 */
+	public function add_pii_attributes( $attrs = array() ) {
+		$defaults = array(
+			'autocapitalize' => 'off',
+			'autocomplete'   => 'off',
+			'autocorrect'    => 'off',
+			'spellcheck'     => 'false',
+		);
+		return array_merge( $defaults, $attrs );
+	}
+
+
+	/***  methods for controlling the attr_quote_replacement property  ***/
+
+	/**
+	 *  Get the attr_quote_replacement property
+	 *
+	 * @since 20191118
+	 * @return boolean
+	 */
+	public function get_attr_quote_replacement() {
+		return static::$attr_quote_replacement;
+	}
+
+	/**
+	 *  Set the attr_quote_replacement property
+	 *
+	 * @since 20191118
+	 * @param boolean
+	 */
+	public function set_attr_quote_replacement( $new = true ) {
+		static::$attr_quote_replacement = ( $new ) ? true : false;
+		return static::$attr_quote_replacement;
+	}
+
+
+	/***  methods for controlling the attr_iframe_sandbox property  ***/
+
+	/**
+	 *  Get the attr_iframe_sandbox property
+	 *
+	 * @since 20191213
+	 * @return boolean
+	 */
+	public function get_attr_iframe_sandbox() {
+		return static::$attr_iframe_sandbox;
+	}
+
+	/**
+	 *  Set the attr_iframe_sandbox property
+	 *
+	 * @since 20191213
+	 * @param boolean
+	 */
+	public function set_attr_iframe_sandbox( $new = true ) {
+		static::$attr_iframe_sandbox = ( $new ) ? true : false;
+		return static::$attr_iframe_sandbox;
 	}
 
 

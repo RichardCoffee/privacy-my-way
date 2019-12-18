@@ -19,22 +19,22 @@ abstract class PMW_Form_Admin {
 	 * @since 20150926
 	 * @var string name of screen options saved in WP dbf
 	 */
-	protected $current   = '';
+	protected $current = '';
 	/**
 	 * @since 20150323
 	 * @var array controls screen layout and display
 	 */
-	protected $form      =  array();
+	protected $form = array();
 	/**
 	 * @since 20150926
 	 * @var array screen options array from WP dbf
 	 */
-	protected $form_opts =  array();
+	protected $form_opts = array();
 	/**
 	 * @since 20150323
 	 * @var array contains translated text strings
 	 */
-	protected $form_text =  array();
+	protected $form_text = array();
 	/**
 	 *  This is the admin menu hook, and should be set in the child class.
 	 *
@@ -51,7 +51,7 @@ abstract class PMW_Form_Admin {
 	 * @since 20150323
 	 * @var string screen options name prefix
 	 */
-	protected $prefix    = 'tcc_options_';
+	protected $prefix = 'tcc_options_';
 	/**
 	 * @since 20150323
 	 * @var string name of function that registers the form
@@ -66,18 +66,18 @@ abstract class PMW_Form_Admin {
 	 * @since 20150323
 	 * @var string page slug
 	 */
-	protected $slug      = 'default_page_slug';
+	protected $slug = 'default_page_slug';
 	/**
 	 * @since 20151001
 	 * @var string form tab to be shown to user
 	 */
-	public    $tab       = 'about';
+	public $tab = 'about';
 	/**
 	 * @since 20150323
 	 * @var string form type: 'single','tabbed'
 	 * @todo add 'multi'
 	 */
-	protected $type      = 'single';
+	protected $type = 'single';
 	/**
 	 * @since 20150323
 	 * @var string callback function for field validation

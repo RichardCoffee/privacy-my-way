@@ -1,20 +1,41 @@
 <?php
-
-/*
- *  https://secure.php.net/manual/en/language.oop5.magic.php
- *  http://php.net/manual/en/language.oop5.overloading.php
- *  http://www.garfieldtech.com/blog/magical-php-call
- *  https://lornajane.net/posts/2012/9-magic-methods-in-php
+/**
+ *  Trait to provide some basic magic methods
+ *
+ * @package Privacy_My_Way
+ * @subpackage Traits
+ * @since 20170116
+ * @author Richard Coffee <richard.coffee@rtcenterprises.net>
+ * @copyright Copyright (c) 2017, Richard Coffee
+ * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Trait/Magic.php
+ * @link https://secure.php.net/manual/en/language.oop5.magic.php
+ * @link http://php.net/manual/en/language.oop5.overloading.php
+ * @link http://www.garfieldtech.com/blog/magical-php-call
+ * @link https://lornajane.net/posts/2012/9-magic-methods-in-php
  */
-
 trait PMW_Trait_Magic {
 
 
-	protected static $magic__call   = array();
-	protected static $set__callable = false;
+	/**
+	 * @since 20170305
+	 * @var boolean toggles functionality of set method
+	 */
+	protected $set__callable = false;
+	/**
+	 * @since 20170202
+	 * @var array stores aliases for methods
+	 */
+	protected static $magic__call = array();
 
 
-	# do not use is_callable() within this function
+	/**
+	 *  Enables aliasing of class methods - do not use is_callable() within this function
+	 *
+	 * @since 20170116
+	 * @param string method name/alias
+	 * @param mixed parameter(s) to be passed to method
+	 * @return mixed
+	 */
 	public function __call( $string, $args ) {
 		$return = "non-callable function '$string'";
 		if ( array_key_exists( $string, static::$magic__call ) ) {
@@ -27,17 +48,37 @@ trait PMW_Trait_Magic {
 		return $return;
 	}
 
+	/**
+	 *  Default get method to allow read access to private/protected variables
+	 *
+	 * @since 20170116
+	 * @param string property name
+	 */
 	public function __get( $name ) {
 		if ( property_exists( $this, $name ) ) {
-			return $this->$name;  #  Allow read access to private/protected variables
+			return $this->$name;
 		}
 		return null;
 	}
 
+	/**
+	 *  Default isset method to allow read access to private/protected variables
+	 *
+	 * @since 20170116
+	 * @param string property name
+	 */
 	public function __isset( $name ) {
-		return isset( $this->$name ); #  Allow read access to private/protected variables
+		return property_exists( $this, $name );
 	} //*/
 
+	/**
+	 *  Add method aliases to static trait array
+	 *
+	 * @since 20170202
+	 * @param string|array method name
+	 * @param string method alias
+	 * @return boolean
+	 */
 	public function register__call( $method, $alias = false ) {
 		if ( is_callable( $method ) ) {
 			if ( $alias ) {
@@ -51,14 +92,26 @@ trait PMW_Trait_Magic {
 		return false;
 	} //*/
 
+	/**
+	 *  Provides ability to set generic private/protected properties
+	 *
+	 * @since 20170325
+	 * @param string property name
+	 * @param mixed new property value
+	 * @return mixed old value of property
+	 */
 	public function set( $property, $value ) {
-		if ( static::$set__callable ) {
+		$result = null;
+		if ( $this->set__callable ) {
 			if ( ( ! empty( $property ) ) && ( ! empty( $value ) ) ) {
+				$result = "property '$property' does not exist.";
 				if ( property_exists( $this, $property ) ) {
+					$result = $this->$property;
 					$this->{$property} = $value;
 				}
 			}
 		}
+		return $result;
 	}
 
 

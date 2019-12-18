@@ -50,7 +50,8 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
-= Next Release =
+= 1.6.1 =
+* Upgrade:  updated core files.
 
 = 1.6.0 =
 * Enhancement: allow for blank or missing Plugin/Author URI in description when filtering plugins.

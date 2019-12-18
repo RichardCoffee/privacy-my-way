@@ -18,21 +18,21 @@ defined( 'ABSPATH' ) || exit;
 abstract class PMW_Plugin_Plugin {
 
 #	 * @since 20170111
-	protected $admin    = null;
+	protected $admin = null;
 #	 * @since 20170111
-	public    $dbvers   = '0';
+	public    $dbvers = '0';
 #	 * @since 20170325
-	protected $github   = '';    #  'https://github.com/MyGithubName/my-plugin-name/';
+	protected $github = '';    #  'https://github.com/MyGithubName/my-plugin-name/';
 #	 * @since 20170113
-	public    $paths    = null;  #  PMW_Plugin_Paths object
+	public    $paths = null;   #  PMW_Plugin_Paths object
 #	 * @since 20170111
-	public    $plugin   = 'plugin-slug';
+	public    $plugin = 'plugin-slug';
 #	 * @since 20170207
-	protected $setting  = '';    #  settings link
+	protected $setting = '';    #  settings link
 #	 * @since 20170207
-	protected $state    = '';
+	protected $state = '';
 #	 * @since 20170111
-	protected $tab      = 'about';
+	protected $tab = 'about';
 
 	use PMW_Trait_Magic;
 	use PMW_Trait_ParseArgs;

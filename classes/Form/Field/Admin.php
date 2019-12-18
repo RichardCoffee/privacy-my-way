@@ -1,20 +1,65 @@
 <?php
-
-/*
- *  File:   classes/Form/Field/Admin.php
+/**
+ *  Display admin forms
+ *
+ * @package Privacy_My_Way
+ * @subpackage Forms
+ * @since 20180323
+ * @author Richard Coffee <richard.coffee@rtcenterprises.net>
+ * @copyright Copyright (c) 2018, Richard Coffee
+ * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Form/Field/Admin.php
+ */
+defined( 'ABSPATH' ) || exit;
+/**
+ *  Provides properties and methods useful for registering fields on admin screens
  *
  */
-
 class PMW_Form_Field_Admin extends PMW_Form_Field_Field {
 
-	protected $action   = 'admin_head';  #  when to register variable - must happen after current_screen hook
-	protected $callback = null;          #  display method
-	protected $default  = '';            #  field default value
-	protected $group;                    #  setting group/page
-	protected $section  = 'default';     #  section on page
-	protected $show_in_rest = true;      #  allow access via rest api
-	protected $tr_class = '';            #  <tr> css class
+	/**
+	 * @since 20180323
+	 * @var string When to register variable - must happen after current_screen hook
+	 */
+	protected $action = 'admin_head';
+	/**
+	 * @since 20180323
+	 * @var string|array display method to be used
+	 */
+	protected $callback = null;
+	/**
+	 * @since 20180323
+	 * @var string field default value
+	 */
+	protected $default = '';
+	/**
+	 * @since 20180323
+	 * @var string setting group/page
+	 */
+	protected $group;
+	/**
+	 * @since 20180326
+	 * @var string section on page
+	 */
+	protected $section = 'default';
+	/**
+	 * @since 20180326
+	 * @var bool allow access via rest api
+	 */
+	protected $show_in_rest = true;
+	/**
+	 * @since 20180326
+	 * @var string css class for table row
+	 */
+	protected $tr_class = '';
 
+	/**
+	 *  Constructor function
+	 *
+	 * @since 20180323
+	 * @param array field behavior values
+	 * @see get_option()
+	 * @see add_action()
+	 */
 	public function __construct( $args ) {
 		parent::__construct( $args );
 		if ( empty( $this->value ) ) {
@@ -29,9 +74,17 @@ class PMW_Form_Field_Admin extends PMW_Form_Field_Field {
 		if ( empty( $this->callback ) ) {
 			$this->callback = array( $this, 'input' );
 		}
-		add_action( $this->action, array( $this, 'register_field' ), 9 );
+		add_action( $this->action, [ $this, 'register_field' ], 9 );
 	}
 
+	/**
+	 *  Register the field
+	 *
+	 * @since 20180323
+	 * @uses PMW_Form_Field_Field::get_label()
+	 * @see register_settings()
+	 * @see add_settings_field()
+	 */
 	public function register_field() {
 		if ( ! empty( $this->group ) ) {
 			$args = array(
