@@ -261,7 +261,7 @@ trait PMW_Trait_Attributes {
 	 */
 	public function filter_attributes_by_tag( $html_tag, $attrs ) {
 		if ( ( $html_tag === 'a' ) && array_key_exists( 'target', $attrs ) ) {
-			$attrs['rel'] = ( ( array_key_exists( 'rel', $attrs ) ) ? $attrs['rel'] : '' ) . ' nofollow noopener noreferrer';
+			$attrs['rel'] = ( ( array_key_exists( 'rel', $attrs ) ) ? $attrs['rel'] : '' ) . ' nofollow noopener noreferrer ugc';
 		}
 		if ( ( $html_tag === 'iframe' ) && static::$attr_iframe_sandbox ) {
 			if ( ! array_key_exists( 'sandbox', $attrs ) ) {

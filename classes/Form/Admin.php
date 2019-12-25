@@ -319,7 +319,7 @@ abstract class PMW_Form_Admin {
 	 * @see add_settings_field()
 	 */
 	private function register_field( $option, $key, $itemID, $data ) {
-		if ( is_string( $data ) )
+		if ( ! is_array( $data ) )
 			return; // skip string variables
 		if ( ! array_key_exists( 'render', $data ) )
 			return; // skip variables without render data
