@@ -62,9 +62,9 @@ trait PMW_Trait_Logging {
 	 * @return string
 	 */
 	public function logging_calling_location( $depth = 1 ) {
-		#	This is not intended to be an exhaustive list
+		#  This is not intended to be an exhaustive list
 		static $skip_list = array(
-#			'__call',
+			'__call',
 			'apply_filters',
 			'call_user_func',
 			'call_user_func_array',
@@ -96,11 +96,17 @@ trait PMW_Trait_Logging {
 		}
 	}
 
-#	 * @since 20180410
-	public function logging_get_calling_function_name( $depth = 4 ) {
-		$result = $this->logging_calling_location( max( $depth, 4 ) );
+	/**
+	 *  Determines the name of the function which called the function from where this function was called.
+	 *
+	 * @since 20180410
+	 * @param int starting depth for stack search
+	 * @return string function name
+	 */
+	public function logging_get_calling_function_name( $depth = 1 ) {
+		$result = $this->logging_calling_location( max( $depth, 1 ) );
 		$trace  = array_map( 'trim', explode( '/', $result ) );
-		$result = $this->logging_calling_location( $trace[1] );
+		$result = $this->logging_calling_location( end( $trace ) );
 		$trace  = array_map( 'trim', explode( ',', $result ) );
 		return $trace[1];
 	}
@@ -108,7 +114,7 @@ trait PMW_Trait_Logging {
 	/**
 	 * locates a function name in the stack
 	 *
-#	 * @since 20180410
+	 * @since 20180410
 	 * @param string $func
 	 * @return bool|numeric false or stack level
 	 */
@@ -180,12 +186,30 @@ trait PMW_Trait_Logging {
 		if ( is_array( $log_me ) || is_object( $log_me ) ) {
 			$message = print_r( $log_me, true ); // PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 33226752 bytes)
 		} else if ( $log_me === 'stack' ) {
-			$message = print_r( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ), true );
+			$backtrace = $this->logging_stack_with_origin( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );
+			$message = print_r( $backtrace, true );
 		} else if ( $log_me === 'full-stack' ) {
 			$message = print_r( debug_backtrace(), true );
 		}
 		$message = date( '[d-M-Y H:i:s e] ' ) . $message . "\n";
 		error_log( $message, 3, $destination );
+	}
+
+	/**
+	 *  Adds the line number of the calling function to the function string
+	 *
+	 * @since 20200116
+	 * @param array the debug backtrace array
+	 * @return array the modified array
+	 */
+	private function logging_stack_with_origin( $backtrace ) {
+		$current = $backtrace[0];
+		foreach( $backtrace as $key => $data ) {
+			if ( $key === 0 ) continue;
+			$backtrace[ $key ]['function'] .= " - {$current['line']}";
+			$current = $data;
+		}
+		return $backtrace;
 	}
 
 /***   Helper functions   ***/

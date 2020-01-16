@@ -18,9 +18,14 @@ trait PMW_Trait_Magic {
 
 	/**
 	 * @since 20170305
-	 * @var boolean toggles functionality of set method
+	 * @var bool toggles functionality of set method
 	 */
 	protected $set__callable = false;
+	/**
+	 * @since 20200114
+	 * @var bool controls access to private variables
+	 */
+	protected $magic__private = true;
 	/**
 	 * @since 20170202
 	 * @var array stores aliases for methods
@@ -37,15 +42,19 @@ trait PMW_Trait_Magic {
 	 * @return mixed
 	 */
 	public function __call( $string, $args ) {
-		$return = "non-callable function '$string'";
 		if ( array_key_exists( $string, static::$magic__call ) ) {
-			$return = call_user_func_array( static::$magic__call[ $string ], $args );
+			return call_user_func_array( static::$magic__call[ $string ], $args );
 		} else if ( in_array( $string, static::$magic__call, true ) ) {
-			$return = call_user_func_array( $string, $args );
+			return call_user_func_array( $string, $args );
 		} else if ( property_exists( $this, $string ) ) {
-			$return = $this->$string;
+			return $this->$string;
 		}
-		return $return;
+		$message = "non-callable function '$string'";
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			$caller = @next( debug_backtrace() ); // without '@', this line produces "PHP Notice:  Only variables should be passed by reference"
+			$message .= " called from {$caller['file']} on line {$caller['line']}";
+		}
+		trigger_error( $message, E_USER_ERROR );
 	}
 
 	/**
@@ -56,6 +65,10 @@ trait PMW_Trait_Magic {
 	 */
 	public function __get( $name ) {
 		if ( property_exists( $this, $name ) ) {
+			if ( ! $this->magic__private ) {
+				$test = new ReflectionProperty( $this, $name );
+				if ( $test->isPrivate() ) return null;
+			}
 			return $this->$name;
 		}
 		return null;

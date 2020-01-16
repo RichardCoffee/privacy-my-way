@@ -15,7 +15,7 @@
  * Version:           1.6.1
  * Requires at least: 4.7.0
  * Requires WP:       4.7.0
- * Tested up to:      5.2.1
+ * Tested up to:      5.3.2
  * Requires PHP:      5.3.6
  * Author:            Richard Coffee
  * Author URI:        http://rtcenterprises.net

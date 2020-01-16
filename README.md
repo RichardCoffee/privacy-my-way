@@ -17,10 +17,10 @@ no files in it.  If anyone has a notion as to what may have happened, please con
 **Requires at least:** 4.7
 
 
-**Tested up to:** 5.2.1
+**Tested up to:** 5.3.2
 
 
-**Stable tag:** 1.6.0
+**Stable tag:** 1.6.1
 
 
 **License:** MIT
@@ -74,6 +74,10 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 Contributions are welcome - fork, fix and send pull requests against the `development` branch please.
 
 ## Changelog
+
+### Next version
+* Upgrade:  updated core files.
+* Upgrade:  updated WP tested version.
 
 ### 1.6.1
 * Upgrade:  updated core files.
