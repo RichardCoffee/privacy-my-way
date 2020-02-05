@@ -17,30 +17,79 @@ defined( 'ABSPATH' ) || exit;
  */
 abstract class PMW_Plugin_Plugin {
 
+
 #	 * @since 20170111
 	protected $admin = null;
 #	 * @since 20170111
 	public    $dbvers = '0';
-#	 * @since 20170325
+	/**
+	 *  Github address used in conjunction with https://github.com/YahnisElsts/plugin-update-checker
+	 *
+	 * @since 20170325
+	 * @var string
+	 */
 	protected $github = '';    #  'https://github.com/MyGithubName/my-plugin-name/';
-#	 * @since 20170113
-	public    $paths = null;   #  PMW_Plugin_Paths object
-#	 * @since 20170111
+	/**
+	 *  PMW_Plugin_Paths object
+	 *
+	 * @since 20170113
+	 * @var object
+	 */
+	public    $paths = null;
+	/**
+	 *  Slug for the plugin.  Gets set in the constructor method.
+	 *
+	 * @since 20170111
+	 * @var string
+	 */
 	public    $plugin = 'plugin-slug';
-#	 * @since 20170207
-	protected $setting = '';    #  settings link
-#	 * @since 20170207
-	protected $state = '';
-#	 * @since 20170111
+	/**
+	 *  Wordpress link to a settings page for the plugin.  Shown on the admin plugins list page.
+	 *
+	 * @since 20170207
+	 * @var string url link
+	 */
+	protected $setting = '';
+	/**
+	 *  Used for integration purposes with certain themes and plugins.  Can be safely ignored.
+	 *
+	 * @since 20170207
+	 * @var string
+	 */
+	protected $state = 'alone';
+	/**
+	 *  Used for a settings tab in conjunction with certain themes.  Can be safely ignored.
+	 *
+	 * @since 20170111
+	 * @var string
+	 */
 	protected $tab = 'about';
 
+
+	/**
+	 *  Trait that provides default magic methods, see classes/Trait/Magic.php for more details
+	 */
 	use PMW_Trait_Magic;
+	/**
+	 *  Trait that provides methods used in autoloading plugin properties.
+	 */
 	use PMW_Trait_ParseArgs;
 
-#	 * @since 20170214
+
+	/**
+	 *  Method that should be used to setup the required plugin environment.  Will be called in 'plugins_loaded' hook with a priority of 100.
+	 *
+	 * @since 20170214
+	 */
 	abstract public function initialize();
 
-#	 * @since 20170111
+
+	/**
+	 *  Provides basic initialization for the plugin.
+	 *
+	 * @since 20170111
+	 * @param array Contains values to be loaded into plugin properties.
+	 */
 	protected function __construct( $args = array() ) {
 		if ( ! empty( $args['file'] ) ) {
 			$data = get_file_data( $args['file'], [ 'ver' => 'Version' ] );
@@ -62,19 +111,31 @@ abstract class PMW_Plugin_Plugin {
 		}
 	}
 
-#	 * @since 20170111
+	/**
+	 *  Default plugin add_action calls.
+	 *
+	 * @since 20170111
+	 */
 	public function add_actions() { }
 
-#	 * @since 20170111
+	/**
+	 *  Default plugin add_filter calls.
+	 *
+	 * @since 20170111
+	 */
 	public function add_filters() {
 		add_filter( 'plugin_action_links', [ $this, 'settings_link' ], 10, 4 );
 		add_filter( 'network_admin_plugin_action_links', [ $this, 'settings_link' ], 10, 4 );
-	} //*/
+	}
 
 
 	/**  General functions  **/
 
-#	 * @since 20170207
+	/**
+	 *  Detects presence of themes and other plugins this plugin may be compatible with.
+	 *
+	 * @since 20170207
+	 */
 	public function state_check() {
 		$state = 'alone';
 		if ( is_readable( get_template_directory() . '/classes/Form/Admin.php' ) ) {
@@ -103,8 +164,12 @@ abstract class PMW_Plugin_Plugin {
 		}
 	}
 
-#	 * @since 20170325
-#	 * @link https://github.com/schemapress/Schema
+	/**
+	 *  Loads the plugin's language file, if present.
+	 *
+	 * @since 20170325
+	 * @link https://github.com/schemapress/Schema
+	 */
 	private function load_textdomain() {
 		$args = array(
 			'text_domain' => 'Text Domain',
@@ -123,36 +188,49 @@ abstract class PMW_Plugin_Plugin {
 		}
 	}
 
-#	 * @since 20170409
+	/**
+	 *  Tries to determine where the language files should be at.
+	 *
+	 * @since 20170409
+	 * @param array Should contain data read from the main plugin file.
+	 * @return array Possible locations of language files
+	 */
 	private function determine_textdomain_filenames( $data ) {
 		$lang_def = ( empty( $data['lang_dir'] ) ) ? '/languages' : $data['lang_dir'];
-		#	$lang_dir
+		//  Where the language files should be.
 		$files[]  = untrailingslashit( $this->paths->dir ) . $lang_def;
+		//  Determine the language file to load.
 		$locale   = apply_filters( 'plugin_locale',  get_locale(), $data['text_domain'] );
 		$mofile   = sprintf( '%1$s-%2$s.mo', $data['text_domain'], $locale );
-		#	$mofile_local
 		$files[]  = $files[0] . '/' . $mofile;
-		#	$mofile_global
+		//  Where a global file might be at.
 		$files[]  = WP_LANG_DIR . '/plugins/' . $data['text_domain'] . '/' . $mofile;
 		return $files;
 	}
 
-#	 * @since 20170111
-	public function get_stylesheet( $file = 'css/privacy-my-way.css', $path = '/' ) {
-		return $this->paths->get_plugin_file_path( $file );
-	}
-
-	/*
-		return $this->paths->get_plugin_file_path( $file );
-	}
-
-	/*
-	 *  Removes 'Edit' option from plugin page entry
-	 *  Adds 'Settings' option to plugin page entry
+	/**
+	 *  Provides a simple method for retrieving the plugin css file.
 	 *
 	 * @since 20170111
-	 *  sources:  http://code.tutsplus.com/tutorials/integrating-with-wordpress-ui-the-basics--wp-26713
-	 *            https://hugh.blog/2012/07/27/wordpress-add-plugin-settings-link-to-plugins-page/
+	 * @param string File to look for.  Alter default as needed.
+	 * @return string Server file path.
+	 */
+	public function get_stylesheet( $file = 'css/privacy-my-way.css' ) {
+		return $this->paths->get_plugin_file_path( $file );
+	}
+
+	/*
+	 *  Removes 'Edit' option from plugin action links, and adds 'Settings' option.
+	 *
+	 * @since 20170111
+	 * @link http://code.tutsplus.com/tutorials/integrating-with-wordpress-ui-the-basics--wp-26713
+	 * @link https://hugh.blog/2012/07/27/wordpress-add-plugin-settings-link-to-plugins-page/
+	 * @link https://developer.wordpress.org/reference/hooks/plugin_action_links/
+	 * @param array  An array of plugin action links.
+	 * @param string Path to the plugin file relative to the plugins directory.
+	 * @param array  An array of plugin data.
+	 * @param string The plugin context.
+	 * @return array
 	 */
 	public function settings_link( $links, $file, $data, $context ) {
 		if ( strpos( $file, $this->plugin ) !== false ) {
@@ -168,8 +246,12 @@ abstract class PMW_Plugin_Plugin {
 
   /** Update functions **/
 
-
-#	 * @since 20170325
+	/**
+	 *  Load the plugin update checker.
+	 *
+	 * @since 20170325
+	 * @link https://github.com/YahnisElsts/plugin-update-checker
+	 */
 	private function load_update_checker() {
 		if ( $this->github ) {
 			$puc_file = $this->paths->dir . $this->paths->vendor . 'plugin-update-checker/plugin-update-checker.php';

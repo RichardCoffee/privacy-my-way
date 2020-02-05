@@ -82,9 +82,9 @@ trait PMW_Trait_Logging {
 		do {
 			$file = ( array_key_exists( 'file', $call_trace[ $depth ] ) )     ? $call_trace[ $depth ]['file']     : $default;
 			$line = ( array_key_exists( 'line', $call_trace[ $depth ] ) )     ? $call_trace[ $depth ]['line']     : $default;
-			$depth++;
+			if ( ! array_key_exists( ++$depth, $call_trace ) ) break;
 			$func = ( array_key_exists( 'function', $call_trace[ $depth ] ) ) ? $call_trace[ $depth ]['function'] : $default;
-		} while( in_array( $func, $skip_list, true ) && ( $total_cnt > $depth ) );
+		} while( in_array( $func, $skip_list ) );
 		return "$file, $func, $line : $total_cnt/$depth";
 	}
 
@@ -170,13 +170,17 @@ trait PMW_Trait_Logging {
 			// accept as is
 		} else if ( is_dir( '../logs' ) && is_writable( '../logs' ) ) {
 			$destination = '../logs/' . $this->logging_prefix . '-' . date( 'Ymd' ) . '.log';
-#		} else {
-#			$destination = 'error_log';
 		}
 		return $destination; // apply_filters( 'logging_write_destination', $destination );
 	}
 
-#	 * @since 20170529
+	/**
+	 *  Write the message out to the log file
+	 *
+	 * @since 20170529
+	 * @param mixed data to write to log file
+	 * @param string name of log file
+	 */
 	public function logging_write_entry( $log_me, $log_file = 'error_log' ) {
 		static $destination = '';
 		if ( empty( $destination ) ) {
@@ -196,7 +200,7 @@ trait PMW_Trait_Logging {
 	}
 
 	/**
-	 *  Adds the line number of the calling function to the function string
+	 *  Adds the line number of the calling function to the 'function' string
 	 *
 	 * @since 20200116
 	 * @param array the debug backtrace array
@@ -206,13 +210,15 @@ trait PMW_Trait_Logging {
 		$current = $backtrace[0];
 		foreach( $backtrace as $key => $data ) {
 			if ( $key === 0 ) continue;
-			$backtrace[ $key ]['function'] .= " - {$current['line']}";
+			if ( array_key_exists( 'line', $current ) ) {
+				$backtrace[ $key ]['function'] .= " - {$current['line']}";
+			}
 			$current = $data;
 		}
 		return $backtrace;
 	}
 
-/***   Helper functions   ***/
+	/**  Helper functions  **/
 
 	/**
 	 *  Remove object references on an object, object is returned as an array.
