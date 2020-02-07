@@ -1,10 +1,3 @@
-WARNING:  The upgrade to 1.5.3 will have to be done manually.  Github lost the
-updater files, not sure how but it seemed to happen with the 1.4.0 version.  They
-were still showing up in the repo on my computer in both the master and development
-branches, but not on github on either branch.  The directory showed up, but had
-no files in it.  If anyone has a notion as to what may have happened, please contact me.
-
-
 
 # Privacy My Way #
 
