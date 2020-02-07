@@ -35,14 +35,21 @@ abstract class PMW_Plugin_Plugin {
 	 * @since 20170113
 	 * @var object
 	 */
-	public    $paths = null;
+	public $paths = null;
 	/**
 	 *  Slug for the plugin.  Gets set in the constructor method.
 	 *
 	 * @since 20170111
 	 * @var string
 	 */
-	public    $plugin = 'plugin-slug';
+	public $plugin = 'plugin-slug';
+	/**
+	 *  The priority used when loading via the 'plugins_loaded' hook
+	 *
+	 * @since 20200205
+	 * @var int
+	 */
+	protected $priority = 10;
 	/**
 	 *  Wordpress link to a settings page for the plugin.  Shown on the admin plugins list page.
 	 *
@@ -77,7 +84,7 @@ abstract class PMW_Plugin_Plugin {
 
 
 	/**
-	 *  Method that should be used to setup the required plugin environment.  Will be called in 'plugins_loaded' hook with a priority of 100.
+	 *  Method that should be used to setup the required plugin environment.  Will be called in 'plugins_loaded' hook with a priority of $this->priority.
 	 *
 	 * @since 20170214
 	 */
@@ -92,13 +99,16 @@ abstract class PMW_Plugin_Plugin {
 	 */
 	protected function __construct( $args = array() ) {
 		if ( ! empty( $args['file'] ) ) {
-			$data = get_file_data( $args['file'], [ 'ver' => 'Version' ] );
+			$data = get_file_data( $args['file'], [ 'ver' => 'Version', 'github' => 'Github URI' ] );
 			$defaults = array(
 				'dir'     => plugin_dir_path( $args['file'] ),
 				'plugin'  => dirname( plugin_basename( $args['file'] ) ),
 				'url'     => plugin_dir_url( $args['file'] ),
 				'version' => $data['ver'],
 			);
+			if ( is_url( $data['github'] ) ) {
+				$defaults['github'] = $data['github'];
+			}
 			$args = array_merge( $defaults, $args );
 			$this->parse_args( $args );
 			$this->paths = PMW_Plugin_Paths::get_instance( $args );
@@ -160,7 +170,7 @@ abstract class PMW_Plugin_Plugin {
 			case 'alone':
 			case 'theme':
 			default:
-				add_action( 'plugins_loaded', [ $this, 'initialize' ], 100 );
+				add_action( 'plugins_loaded', [ $this, 'initialize' ], $this->priority );
 		}
 	}
 
