@@ -24,14 +24,14 @@ trait PMW_Trait_Attributes {
 	 *  flag to force sandbox attribute for iframes tag
 	 *
 	 * @since 20191213
-	 * @var boolean
+	 * @var bool
 	 */
 	protected static $attr_iframe_sandbox = false;
 	/**
 	 *  flag for double quote replacement in attribute values
 	 *
 	 * @since 20191118
-	 * @var boolean
+	 * @var bool
 	 */
 	protected static $attr_quote_replacement = false;
 
@@ -43,9 +43,9 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180426
 	 * @param string $tag
-	 * @param array $attrs
+	 * @param array  $attrs
 	 * @param string $text
-	 * @param boolean $raw if true will prevent $text from being escaped when displayed
+	 * @param bool   $raw  true will prevent $text from being escaped when displayed.
 	 */
 	public function element( $tag, $attrs, $text = '', $raw = false ) {
 		echo $this->get_apply_attrs_element( $tag, $attrs, $text, $raw );
@@ -56,9 +56,9 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180426
 	 * @param string $tag
-	 * @param array $attrs
+	 * @param array  $attrs
 	 * @param string $text
-	 * @param boolean $raw if true will prevent $text from being escaped when displayed
+	 * @param bool   $raw  true will prevent $text from being escaped when displayed.
 	 * @return string
 	 * @used-by PMW_Form_Admin::field_label()
 	 */
@@ -71,7 +71,7 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180426
 	 * @param string $tag
-	 * @param array $attrs
+	 * @param array  $attrs
 	 */
 	public function tag( $tag, $attrs ) {
 		echo $this->get_apply_attrs_tag( $tag, $attrs );
@@ -81,7 +81,7 @@ trait PMW_Trait_Attributes {
 	 *  alias for get_apply_attrs_tag method
 	 * @since 20180426
 	 * @param string $tag
-	 * @param array $attrs
+	 * @param array  $attrs
 	 * @return string
 	 */
 	public function get_tag( $tag, $attrs ) {
@@ -174,7 +174,7 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20170506
 	 * @param string $html_tag tag to be generated
-	 * @param array $attrs contains attribute/value pairs
+	 * @param array  $attrs contains attribute/value pairs
 	 * @return string
 	 */
 	public function get_apply_attrs_tag( $html_tag, $attrs ) {
@@ -219,7 +219,7 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180408
 	 * @param string $element
-	 * @param array $attrs
+	 * @param array  $attrs
 	 * @param string $text
 	 */
 	public function apply_attrs_element( $element, $attrs, $text = '' ) {
@@ -231,9 +231,9 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180408
 	 * @param string $element element to be generated
-	 * @param array $attrs contains attribute/value pairs
-	 * @param string $text content of html element
-	 * @param boolean $raw if true will prevent $text from being escaped when displayed
+	 * @param array  $attrs contains attribute/value pairs
+	 * @param string  $text content of html element
+	 * @param boolean $raw  true will prevent $text from being escaped when displayed.
 	 * @return string
 	 */
 	public function get_apply_attrs_element( $element, $attrs, $text = '', $raw = false ) {
@@ -256,7 +256,7 @@ trait PMW_Trait_Attributes {
 	 * @link https://www.hongkiat.com/blog/wordpress-rel-noopener/
 	 * @link https://support.performancefoundry.com/article/186-noopener-noreferrer-on-my-links
 	 * @param string $html_tag
-	 * @param array $attrs
+	 * @param array  $attrs
 	 * @return array
 	 */
 	public function filter_attributes_by_tag( $html_tag, $attrs ) {
@@ -279,7 +279,7 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180424
 	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
-	 * @param array $attrs Accepted as reference.
+	 * @param array $attrs   Accepted as reference.
 	 * @param mixed $checked value to check
 	 * @param mixed $current base value to check against
 	 */
@@ -292,9 +292,9 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180424
 	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
-	 * @param array $attrs Accepted as reference.
+	 * @param array $attrs    Accepted as reference.
 	 * @param mixed $disabled value to check
-	 * @param mixed $current base value to check against
+	 * @param mixed $current  base value to check against
 	 */
 	public function disabled( &$attrs, $disabled, $current = true ) {
 		$this->checked_selected_helper( $attrs, $disabled, $current, 'disabled' );
@@ -305,9 +305,9 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180424
 	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
-	 * @param array $attrs Accepted as reference.
+	 * @param array $attrs    Accepted as reference.
 	 * @param mixed $readonly value to check
-	 * @param mixed $current base value to check against
+	 * @param mixed $current  base value to check against
 	 */
 	public function readonly( &$attrs, $readonly, $current = true ) {
 		$this->checked_selected_helper( $attrs, $readonly, $current, 'readonly' );
@@ -318,9 +318,9 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180424
 	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
-	 * @param array $attrs Accepted as reference.
+	 * @param array $attrs    Accepted as reference.
 	 * @param mixed $selected value to check
-	 * @param mixed $current base value to check against
+	 * @param mixed $current  base value to check against
 	 */
 	public function selected( &$attrs, $selected, $current = true ) {
 		$this->checked_selected_helper( $attrs, $selected, $current, 'selected' );
@@ -331,10 +331,10 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20180424
 	 * @link https://developer.wordpress.org/reference/files/wp-includes/general-template.php/
-	 * @param array $attrs Accepted as reference.
-	 * @param mixed $checked value to check
-	 * @param mixed $current base value to check against
-	 * @param string $type attribute to add
+	 * @param array  $attrs   Accepted as reference.
+	 * @param mixed  $checked value to check
+	 * @param mixed  $current base value to check against
+	 * @param string $type    attribute to add
 	 */
 	protected function checked_selected_helper( &$attrs, $helper, $current, $type ) {
 		if ( (string) $helper === (string) $current ) {
@@ -366,7 +366,7 @@ trait PMW_Trait_Attributes {
 	 *  Get the attr_quote_replacement property
 	 *
 	 * @since 20191118
-	 * @return boolean
+	 * @return bool
 	 */
 	public function get_attr_quote_replacement() {
 		return static::$attr_quote_replacement;
@@ -376,7 +376,7 @@ trait PMW_Trait_Attributes {
 	 *  Set the attr_quote_replacement property
 	 *
 	 * @since 20191118
-	 * @param boolean
+	 * @param bool
 	 */
 	public function set_attr_quote_replacement( $new = true ) {
 		static::$attr_quote_replacement = ( $new ) ? true : false;
@@ -390,7 +390,7 @@ trait PMW_Trait_Attributes {
 	 *  Get the attr_iframe_sandbox property
 	 *
 	 * @since 20191213
-	 * @return boolean
+	 * @return bool
 	 */
 	public function get_attr_iframe_sandbox() {
 		return static::$attr_iframe_sandbox;
@@ -400,7 +400,7 @@ trait PMW_Trait_Attributes {
 	 *  Set the attr_iframe_sandbox property
 	 *
 	 * @since 20191213
-	 * @param boolean
+	 * @param bool
 	 */
 	public function set_attr_iframe_sandbox( $new = true ) {
 		static::$attr_iframe_sandbox = ( $new ) ? true : false;

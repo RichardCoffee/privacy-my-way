@@ -23,6 +23,13 @@ abstract class PMW_Plugin_Plugin {
 #	 * @since 20170111
 	public    $dbvers = '0';
 	/**
+	 *  Branch to be used in conjunction with https://github.com/YahnisElsts/plugin-update-checker
+	 *
+	 * @since 20200221
+	 * @var string
+	 */
+	protected $branch = 'master';
+	/**
 	 *  Github address used in conjunction with https://github.com/YahnisElsts/plugin-update-checker
 	 *
 	 * @since 20170325
@@ -268,6 +275,7 @@ abstract class PMW_Plugin_Plugin {
 			if ( is_readable( $puc_file ) ) {
 				require_once( $puc_file );
 				$puc = Puc_v4_Factory::buildUpdateChecker( $this->github, $this->paths->file, $this->plugin );
+				$puc->setBranch( $this->branch );
 			}
 		}
 	}
