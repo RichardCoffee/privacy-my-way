@@ -1,19 +1,42 @@
 <?php
+/**
+ *  Display the plugin options screen.
+ *
+ * @package Privacy_My_Way
+ * @subpackage Forms
+ * @since 20170222
+ * @author Richard Coffee <richard.coffee@rtcenterprises.net>
+ * @copyright Copyright (c) 2017, Richard Coffee
+ * @link https://github.com/RichardCoffee/privacy-my-way/blob/master/classes/Form/Privacy.php
+ */
+defined( 'ABSPATH' ) || exit;
 
 class PMW_Form_Privacy extends PMW_Form_Admin {
 
-
+	/**
+	 * @since 20170310
+	 * @var string  Form slug.
+	 */
 	protected $slug = 'privacy-my-way';
 
 
+	/**
+	 *  Constructor method.
+	 *
+	 * @since 20170222
+	 */
 	public function __construct() {
-		$this->library = new PMW_Plugin_Library;
-		add_action( 'admin_menu',              array( $this, 'add_menu_option'    ) );
-		add_action( 'tcc_load_form_page',      array( $this, 'tcc_load_form_page' ) );
-		add_filter( "form_text_{$this->slug}", array( $this, 'form_trans_text' ), 10, 2 );
+		add_action( 'admin_menu',              [ $this, 'add_menu_option'    ] );
+		add_action( 'tcc_load_form_page',      [ $this, 'tcc_load_form_page' ] );
+		add_filter( "form_text_{$this->slug}", [ $this, 'form_trans_text' ], 10, 2 );
 		parent::__construct();
 	}
 
+	/**
+	 *  Add the form to the Settings menu.
+	 *
+	 * @since 20170222
+	 */
 	public function add_menu_option() {
 		$cap = 'update_core';
 		if ( current_user_can( $cap ) ) {
@@ -24,23 +47,46 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 		}
 	}
 
+	/**
+	 *  Load the required scripts when needed.
+	 *
+	 * @since 20170504
+	 */
 	public function tcc_load_form_page() {
 		if ( $this->slug === $this->tab ) {
-			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_theme_scripts' ) );
+			add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_theme_scripts' ] );
 		}
 	}
 
+	/**
+	 *  Load the scripts in standalone mode.
+	 *
+	 * @since 20170222
+	 * @param string $hook  Suffix for action hook - not used here.
+	 */
 	public function admin_enqueue_scripts( $hook ) {
-		$paths = plugin_paths();
+		$paths = PMW_Plugin_Paths::instance();
 		wp_enqueue_style(  'privacy-form.css', $paths->get_plugin_file_uri( 'css/pmw-admin-form.css' ), null, $paths->version );
 		wp_enqueue_script( 'privacy-form.js',  $paths->get_plugin_file_uri( 'js/pmw-admin-form.js' ), array( 'jquery' ), $paths->version, true );
 	}
 
+	/**
+	 *  Load scripts in theme mode.
+	 *
+	 * @since 20170328
+	 */
 	public function enqueue_theme_scripts() {
-		$paths = plugin_paths();
+		$paths = PMW_Plugin_Paths::instance();
 		wp_enqueue_style(  'privacy-form.css', $paths->get_plugin_file_uri( 'css/pmw-theme-form.css' ), null, $paths->version );
 	}
 
+	/**
+	 *  Get the privacy options layout
+	 *
+	 * @since 20170222
+	 * @param  array $form  Passed if tabbed layout
+	 * @return array        Form layout
+	 */
 	protected function form_layout( $form = array() ) {
 		$options = new PMW_Options_Privacy;
 		$form    = $options->default_form_layout();
@@ -48,10 +94,18 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 		return $form;
 	}
 
+	/**
+	 *  Translate strings
+	 *
+	 * @since 20170222
+	 * @param array $text  Pre-set text.
+	 * @param array $orig  Original text.
+	 */
 	public function form_trans_text( $text, $orig ) {
 		$text['submit']['object']  = __( 'Privacy', 'privacy-my-way' );
 		$text['submit']['subject'] = __( 'Privacy', 'privacy-my-way' );
 		return $text;
-	} //*/
+	}
+
 
 }
