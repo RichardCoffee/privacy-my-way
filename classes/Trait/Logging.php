@@ -1,36 +1,70 @@
 <?php
 /**
+ *  Provides logging methods.
+ *
  * @package Privacy_My_Way
  * @subpackage Traits
  * @requires PHP 5.3.6
+ * @since 20170325
+ * @author Richard Coffee <richard.coffee@rtcenterprises.net>
+ * @copyright Copyright (c) 2017-2020, Richard Coffee
+ * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Trait/Logging.php
  */
 defined( 'WP_DEBUG' ) || exit;
-/**
- * @since 20170325
- */
+
+
 trait PMW_Trait_Logging {
 
-#	 * @since 20170325
-	public $logging_debug  =  WP_DEBUG; #  boolean  - enable/disable logging
-#	 * @since 20170325
-	public $logging_force  =  false;    #  boolean  - can be used to force a single log entry
-#	 * @since 20170325
-	public $logging_func;               #  callable - logging function: must be able to accept a variable number of parameters
-#	 * @since 20180317
-	public $logging_prefix = 'rtc';     #  string   - log file prefix
+
+	/**
+	 * @since 20170325
+	 * @var bool  Enable/disable logging.
+	 */
+	public $logging_debug = WP_DEBUG;
+	/**
+	 * @since 20200228
+	 * @var string  Used in conjunction with property 'logging_prefix'.
+	 */
+	public $logging_dir = '../logs';
+	/**
+	 * @since 20170325
+	 * @var bool  Force logging for a single entry, by-passing the $logging_debug property.
+	 */
+	public $logging_force = false;
+	/**
+	 * @since 20170325
+	 * @var string|array  Callable logging function, must be able to accept a variable number of parameters
+	 */
+	public $logging_func;
+	/**
+	 * @since 20180317
+	 * @var string  Log file prefix, only used under certain circumstances, see method 'logging_write_destination' for usages.
+	 */
+	public $logging_prefix = 'rtc';
 
 
-/***   Action functions   ***/
+	/**  Logging functions  **/
 
-#	 * @since 20170529
+	/**
+	 *  Normal logging function, using internal logging methods.
+	 *
+	 * @since 20170529
+	 * @param mixed  Multiple parameters are accepted by this function.
+	 */
 	public function log() {
 		call_user_func_array( [ $this, 'logging_entry' ], func_get_args() );
 	}
 
-#	 * @since 20170325
-#	 * @used-by PMW_Form_Admin::get_defaults()
+	/**
+	 *  Logging function for when using an external logging function, or for when force a log entry.
+	 *
+	 * @since 20170325
+	 * @used-by PMW_Form_Admin::get_defaults()
+	 * @param mixed  Multiple parameters are accepted by this function.
+	 */
 	public function logg() {
-		if ( is_callable( $this->logging_func ) && ( $this->logging_debug || $this->logging_force ) ) {
+		$this->logging_check_function();
+		if ( $this->logging_debug || $this->logging_force ) {
 			call_user_func_array( $this->logging_func, func_get_args() );
 			$this->logging_force = false;
 		}
@@ -48,7 +82,7 @@ trait PMW_Trait_Logging {
 	}
 
 
-/*** Discover functions   ***/
+	/**  Discover functions  **/
 
 	/**
 	 * Get the calling function.
@@ -58,7 +92,7 @@ trait PMW_Trait_Logging {
 	 *
 	 * @since 20170529
 	 * @link http://php.net/debug_backtrace
-	 * @param numeric $depth
+	 * @param integer $depth
 	 * @return string
 	 */
 	public function logging_calling_location( $depth = 1 ) {
@@ -88,8 +122,11 @@ trait PMW_Trait_Logging {
 		return "$file, $func, $line : $total_cnt/$depth";
 	}
 
-	# generally only called in library classes
-#	 * @since 20170325
+	/**
+	 *  Checks to make sure the registered logging function is callable.
+	 *
+	 * @since 20170325
+	 */
 	protected function logging_check_function() {
 		if ( ! is_callable( $this->logging_func ) ) {
 			$this->logging_func = array( $this, 'log' );
@@ -112,7 +149,7 @@ trait PMW_Trait_Logging {
 	}
 
 	/**
-	 * locates a function name in the stack
+	 *  Locates a function name in the stack
 	 *
 	 * @since 20180410
 	 * @param string $func
@@ -130,17 +167,24 @@ trait PMW_Trait_Logging {
 		return false;
 	}
 
-#	 * @since 20180410
-	# see classes/Plugin/Library.php or classes/Theme/Library.php for usage
+	/**
+	 *  see classes/Plugin/Library.php or classes/Theme/Library.php for usage examples.
+	 *
+	 * @since 20180410
+	 */
 	public function logging_log_deprecated() {
 		$args = func_get_args();
 		$this->log( $args, 'stack' );
 	}
 
 
-/***  Task functions   ***/
+	/**  Task functions  **/
 
-#	 * @since 20170529
+	/**
+	 *  Handles logging for multiple parameters.
+	 *
+	 * @since 20170529
+	 */
 	public function logging_entry() {
 		if ( ( ! $this->logging_force ) && defined( 'DOING_AJAX' ) && DOING_AJAX ) { return; }
 		if ( $this->logging_debug || $this->logging_force ) {
@@ -161,17 +205,23 @@ trait PMW_Trait_Logging {
 		}
 	}
 
-#	 * @since 20170529
+	/**
+	 *  Check for safe log file destinations.
+	 *
+	 * @since 20170529
+	 * @param string  Log file name, not applicable if using wordpress
+	 */
 	protected function logging_write_destination( $log_file = 'error_log' ) {
 		$destination = $log_file;
 		if ( defined( 'WP_CONTENT_DIR' ) ) {
 			$destination = WP_CONTENT_DIR . '/debug.log';
 		} else if ( is_file( $destination ) && is_writable( $destination ) ) {
 			// accept as is
-		} else if ( is_dir( '../logs' ) && is_writable( '../logs' ) ) {
-			$destination = '../logs/' . $this->logging_prefix . '-' . date( 'Ymd' ) . '.log';
+		} else if ( is_dir( $this->logging_dir ) && is_writable( $this->logging_dir ) ) {
+			$destination = $this->logging_dir . '/' . $this->logging_prefix . '-' . date( 'Ymd' ) . '.log';
 		}
-		return $destination; // apply_filters( 'logging_write_destination', $destination );
+		if ( function_exists( 'apply_filters' ) ) return apply_filters( 'logging_write_destination', $destination );
+		return $destination;
 	}
 
 	/**
@@ -183,9 +233,7 @@ trait PMW_Trait_Logging {
 	 */
 	public function logging_write_entry( $log_me, $log_file = 'error_log' ) {
 		static $destination = '';
-		if ( empty( $destination ) ) {
-			$destination = $this->logging_write_destination( $log_file );
-		}
+		if ( empty( $destination ) ) $destination = $this->logging_write_destination( $log_file );
 		$message = $log_me;
 		if ( is_array( $log_me ) || is_object( $log_me ) ) {
 			$message = print_r( $log_me, true ); // PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 33226752 bytes)
@@ -196,7 +244,9 @@ trait PMW_Trait_Logging {
 			$message = print_r( debug_backtrace(), true );
 		}
 		$message = date( '[d-M-Y H:i:s e] ' ) . $message . "\n";
-		error_log( $message, 3, $destination );
+		if ( is_writable( $destination ) ) {
+			error_log( $message, 3, $destination );
+		}
 	}
 
 	/**
