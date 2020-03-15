@@ -82,7 +82,10 @@ abstract class PMW_Options_Options {
 	 */
 	public function form_layout( $form ) {
 		if ( ! array_key_exists( $this->base, $form ) ) {
-			$form[ $this->base ] = $this->default_form_layout();
+			$layout = apply_filters( "tcc_{$this->base}_options_layout", $this->options_layout() );
+			if ( ! empty( $layout ) ) {
+				$form[ $this->base ] = $this->default_form_layout( $layout );
+			}
 		}
 		return $form;
 	}
@@ -91,16 +94,17 @@ abstract class PMW_Options_Options {
 	 *  Set the screen property and return it.
 	 *
 	 * @since 20170505
-	 * @return array  Current screen layout.
+	 * @param array $layout  Data layout.
+	 * @return array         Current screen layout.
 	 */
-	public function default_form_layout() {
+	public function default_form_layout( $layout = array() ) {
 		if ( empty( $this->screen ) ) {
 			$this->screen = array(
 				'describe' => [ $this, 'describe_options' ],
 				'title'    => $this->form_title(),
 				'icon'     => $this->form_icon(),
 				'option'   => 'tcc_options_' . $this->base,
-				'layout'   => apply_filters( "tcc_{$this->base}_options_layout", $this->options_layout() ),
+				'layout'   => $layout,
 			);
 		}
 		return $this->screen;

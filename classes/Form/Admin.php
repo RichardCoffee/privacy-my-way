@@ -1,6 +1,6 @@
 <?php
 /**
- *  Display admin forms
+ *  Display admin forms - If you're looking for an example of what an excellent programmer I am, then you'll need to look somewhere else, because this isn't it.
  *
  * @package Privacy_My_Way
  * @subpackage Forms
@@ -17,22 +17,22 @@ abstract class PMW_Form_Admin {
 
 	/**
 	 * @since 20150926
-	 * @var string name of screen options saved in WP dbf
+	 * @var string  Name of screen options saved in WP dbf.
 	 */
 	protected $current = '';
 	/**
 	 * @since 20150323
-	 * @var array controls screen layout and display
+	 * @var array  Controls screen layout.
 	 */
 	protected $form = array();
 	/**
 	 * @since 20150926
-	 * @var array screen options array from WP dbf
+	 * @var array  Screen options array from WP dbf.
 	 */
 	protected $form_opts = array();
 	/**
 	 * @since 20150323
-	 * @var array contains translated text strings
+	 * @var array  Contains translated text strings.
 	 */
 	protected $form_text = array();
 	/**
@@ -44,43 +44,43 @@ abstract class PMW_Form_Admin {
 	protected $hook_suffix;
 	/**
 	 * @since 20150323
-	 * @var string callback function for settings field
+	 * @var string  Callback function for settings field.
 	 */
 	protected $options;
 	/**
 	 * @since 20150323
-	 * @var string screen options name prefix
+	 * @var string  Screen options name prefix.
 	 */
 	protected $prefix = 'tcc_options_';
 	/**
 	 * @since 20150323
-	 * @var string name of function that registers the form
+	 * @var string  Name of function that registers the form
 	 */
 	protected $register;
 	/**
 	 * @since 20150323
-	 * @var string callback function for rendering fields
+	 * @var string  Callback function for rendering fields.
 	 */
 	protected $render;
 	/**
 	 * @since 20150323
-	 * @var string page slug
+	 * @var string  Page slug.
 	 */
 	protected $slug = 'default_page_slug';
 	/**
 	 * @since 20151001
-	 * @var string form tab to be shown to user
+	 * @var string  Form tab to be shown to user.
 	 */
 	public $tab = 'about';
 	/**
 	 * @since 20150323
-	 * @var string form type: 'single','tabbed'
+	 * @var string  Form type: 'single','tabbed'
 	 * @todo add 'multi'
 	 */
 	protected $type = 'single';
 	/**
 	 * @since 20150323
-	 * @var string callback function for field validation
+	 * @var string  Callback function for field validation
 	 */
 	protected $validate;
 
@@ -116,7 +116,25 @@ abstract class PMW_Form_Admin {
 	 */
 	protected function __construct() {
 		$this->screen_type();
+		/**
+		 *  20200314:
+		 *  When I try to load the form using the load hook, the form options never get whitelisted.
+		 *  Using a filter to whitelist the options doesn't work because there is no way to load the filter call, AFAIK.
+		 *  TODO:  Find out why this doesn't work like I thought it would.
+		 *
+		//  Child class should get the hook_suffix property during 'admin_menu' hook.
+		add_action( 'admin_init', [ $this, 'load_check' ] );
+		 */
 		add_action( 'admin_init', [ $this, 'load_form_page' ] );
+	}
+
+	/**
+	 *  Load the page form on settings page only.  Using this doesn't whitelist the options.
+	 *
+	 * @since 20200313
+	 */
+	public function load_check() {
+		add_action( "load-{$this->hook_suffix}", [ $this, 'load_form_page' ] );
 	}
 
 	/**
@@ -127,10 +145,6 @@ abstract class PMW_Form_Admin {
 	 * @see sanitize_key()
 	 * @see get_transient()
 	 * @see set_transient()
-	 * @uses PMW_Form_Admin::form_text()
-	 * @uses PMW_Form_Admin::form_layout()
-	 * @uses PMW_Form_Admin::determine_option()
-	 * @uses PMW_Form_Admin::get_form_options()
 	 * @see do_action()
 	 * @see add_action()
 	 */
@@ -152,7 +166,7 @@ abstract class PMW_Form_Admin {
 			$this->form_text();
 			$this->form = $this->form_layout();
 			if ( ( $this->type === 'tabbed' ) && ! array_key_exists( $this->tab, $this->form ) ) {
-				$this->tab = 'about';
+				$this->tab = array_key_last( $this->form );
 			}
 			$this->determine_option();
 			$this->get_form_options();
@@ -167,7 +181,7 @@ abstract class PMW_Form_Admin {
 	 *  Load required style and script files.  Provides filter 'tcc_form_admin_options_localization' to allow child classes to add javascript variables.
 	 *
 	 * @since 20150925
-	 * @param string $hook_suffix admin page menu option suffix - passed by WP but not used
+	 * @param string $hook_suffix  Admin page menu option suffix - passed by WP but not used
 	 * @see wp_enqueue_media()
 	 * @see wp_enqueue_style()
 	 * @see get_theme_file_uri()
@@ -189,9 +203,9 @@ abstract class PMW_Form_Admin {
 	 *  Ensures 'showhide' sub-arrays contain all required subscripts for the javascript.
 	 *
 	 * @since 20170505
-	 * @param array $new
-	 * @param array $old
-	 * @return array
+	 * @param  array $new  New and improved options.
+	 * @param  array $old  Old and busted options.
+	 * @return array       New and improved versions of old and busted options.
 	 */
 	protected function normalize_options( $new, $old ) {
 		if ( array_key_exists( 'showhide', $old ) ) {
@@ -204,8 +218,8 @@ abstract class PMW_Form_Admin {
 	 *  Provides array defaults
 	 *
 	 * @since 20170507
-	 * @param array $item
-	 * @return array
+	 * @param  array $item  Item to normalize.
+	 * @return array        Normalized item.
 	 */
 	public function normalize_showhide( $item ) {
 		$default = array(
@@ -345,10 +359,10 @@ abstract class PMW_Form_Admin {
 	 *  Display label for field
 	 *
 	 * @since 20150930
-	 * @param string $ID field ID
-	 * @param array $data field data
+	 * @param string $ID    Field ID
+	 * @param array  $data  Field data
 	 * @uses PMW_Trait_Attributes::get_element()
-	 * @return string
+	 * @return string       HTML element as a string.
 	 */
 	private function field_label( $ID, $data ) {
 		$data  = array_merge( [ 'help' => '', 'label' => '' ], $data );
@@ -371,8 +385,8 @@ abstract class PMW_Form_Admin {
 	 *  Checks to make sure that field's validation callback function is callable
 	 *
 	 * @since 20160228
-	 * @param array $data field data
-	 * @return string
+	 * @param  array  $data  Data to sterilize.
+	 * @return string        Squeaky clean data.
 	 */
 	private function sanitize_callback( $data ) {
 		$valid_func = "validate_{$data['render']}";
@@ -413,9 +427,10 @@ abstract class PMW_Form_Admin {
 	 *  Retrieve form fields default values.
 	 *
 	 * @since 20150323
-	 * @param string $option tabbed page option
+	 * @param string $option  Tabbed page option
+	 * @param string $option  Name of tab to retrieve defaults for.
+	 * @return array          Default options.
 	 * @uses PMW_Trait_Logging::logg()
-	 * @return array
 	 */
 	protected function get_defaults( $option = '' ) {
 		if ( empty( $this->form ) ) {
@@ -509,8 +524,8 @@ abstract class PMW_Form_Admin {
 				$refer = "admin.php?page=$active_page";
 				foreach( $this->form as $key => $menu_item ) {
 					if ( is_string( $menu_item ) ) continue;
-					$tab_ref  = "$refer&tab=$key";
-					$tab_css  = 'nav-tab' . ( ( $this->tab === $key ) ? ' nav-tab-active' : '' ); ?>
+					$tab_ref = "$refer&tab=$key";
+					$tab_css = 'nav-tab' . ( ( $this->tab === $key ) ? ' nav-tab-active' : '' ); ?>
 					<a href='<?php e_esc_attr( $tab_ref ); ?>' class='<?php e_esc_attr( $tab_css ); ?>'><?php
 						if ( ! empty( $menu_item['icon'] ) ) { ?>
 							<i class="dashicons <?php e_esc_attr( $menu_item['icon'] ); ?>"></i><?php
@@ -535,7 +550,7 @@ abstract class PMW_Form_Admin {
 	 *  Display form submit buttons.
 	 *
 	 * @since 20150323
-	 * @param string $title reset button text
+	 * @param string $title  Text for reset button.
 	 * @see submit_button()
 	 */
 	private function submit_buttons( $title = '' ) {
@@ -598,7 +613,7 @@ abstract class PMW_Form_Admin {
 	 *  Display fields on tabbed screens
 	 *
 	 * @since 20150323
-	 * @param array $args field identificatin information
+	 * @param array $args  Field identificatin information
 	 * @uses PMW_Trait_Attributes::tag()
 	 * @uses e_esc_html()
 	 * @uses PMW_Trait_Logging::log()
@@ -634,7 +649,7 @@ abstract class PMW_Form_Admin {
 	}
 
 	/**
-	 *  Render fields on multiple screen form
+	 *  Render fields on multiple screen form.  Non-functional!!!
 	 *
 	 * @since 20150323
 	 * @param array $args
@@ -643,11 +658,11 @@ abstract class PMW_Form_Admin {
 	}
 
 	/**
-	 *  Determine field attributes
+	 *  Determine field attributes for rendering.
 	 *
 	 * @since 20161206
-	 * @param array $layout field characteristics
-	 * @return array
+	 * @param  array $layout  Layout for field to be rendered.
+	 * @return array          Field rendering characteristics.
 	 */
 	private function render_attributes( $layout ) {
 		$attrs = array();
@@ -694,7 +709,6 @@ abstract class PMW_Form_Admin {
 	 * @param array $data field information
 	 * @uses PMW_Trait_Attributes::checked()
 	 * @uses PMW_Trait_Attributes::tag()
-	 * @uses e_esc_html()
 	 */
 	private function render_checkbox( $data ) {
 		extract( $data );  #  associative array: keys are 'ID', 'value', 'layout', 'name'
@@ -705,13 +719,11 @@ abstract class PMW_Form_Admin {
 			'value' => 'yes',
 			'onchange' => ( array_key_exists( 'change', $layout ) ) ? $layout['change'] : '',
 		);
-		$this->checked( $attrs, $value, 'yes' ); ?>
-		<label>
-			<?php $this->tag( 'input', $attrs ); ?>&nbsp;
-			<span>
-				<?php e_esc_html( $layout['text'] ); ?>
-			</span>
-		</label><?php
+		$this->checked( $attrs, $value, 'yes' );
+		$html  = $this->get_tag( 'input', $attrs );
+		$html .= '&nbsp;';
+		$html .= $this->get_element( 'span', [ ], $layout['text'] );
+		$this->element( 'label', [ ], $html, true );
 	}
 
 	/**
@@ -719,7 +731,6 @@ abstract class PMW_Form_Admin {
 	 *
 	 * @since 20170202
 	 * @param array $data field information
-	 * @uses e_esc_html()
 	 * @uses PMW_Trait_Attributes::checked()
 	 * @uses PMW_Trait_Attributes::tag()
 	 */
@@ -728,10 +739,8 @@ abstract class PMW_Form_Admin {
 		if ( empty( $layout['source'] ) ) {
 			return;
 		}
-		if ( ! empty( $layout['text'] ) ) { ?>
-			<div>
-				<?php e_esc_html( $layout['text'] ); ?>
-			</div><?php
+		if ( ! empty( $layout['text'] ) ) {
+			$this->element( 'div', [ ], $layout['text'] );
 		}
 		foreach( $layout['source'] as $key => $text ) {
 			$attrs = array(
@@ -741,15 +750,12 @@ abstract class PMW_Form_Admin {
 				'value' => $key,
 			);
 			$check = array_key_exists( $key, $value ) ? true : false;
-			$this->checked( $attrs, $check ); ?>
-			<div>
-				<label>
-					<?php $this->tag( 'input', $attrs ); ?>&nbsp;
-					<span>
-						<?php e_esc_html( $text ); ?>
-					</span>
-				</label>
-			</div><?php
+			$this->checked( $attrs, $check );
+			$html  = $this->get_tag( 'input', $attrs );
+			$html .= '&nbsp;';
+			$html .= $this->get_element( 'span',  [ ], $text );
+			$label = $this->get_element( 'label', [ ], $html, true );
+			$this->element( 'div', [ ], $label, true );
 		}
 	}
 
@@ -759,7 +765,6 @@ abstract class PMW_Form_Admin {
 	 * @since 20150927
 	 * @param array $data field information
 	 * @uses PMW_Trait_Attributes::element()
-	 * @uses e_esc_html()
 	 */
 	private function render_colorpicker($data) {
 		extract( $data );  #  array( 'ID' => $item, 'value' => $data[ $item ], 'layout' => $layout[ $item ], 'name' => $name )
@@ -773,7 +778,7 @@ abstract class PMW_Form_Admin {
 		$this->element( 'input', $attrs );
 		$text = ( ! empty( $layout['text'] ) ) ? $layout['text'] : '';
 		if ( ! empty( $text ) ) {
-			e_esc_html( '&nbsp;' );
+			?>&nbsp;<?php
 			$this->element( 'span', [ 'class' => 'form-colorpicker-text' ], $text );
 		}
 	}
@@ -782,6 +787,7 @@ abstract class PMW_Form_Admin {
 	 *  Display a field as text
 	 *
 	 * @since 20160201
+	 * @param array $data field information
 	 * @uses e_esc_html()
 	 * @uses PMW_Trait_Attributes::element()
 	 */
@@ -809,18 +815,16 @@ abstract class PMW_Form_Admin {
 		$attrs = array(
 			'id'       => $ID,
 			'name'     => "{$name}[]",
-			'multiple' => ''
+			'multiple' => '',
+			'onchange' => ( array_key_exists( 'change', $layout ) ) ? $layout['change'] : '',
 		);
-		if ( array_key_exists( 'change', $layout ) ) {
-			$attrs['onchange'] = $layout['change'];
+		$html = '';
+		foreach( $layout['source'] as $key => $text ) {
+			$attrs = [ 'value' => $key ];
+			$this->selected( $attrs, $key, $value );
+			$html .= $this->get_element( 'option', $attrs, ' ' . $key . ' ' );
 		}
-		$this->tag( 'select', $attrs );
-			foreach( $layout['source'] as $key => $text ) {
-				$attrs = [ 'value' => $key ];
-				$this->selected( $attrs, $key, $value );
-				$this->element( 'option', $attrs, ' ' . $key . ' ' );
-			} ?>
-		</select><?php
+		$this->element( 'select', $attrs, $html, true );
 		if ( ! empty( $data['layout']['text'] ) ) {
 			$this->element( 'span', [ ], ' ' . $data['layout']['text'] );
 		}
@@ -830,80 +834,80 @@ abstract class PMW_Form_Admin {
 	 *  Render an image on the form
 	 *
 	 * @since 20150925
-	 * @param array $data
+	 * @param array $data field information
 	 * @uses e_esc_attr()
-	 * @uses e_esc_html()
-	 * @todo make use of Attributes Trait
 	 */
 	private function render_image( $data ) {
 		extract( $data );  #  array( 'ID' => $item, 'value' => $data[ $item ], 'layout' => $layout[ $item ], 'name' => $name )
-		$media   = $this->form_text['media'];
+		$media = $this->form_text['media'];
+		if ( array_key_exists( 'media', $layout ) ) { $media = array_merge( $media, $layout['media'] ); }
+		$div = array(
+			'data-title'  => $media['title'],
+			'data-button' => $media['button'],
+			'data-field'  => $ID,
+		);
 		$img_css = 'form-image-container' . ( ( empty( $value ) ) ? ' hidden' : '');
 		$btn_css = 'form-image-delete' . ( ( empty( $value ) ) ? ' hidden' : '');
-		if ( array_key_exists( 'media', $layout ) ) { $media = array_merge( $media, $layout['media'] ); } ?>
-		<div data-title="<?php e_esc_attr( $media['title'] ); ?>"
-			  data-button="<?php e_esc_attr( $media['button'] ); ?>" data-field="<?php e_esc_attr( $ID ); ?>">
-			<button type="button" class="form-image">
-				<?php e_esc_html( $media['button'] ); ?>
-			</button>
-			<input id="<?php e_esc_attr( $ID ); ?>_input" type="text" class="hidden" name="<?php e_esc_attr( $name ); ?>" value="<?php e_esc_html( $value ); ?>" />
-			<div class="<?php e_esc_attr( $img_css ); ?>">
-				<img id="<?php e_esc_attr( $ID ); ?>_img" src="<?php e_esc_attr( $value ); ?>" alt="<?php e_esc_attr( $value ); ?>">
-			</div>
-			<button type="button" class="<?php e_esc_attr( $btn_css ); ?>">
-				<?php e_esc_html( $media['delete'] ); ?>
-			</button>
-		</div><?php
+		$attrs = array(
+			'id'    => $ID . '_input',
+			'type'  => 'text',
+			'class' => 'hidden',
+			'name'  => $name,
+			'value' => $value,
+		);
+		$html  = $this->get_element( 'button', [ 'type' => "button", 'class' => "form-image" ], $media['button'] );
+		$html .= $this->get_element( 'input', $attrs );
+		$img   = $this->get_tag( 'img', [ 'id' => $ID . '_img', 'src' => $value, 'alt' => $value ] );
+		$html .= $this->get_element( 'div', [ 'class' => $img_css ], $img, true );
+		$html .= $this->get_element( 'button', [ 'type' => 'button', 'class' => $btn_css ], $media['delete'] );
+		$this->element( 'div', $div, $html, true );
 	}
 
 	/**
 	 *  Render radio field
 	 *
 	 * @since 20160201
+	 * @param array $data field information
 	 * @uses PMW_Trait_Attributes::element()
 	 * @uses PMW_Trait_Attributes::checked()
 	 * @uses PMW_Trait_Attributes::tag()
 	 * @see wp_kses()
 	 * @uses PMW_Theme_Library::kses()
-	 * @uses e_esc_html()
 	 */
-	private function render_radio($data) {
+	private function render_radio( $data ) {
 		extract( $data );  #  associative array: keys are 'ID', 'value', 'layout', 'name'
 		if ( empty( $layout['source'] ) ) return;
-		$radio_attrs = array(
+		$base_attrs = array(
 			'type'     => 'radio',
 			'name'     => $name,
 			'onchange' => ( array_key_exists( 'change', $layout ) ) ? $layout['change'] : '',
-		); ?>
-		<div><?php
-			if ( array_key_exists( 'text', $layout ) ) {
-				$uniq = uniqid();
-				$this->element( 'div', [ 'id' => $uniq ], $layout['text'] );
-				$radio_attrs['aria-describedby'] = $uniq;
+		);
+		$html = '';
+		if ( array_key_exists( 'text', $layout ) ) {
+			$uniq  = uniqid();
+			$html .= $this->get_element( 'div', [ 'id' => $uniq ], $layout['text'] );
+			$base_attrs['aria-describedby'] = $uniq;
+		}
+		foreach( $layout['source'] as $key => $text ) {
+			$radio_attrs = $base_attrs;
+			$radio_attrs['value'] = $key;
+			$this->checked( $radio_attrs, $value, $key );
+			$item = $this->get_tag( 'input', $radio_attrs );
+			if ( array_key_exists( 'src-html', $layout ) ) {
+				$item .= wp_kses( $text, pmw()->kses() );
+			} else {
+				$item .= esc_html( $text );
 			}
-			foreach( $layout['source'] as $key => $text ) {
-				$radio_attrs['value'] = $key;
-				$this->checked( $radio_attrs, $value, $key ); ?>
-				<div>
-					<label><?php
-						$this->tag( 'input', $radio_attrs );
-						if ( array_key_exists( 'src-html', $layout ) ) {
-							echo wp_kses( $text, pmw()->kses() );
-						} else {
-							e_esc_html( $text );
-						}
-						if ( array_key_exists( 'extra_html', $layout ) && array_key_exists( $key, $layout['extra_html'] ) ) {
-							echo wp_kses( $layout['extra_html'][ $key ], pmw()->kses() );
-						} ?>
-					</label>
-				</div><?php
+			if ( array_key_exists( 'extra_html', $layout ) && array_key_exists( $key, $layout['extra_html'] ) ) {
+				$item .= wp_kses( $layout['extra_html'][ $key ], pmw()->kses() );
 			}
-			if ( array_key_exists( 'postext', $layout ) ) { ?>
-				<div>
-					<?php e_esc_html( $layout['postext'] ) ; ?>
-				</div><?php
-			} ?>
-		</div><?php
+			$label = $this->get_element( 'label', [], $item,  true );
+			$html .= $this->get_element( 'div',   [], $label, true );
+		}
+		if ( array_key_exists( 'postext', $layout ) ) {
+			$html .= $this->get_element( 'div', [ ], $layout['postext'] ) ;
+		}
+		$this->element( 'div', [], $html, true );
 	}
 
 	/**
@@ -917,7 +921,6 @@ abstract class PMW_Form_Admin {
 	 * @see checked()
 	 * @see wp_kses()
 	 * @uses PMW_Theme_Library::kses()
-	 * @uses e_esc_html()
 	 */
 	private function render_radio_multiple( $data ) {
 		extract( $data );   #   associative array: keys are 'ID', 'value', 'layout', 'name'
@@ -926,40 +929,51 @@ abstract class PMW_Form_Admin {
 		$pre_css   = ( array_key_exists( 'textcss', $layout ) ) ? $layout['textcss'] : '';
 		$pre_text  = ( array_key_exists( 'text',    $layout ) ) ? $layout['text']    : '';
 		$post_text = ( array_key_exists( 'postext', $layout ) ) ? $layout['postext'] : '';
-		$preset    = ( array_key_exists( 'preset',  $layout ) ) ? $layout['preset']  : 'no'; ?>
-		<div class="radio-multiple-div">
-			<?php $this->element( 'div', [ 'class' => $pre_css ], $pre_text ); ?>
-			<div class="radio-multiple-header">
-				<span class="radio-multiple-yes"><?php esc_html_e( 'Yes', 'privacy-my-way' ); ?></span>&nbsp;
-				<span class="radio-multiple-no" ><?php esc_html_e( 'No', 'privacy-my-way' ); ?></span>
-			</div><?php
-			foreach( $layout['source'] as $key => $text ) {
-				$check  = ( array_key_exists( $key, $value ) ) ? $value[ $key ] : $preset; ?>
-				<div class="radio-multiple-list-item">
-					<label>
-						<input type="radio" value="yes" class="radio-multiple-list radio-multiple-list-yes"
-						       name="<?php echo esc_attr( $name.'['.$key.']' ) ; ?>"
-						       <?php checked( $check, 'yes' ); ?> />&nbsp;
-						<input type="radio" value="no" class="radio-multiple-list radio-multiple-list-no"
-						       name="<?php echo esc_attr( $name.'['.$key.']' ) ; ?>"
-						       <?php checked( $check, 'no' ); ?> />
-						<span class="radio-multiple-list-text">
-							<?php echo wp_kses( $text, pmw()->kses() ); ?>
-						</span>
-					</label>
-				</div><?php
-			} ?>
-			<div class="radio-multiple-post-text">
-				<?php e_esc_html( $post_text ) ; ?>
-			</div>
-		</div><?php
+		$preset    = ( array_key_exists( 'preset',  $layout ) ) ? $layout['preset']  : 'no';
+		//  Pre-Text
+		$html = $this->get_element( 'div', [ 'class' => $pre_css ], $pre_text );
+		//  Radio labels
+		$label  = $this->get_element( 'span', [ 'class' => 'radio-multiple-yes' ], __( 'Yes', 'privacy-my-way' ) );
+		$label .= '&nbsp;';
+		$label .= $this->get_element( 'span', [ 'class' => 'radio-multiple-no'  ], __( 'No',  'privacy-my-way' ) );
+		$html  .= $this->get_element( 'div', [ 'class' => 'radio-multiple-header' ], $label, true );
+		//  Radio buttons
+		foreach( $layout['source'] as $key => $text ) {
+			$check  = ( array_key_exists( $key, $value ) ) ? $value[ $key ] : $preset;
+			//  Yes radio
+			$yes = array(
+				'type'  => 'radio',
+				'value' => 'yes',
+				'class' => 'radio-multiple-list radio-multiple-list-yes',
+				'name'  => $name .'[' . $key . ']',
+			);
+			$this->checked( $yes, $check, 'yes' );
+			$item  = $this->get_element( 'input', $yes );
+			$item .= '&nbsp;';
+			//  No radio
+			$no = array(
+				'type'  => 'radio',
+				'value' => 'no',
+				'class' => 'radio-multiple-list radio-multiple-list-no',
+				'name'  => $name . '[' . $key . ']',
+			);
+			$this->checked( $no, $check, 'no' );
+			$item .= $this->get_element( 'input', $no );
+			$item .= $this->get_element( 'span', [ 'class' => 'radio-multiple-list-text' ], wp_kses( $text, pmw()->kses() ), true );
+			$label = $this->get_element( 'label', [], $item, true );
+			$html .= $this->get_element( 'div', [ 'class' => 'radio-multiple-list-item' ], $label, true );
+		}
+		if ( array_key_exists( 'postext', $layout ) ) {
+			$html .= $this->element( 'div', [ 'class' => 'radio-multiple-post-text' ], $post_text );
+		}
+		$this->element( 'div', [ 'class' => 'radio-multiple-div' ], $html, true );
 	}
 
 	/**
 	 *  Render a select field
 	 *
 	 * @since 20150323
-	 * @param array $data
+	 * @param array $data field information
 	 * @uses PMW_Trait_Attributes::element()
 	 * @uses PMW_Trait_Attributes::tag()
 	 * @uses PMW_Trait_Attributes::selected()
@@ -1002,7 +1016,7 @@ abstract class PMW_Form_Admin {
 	 *  Render a field with multiple selects
 	 *
 	 * @since 20170228
-	 * @see array $data field information
+	 * @param array $data field information
 	 */
 	private function render_select_multiple( $data ) {
 		$data['name'] .= '[]';
@@ -1015,7 +1029,6 @@ abstract class PMW_Form_Admin {
 	 * @since 20170126
 	 * @param array $data field information
 	 * @uses PMW_Trait_Attributes::element()
-	 * @uses e_esc_html()
 	 */
 	private function render_spinner( $data ) {
 		extract( $data );  #  array( 'ID' => $item, 'value' => $data[ $item ], 'layout' => $layout[ $item ], 'name' => $name )
@@ -1378,5 +1391,32 @@ if ( ! function_exists( 'e_esc_attr' ) ) {
 if ( ! function_exists( 'e_esc_html' ) ) {
 	function e_esc_html( $string ) {
 		echo esc_html( $string );
+	}
+}
+
+/**
+ *  array_key_first() introduced in PHP 7.3.0
+ *
+ * @since 20200315
+ * @param array $arr  Input array.
+ * @return string     First key of the array.
+ */
+if ( ! function_exists( 'array_key_first' ) ) {
+	function array_key_first( array $arr ) {
+		foreach( $arr as $key => $item ) return $key;
+		return null;
+	}
+}
+
+/**
+ *  array_key_last() introduced in PHP 7.3.0
+ *
+ * @since 20200315
+ * @param array $arr  Input array.
+ * @return string     Last key of the array.
+ */
+if ( ! function_exists( 'array_key_last' ) ) {
+	function array_key_last( array $arr ) {
+		return array_key_first( array_reverse( $arr, true ) );
 	}
 }
