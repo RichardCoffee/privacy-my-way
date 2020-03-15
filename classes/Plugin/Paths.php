@@ -10,25 +10,7 @@
  * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Plugin/Paths.php
  */
 defined( 'ABSPATH' ) || exit;
-/**
- *  Function to provide easier access to Paths object.
- *
- * @since 20170404
- * @return object
- */
-if ( ! function_exists( 'plugin_paths' ) ) {
-	function plugin_paths() {
-		static $instance = null;
-		if ( empty( $instance ) ) {
-			$instance = PMW_Plugin_Paths::instance();
-		}
-		return $instance;
-	}
-}
 
-/**
- * @since 20170113
- */
 class PMW_Plugin_Paths {
 
 #	 * @since 20170113

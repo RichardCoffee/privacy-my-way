@@ -17,24 +17,25 @@ abstract class PMW_Options_Options {
 
 	/**
 	 * @since 20170505
-	 * @var string Option slug.
+	 * @var string  Slug name for option.
 	 */
 	protected $base = 'options';
 	/**
 	 * @since 20180404
-	 * @var string User capability required to edit the options form.
+	 * @var string  User capability required to edit the options form.
 	 */
 	protected $capability = 'edit_theme_options';
 	/**
 	 * @since 20170505
-	 * @var integer Tab priority on multi-tabbed screens.
+	 * @var integer  Tab priority on multi-tabbed screens.
 	 */
 	protected $priority = 1000;
 	/**
 	 * @since 20170505
-	 * @var array Contains screen layout.
+	 * @var array  Contains screen layout.
 	 */
 	protected $screen = array();
+
 
 	/**
 	 *  This function should return the title of the screen/tab
@@ -73,11 +74,11 @@ abstract class PMW_Options_Options {
 	}
 
 	/**
-	 *  Add options layout array
+	 *  Add options layout to current form.
 	 *
 	 * @since 20170505
-	 * @param  array $form Contains form information determining the screen layout.
-	 * @return array       Returns the form with a the current layout added.
+	 * @param  array $form  Contains form information determining the screen layout.
+	 * @return array        Returns the form with a tab layout added.
 	 */
 	public function form_layout( $form ) {
 		if ( ! array_key_exists( $this->base, $form ) ) {
@@ -87,10 +88,10 @@ abstract class PMW_Options_Options {
 	}
 
 	/**
-	 *  Create screen option layout
+	 *  Set the screen property and return it.
 	 *
 	 * @since 20170505
-	 * @return array Returns the current screen layout.
+	 * @return array  Current screen layout.
 	 */
 	public function default_form_layout() {
 		if ( empty( $this->screen ) ) {
@@ -99,18 +100,18 @@ abstract class PMW_Options_Options {
 				'title'    => $this->form_title(),
 				'icon'     => $this->form_icon(),
 				'option'   => 'tcc_options_' . $this->base,
-				'layout'   => $this->options_layout(),
+				'layout'   => apply_filters( "tcc_{$this->base}_options_layout", $this->options_layout() ),
 			);
 		}
 		return $this->screen;
 	}
 
 	/**
-	 *  Add localization data to javascript
+	 *  Add showhide data to array passed to javascript
 	 *
 	 * @since 20170505
-	 * @param array  $data Localization array
-	 * @return array       Returns the localization array with curretn screen data added.
+	 * @param  array $data  Incoming data.
+	 * @return array        Data with showhide data added.
 	 */
 	public function options_localization( $data = array() ) {
 		if ( ! array_key_exists( 'showhide', $data ) ) {
@@ -127,10 +128,10 @@ abstract class PMW_Options_Options {
 	}
 
 	/**
-	 *  Create an array containing default option values
+	 *  Create an array containing default option values.
 	 *
 	 * @since 20170505
-	 * @return array Either the current screen default values, or an empty array.
+	 * @return array  Current screen default values.
 	 */
 	public function get_default_options() {
 		$form = $this->options_layout( true );
@@ -145,11 +146,11 @@ abstract class PMW_Options_Options {
 	}
 
 	/**
-	 *  Get the layout for a screen item
+	 *  Get the layout for a screen item.
 	 *
 	 * @since 20180410
-	 * @param string $item Slug of the item to be retrieved.
-	 * @return array       Item informational array.
+	 * @param string $item  Slug of the item to be retrieved.
+	 * @return array        Layout of the item requested.
 	 */
 	public function get_item( $item ) {
 		$layout = ( empty( $this->screen ) ) ? $this->options_layout() : $this->screen['layout'];
