@@ -1368,7 +1368,8 @@ abstract class PMW_Form_Admin {
 
 } # end of PMW_Form_Admin class
 
-#   These are just a shorthand functions
+
+/**  These are just shorthand functions  **/
 
 /**
  *  Echo an escaped attribute string

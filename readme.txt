@@ -51,7 +51,7 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 == Changelog ==
 
 = Next version =
-* Upgrade:  updated core files.
+* Upgrade:  updated core files, fixed a couple of bugs in the Admin Options form.
 * Upgrade:  updated WP tested version.
 
 = 1.6.1 =

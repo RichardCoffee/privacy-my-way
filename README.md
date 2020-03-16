@@ -69,17 +69,17 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ## Changelog
 
 ### Next version
-* Upgrade:  updated core files.
+* Upgrade:  updated core files, fixed a couple of bugs in the Admin Options form.
 * Upgrade:  updated WP tested version.
 
 ### 1.6.1
 * Upgrade:  updated core files.
 
 ### 1.6.0
-* Enhancement: Allow for blank or missing Plugin/Author URI in description when filtering plugins.
+* Enhancement:  Allow for blank or missing Plugin/Author URI in description when filtering plugins.
 * Upgrade:  upgraded to version 4.8 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
 * Upgrade:  updated core files.
-* Bugfix: Prevent a recursion issue with user count.
+* Bugfix:  Prevent a recursion issue with user count.
 * Minor:  Replace isset calls with array_key_exists.
 
 ### 1.5.5
