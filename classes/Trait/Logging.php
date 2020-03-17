@@ -244,7 +244,7 @@ trait PMW_Trait_Logging {
 			$message = print_r( debug_backtrace(), true );
 		}
 		$message = date( '[d-M-Y H:i:s e] ' ) . $message . "\n";
-		if ( is_writable( $destination ) ) {
+		if ( is_writable( $destination ) || is_writable( dirname( $destination ) ) ) {
 			error_log( $message, 3, $destination );
 		}
 	}
