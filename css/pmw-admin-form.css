@@ -30,7 +30,7 @@ input[type="radio"].radio-multiple-list-no {
 }
 
 input[type="radio"].radio-multiple-list-no:checked::before {
-|  background-color: red;
+	background-color: red;
 }
 
 input[type="radio"].radio-multiple-list-yes {
@@ -39,7 +39,7 @@ input[type="radio"].radio-multiple-list-yes {
 }
 
 input[type="radio"].radio-multiple-list-yes:checked::before {
-|  background-color: green;
+	background-color: green;
 }
 
 .pmw-plugin-active { color: green; }
