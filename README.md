@@ -71,6 +71,8 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ### Next version
 * Upgrade:  updated core files, fixed a couple of bugs in the Admin Options form.
 * Upgrade:  updated WP tested version.
+* Bugfix:  CSS fix for admin form.
+* Minor:  More work on documentation.
 
 ### 1.6.1
 * Upgrade:  updated core files.

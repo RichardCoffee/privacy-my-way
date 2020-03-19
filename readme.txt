@@ -53,6 +53,8 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 = Next version =
 * Upgrade:  updated core files, fixed a couple of bugs in the Admin Options form.
 * Upgrade:  updated WP tested version.
+* Bugfix:  CSS fix for admin form.
+* Minor:  More work on documentation.
 
 = 1.6.1 =
 * Upgrade:  updated core files.
@@ -61,7 +63,7 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 * Enhancement: allow for blank or missing Plugin/Author URI in description when filtering plugins.
 * Upgrade:  upgraded to version 4.8 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
 * Upgrade:  updated core files.
-* Bugfix: fix a recursion issue with user count.
+* Bugfix:  fix a recursion issue with user count.
 * Minor:  Replace isset calls with array_key_exists.
 
 = 1.5.5 =
