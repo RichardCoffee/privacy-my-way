@@ -99,6 +99,9 @@ abstract class PMW_Options_Options {
 	 */
 	public function default_form_layout( $layout = array() ) {
 		if ( empty( $this->screen ) ) {
+			if ( empty( $layout ) )
+				$layout = apply_filters( "tcc_{$this->base}_options_layout", $this->options_layout() );
+			}
 			$this->screen = array(
 				'describe' => [ $this, 'describe_options' ],
 				'title'    => $this->form_title(),

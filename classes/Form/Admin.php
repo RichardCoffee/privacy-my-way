@@ -292,9 +292,7 @@ abstract class PMW_Form_Admin {
 		$desc  = ( is_array( $desc ) ) ? $desc : ( ( method_exists( $this, $desc ) ) ? [ $this, $desc ] : $desc );
 		add_settings_section( $this->current, $title, $desc, $this->current );
 		foreach( $this->form['layout'] as $item => $data ) {
-			if ( is_string( $data ) ) {
-				continue;	#	skip string variables
-			}
+			if ( is_string( $data ) ) continue;
 			$this->register_field( $this->current, $this->current, $item, $data );
 		}
 	}
