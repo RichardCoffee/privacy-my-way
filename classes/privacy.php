@@ -164,9 +164,9 @@ class Privacy_My_Way {
 	 * @since 20170309
 	 * @return  The site user count.
 	 */
-	private function get_user_count() {
+	private function get_user_count( $network_id ) {
 		$count = 1;
-		#	wp-includes/update.php
+		//  wp-includes/update.php
 		if ( is_multisite() ) {
 			$count = get_user_count( $network_id );
 		} else {
