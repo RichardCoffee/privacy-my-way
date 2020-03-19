@@ -26,8 +26,9 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 	 * @since 20170222
 	 */
 	public function __construct() {
+		$this->tab = $this->slug;
 		add_action( 'admin_menu',              [ $this, 'add_menu_option'    ] );
-		add_action( 'tcc_load_form_page',      [ $this, 'tcc_load_form_page' ] );
+		add_action( 'admin_enqueue_scripts',   [ $this, 'enqueue_theme_scripts' ] );
 		add_filter( "form_text_{$this->slug}", [ $this, 'form_trans_text' ], 10, 2 );
 		parent::__construct();
 	}
@@ -48,18 +49,7 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 	}
 
 	/**
-	 *  Load the required scripts when needed.
-	 *
-	 * @since 20170504
-	 */
-	public function tcc_load_form_page() {
-		if ( $this->slug === $this->tab ) {
-			add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_theme_scripts' ] );
-		}
-	}
-
-	/**
-	 *  Load the scripts in standalone mode.
+	 *  Load the required scripts.
 	 *
 	 * @since 20170222
 	 * @param string $hook  Suffix for action hook - not used here.

@@ -52,13 +52,6 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	 * @var string
 	 */
 	protected $slug = 'privacy-my-way';
-	/**
-	 *  Used for compatibility with fluidity-theme admin options screen.
-	 *
-	 * @since 20170221
-	 * @var string
-	 */
-	protected $tab = 'privacy-my-way';
 
 	/**
 	 *  Forces singleton class.
@@ -120,7 +113,7 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	 * @link https://github.com/RichardCoffee/fluidity-theme
 	 */
 	public function add_privacy_options( $options ) {
-		$this->setting = 'admin.php?page=fluidity_options&tab=' . $this->tab;
+		$this->setting = 'admin.php?page=fluidity_options&tab=' . $this->slug;
 		$options['Privacy'] = new PMW_Options_Privacy;
 		add_action( 'tcc_load_form_page', function() {
 			wp_enqueue_style( 'privacy-form.css', $this->paths->get_plugin_file_uri( 'css/pmw-admin-form.css' ), null, $this->paths->version );
