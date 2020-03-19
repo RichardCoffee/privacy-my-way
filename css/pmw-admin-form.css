@@ -23,15 +23,23 @@
 .form-title {
 	font-size: 16px;
 }
-/*  FIXME: I can't seem to get this to work.  CSS expert, anyone?  */
+
 input[type="radio"].radio-multiple-list-no {
 	border-color: red;
 	color: red;
 }
 
+input[type="radio"].radio-multiple-list-no:checked::before {
+|  background-color: red;
+}
+
 input[type="radio"].radio-multiple-list-yes {
 	border-color: green;
 	color: green;
+}
+
+input[type="radio"].radio-multiple-list-yes:checked::before {
+|  background-color: green;
 }
 
 .pmw-plugin-active { color: green; }
