@@ -38,7 +38,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$this->initialize();
 		$layout  = array( 'default' => true );
 		$warning = _x( '*** Turning off reporting a %1$s means you will not be notified of upgrades for that %1$s! ***', 'noun - singular', 'privacy-my-way' );
-		$extra_html = array( 'yes' => ' <span class="red"> ' . __( ' ( Recommended ) ', 'privacy-my-way' ) . '</span>' );
+		$extra_html = array( 'yes' => ' <span class="red"> ' . esc_html_x( ' ( Recommended ) ', 'Added to a string to indicate the recommended option', 'privacy-my-way' ) . '</span>' );
 		$layout['blog'] = array(
 			'default' => 'yes',
 			'label'   => __( 'Blog URL', 'privacy-my-way' ),
@@ -72,7 +72,6 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			),
 		);
 		if ( ( is_multisite() && is_main_site() ) || $all ) {
-			$layout['blog']['change'] = 'showhidePosi( this, ".privacy-blog-option", "yes" );';
 			$layout['blog']['showhide'] = array(
 				'origin' => 'privacy-blog-active',
 				'target' => 'privacy-blog-option',
@@ -92,7 +91,6 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 					'target' => 'privacy-multi-option',
 					'show'   => 'yes',
 				),
-				'change'  => 'showhidePosi( this, ".privacy-multi-option", "yes" );',
 				'divcss'  => 'privacy-multi-active privacy-blog-option',
 			); //*/
 			$layout['install'] = array(
@@ -129,7 +127,11 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 				'filter' => __( 'Filter the plugin list that gets sent to WordPress.', 'privacy-my-way' ),
 				'none'   => __( 'Do not let them know about your plugins.', 'privacy-my-way' ),
 			),
-			'change'    => 'showhidePosi( this, ".privacy-plugin-filter", "filter" );',
+			'showhide'  => array(
+				'origin' => 'privacy-plugin-active',
+				'target' => 'privacy-plugin-filter',
+				'show'   => 'filter'
+			),
 			'divcss'    => 'privacy-plugin-active',
 		); //*/
 		$layout['install_default'] = array(
@@ -149,7 +151,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			'preset'  => 'yes',
 			'label'   => __( 'Plugin List', 'privacy-my-way' ),
 			'text'    => sprintf( $warning, __( 'plugin', 'privacy-my-way' ) ),
-			'textcss' => 'red', // FIXME: bad css
+			'textcss' => 'red',
 			'render'  => 'radio_multiple',
 			'source'  => $this->get_plugin_list(),
 			'divcss'  => 'privacy-plugin-filter',
@@ -164,7 +166,11 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 				'filter' => __( 'Filter the theme list that gets sent to WordPress.', 'privacy-my-way' ),
 				'none'   => __( 'Do not let them know about your themes.', 'privacy-my-way' ),
 			),
-			'change'  => 'showhidePosi(this,".privacy-theme-filter","filter");',
+			'showhide' => array(
+				'origin' => 'privacy-theme-active',
+				'target' => 'privacy-theme-filter',
+				'show'   => 'filter',
+			),
 			'divcss'  => 'privacy-theme-active',
 		); //*/
 		$layout['theme_list'] = array(
@@ -172,7 +178,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			'preset'  => 'yes',
 			'label'   => __( 'Theme List', 'privacy-my-way' ),
 			'text'    => sprintf( $warning, __( 'theme', 'privacy-my-way' ) ),
-			'textcss' => 'red', // FIXME: bad css
+			'textcss' => 'red',
 			'postext' => __( 'The WordPress twenty* themes that are installed will always be reported.', 'privacy-my-way' ),
 			'help'    => __( 'This plugin does not filter default WordPress themes.', 'privacy-my-way' ),
 			'render'  => 'radio_multiple',
@@ -223,7 +229,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 				'nodelete'  => __( 'Always retain the plugin data.', 'privacy-my-way' ),
 			),
 		);
-		return apply_filters( "tcc_options_layout_{$this->base}", $layout );
+		return $layout;
 	}
 
 

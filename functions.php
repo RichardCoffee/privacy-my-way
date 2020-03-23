@@ -1,9 +1,21 @@
 <?php
-
+/**
+ *  Contains functions required for the plugin.
+ *
+ * @package    Privacy_My_Way
+ * @subpackage Plugin
+ * @author     Richard Coffee <richard.coffee@rtcenterprises.net>
+ * @copyright  2017 Richard Coffee
+ * @link       https://github.com/RichardCoffee/privacy-my-way/blob/master/functions.php
+ */
 defined( 'ABSPATH' ) || exit;
 
-include_once( 'includes/debugging.php' );
-
+/**
+ *  Class autoloader.
+ *
+ * @since 20170221
+ * @param string $class  Name of requested class.
+ */
 function pmw_privacy_class_loader( $class ) {
 	if ( substr( $class, 0, 4 ) === 'PMW_' ) {
 		$load = str_replace( '_', '/', substr( $class, ( strpos( $class, '_' ) + 1 ) ) );
@@ -15,6 +27,13 @@ function pmw_privacy_class_loader( $class ) {
 }
 spl_autoload_register( 'pmw_privacy_class_loader' ); //*/
 
+/**
+ *  Get plugin library class instance.
+ *
+ * @since 20170428
+ * @param bool $force_log  Force the library to log the next entry.
+ * @return object          The plugin library instance.
+ */
 function pmw( $force_log = false ) {
 	static $library;
 	if ( empty( $library ) ) {
@@ -26,22 +45,3 @@ function pmw( $force_log = false ) {
 	return $library;
 }
 
-/**
- * Echo an escaped attribute string
- *
- * @since 1.0.0
- *
- * @param string $string
- */
-if ( ! function_exists('e_esc_attr') ) {
-	function e_esc_attr( $string ) {
-		echo esc_attr( $string );
-	}
-}
-
-# http://stackoverflow.com/questions/14348470/is-ajax-in-wordpress
-if ( ! function_exists( 'is_ajax' ) ) {
-	function is_ajax() {
-		return ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ? true : false;
-	}
-}

@@ -51,7 +51,7 @@ class Privacy_My_Way {
 
 			add_filter( 'core_version_check_query_args', [ $this, 'core_version_check_query_args' ] );
 
-			#	These next two filters are multisite only
+			//  These next two filters are multisite only
 			add_filter( 'pre_site_option_blog_count', [ $this, 'pre_site_option_blog_count' ], 10, 3 );
 			add_filter( 'pre_site_option_user_count', [ $this, 'pre_site_option_user_count' ], 10, 3 );
 
@@ -433,7 +433,7 @@ class Privacy_My_Way {
 			if ( $this->options['plugins'] === 'filter' ) {
 				foreach( $this->options['plugin_list'] as $plugin => $state ) {
 					if ( $state === 'no' ) {
-						if ( array_key_exists( $plugin, $value->checked ) ) {
+						if ( property_exists( $value, 'checked' ) && array_key_exists( $plugin, $value->checked ) ) {
 							unset( $value->checked[ $plugin ] );
 						}
 						if ( array_key_exists( $plugin, $value->response ) ) {
