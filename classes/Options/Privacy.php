@@ -11,8 +11,8 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 	private   $plugins  = array();
 	private   $themes   = array();
 
+#	 * @link https://codex.wordpress.org/Function_Reference/get_plugins
 	private function initialize() {
-		#	https://codex.wordpress.org/Function_Reference/get_plugins
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
@@ -155,7 +155,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 			'render'  => 'radio_multiple',
 			'source'  => $this->get_plugin_list(),
 			'divcss'  => 'privacy-plugin-filter',
-		); //*/
+		);
 		$layout['themes'] = array(
 			'default' => 'all',
 			'label'   => __( 'Themes', 'privacy-my-way' ),
