@@ -45,7 +45,7 @@ class Privacy_My_Way {
 
 		$this->options = $this->get_options();
 		$this->logging_func  = array( $this, 'log' );
-		$this->logging_debug = apply_filters( 'logging_debug_privacy', $this->logging_debug );
+		$this->logging_debug = apply_filters( 'logging_debug_privacy', ( $this->options['logging'] === 'on' ) );
 
 		if ( $this->options ) {  #  opt-in only
 
@@ -74,13 +74,14 @@ class Privacy_My_Way {
 	 * @return array  The plugin options.
 	 */
 	protected function get_options() {
-		$privacy  = new PMW_Options_Privacy;
-		$defaults = $privacy->get_default_options();
-		$current  = get_option( 'tcc_options_privacy-my-way', array() );
-		$options  = array_merge( $defaults, $current );
-		update_option( 'tcc_options_privacy-my-way', $options );
+		$options = get_option( 'tcc_options_privacy-my-way', array() );
+		if ( empty( $options ) ) {
+			$privacy = new PMW_Options_Privacy( false );
+			$options = $privacy->get_default_options();
+			update_option( 'tcc_options_privacy-my-way', $options );
+		}
 		add_filter( 'logging_debug_privacy', function( $debug = false ) {
-			return ( array_key_exists( 'logging', $this->options ) && ( $this->options['logging'] === 'on' ) ) ? true : false; #(bool) $debug;
+			return ( array_key_exists( 'logging', $this->options ) && ( $this->options['logging'] === 'on' ) ) ? true : (bool) $debug;
 		} );
 		return $options;
 	}
