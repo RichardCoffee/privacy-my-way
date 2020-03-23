@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 5.3.2
-Stable tag: 1.6.1
+Stable tag: 1.7.0
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our
@@ -51,9 +51,14 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 == Changelog ==
 
 = Next version =
-* Upgrade:  updated core files, fixed a couple of bugs in the Admin Options form.
+### Next version
+* Enhancement:  Rewrote plugin classes to bring them in sync with core files.
+* Upgrade:  updated core files, which included some bug fixes.
 * Upgrade:  updated WP tested version.
 * Bugfix:  CSS fix for admin form.
+* Bugfix:  Some option filters were being run twice.
+* Bugfix:  Now passes the 'network_id' to get_user_count().
+* Bugfix:  Now checking for object property in transient filter.
 * Minor:  More work on documentation.
 
 = 1.6.1 =
