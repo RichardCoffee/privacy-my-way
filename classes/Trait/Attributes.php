@@ -118,7 +118,7 @@ trait PMW_Trait_Attributes {
 			$attr = sanitize_key( $key );
 			if ( empty( $value ) ) {
 				if ( in_array( $attr, $is_allowed_no_value, true ) ) {
-					$html .= "$attr ";
+					$html .= ' ' . $attr;
 				}
 				continue;
 			}
