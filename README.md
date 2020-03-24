@@ -66,7 +66,7 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ## Changelog
 
-### Next version
+### 1.7.0
 * Enhancement:  Rewrote plugin classes to bring them in sync with core files.
 * Upgrade:  updated core files, which included some bug fixes.
 * Upgrade:  updated WP tested version.

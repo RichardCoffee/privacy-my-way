@@ -50,8 +50,7 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
-= Next version =
-### Next version
+= 1.7.0 =
 * Enhancement:  Rewrote plugin classes to bring them in sync with core files.
 * Upgrade:  updated core files, which included some bug fixes.
 * Upgrade:  updated WP tested version.
