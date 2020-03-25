@@ -136,7 +136,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		); //*/
 		$layout['install_default'] = array(
 			'default' => 'yes',
-			'label'   => __( 'Default', 'privacy-my-way' ),
+			'label'   => __( 'Installs', 'privacy-my-way' ),
 			'text'    => __( 'Default setting for newly installed plugins/themes.', 'privacy-my-way' ),
 			'render'  => 'radio',
 			'source'  => array(
