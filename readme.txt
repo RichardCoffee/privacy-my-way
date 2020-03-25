@@ -49,6 +49,7 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 = Next Release =
 * Bugfix:  More property object checks added.
+* Minor:  Remove an unneeded method.
 
 = 1.7.1 =
 * Bugfix:  Now passes script localization information properly.

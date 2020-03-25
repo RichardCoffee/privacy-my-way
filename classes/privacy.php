@@ -57,7 +57,6 @@ class Privacy_My_Way {
 
 			add_filter( 'http_headers_useragent',     [ $this, 'http_headers_useragent' ],     10, 2 );
 			add_filter( 'pre_http_request',           [ $this, 'pre_http_request' ],            2, 3 );
-			add_filter( 'http_request_args',          [ $this, 'http_request_args' ],          11, 2 );
 
 			add_filter( 'pre_set_site_transient_update_themes',  [ $this, 'themes_site_transient' ],  10, 2 );
 			add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'plugins_site_transient' ], 10, 2 );
@@ -189,26 +188,6 @@ class Privacy_My_Way {
 			$string = 'WordPress/' . get_bloginfo( 'version' );
 		}
 		return $string;
-	}
-
-	/**
-	 *  Filters the message information to be sent to wordpress.
-	 *
-	 * @since 20170221
-	 * @param array  $args  The information wordpress wants.
-	 * @param string $url   Wordpress server url.
-	 * @return array        The information you allow wordpress to get.
-	 */
-	public function http_request_args( $args, $url ) {
-		//  Only act on requests to api.wordpress.org
-		if ( stripos( $url, '://api.wordpress.org/' ) === false ) {
-			return $args;
-		}
-		$args = $this->strip_site_url( $args );
-		$args = $this->filter_plugins( $args, $url );
-		$args = $this->filter_themes(  $args, $url );
-		$this->logg( $url, $args );
-		return $args;
 	}
 
 	/**

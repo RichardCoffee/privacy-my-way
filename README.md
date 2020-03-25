@@ -66,6 +66,7 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ### Next Release
 * Bugfix:  More property object checks added.
+* Minor:  Remove an unneeded method.
 
 ### 1.7.1
 * Bugfix:  Now passes script localization information properly.
