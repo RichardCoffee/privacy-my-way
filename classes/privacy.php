@@ -437,10 +437,10 @@ class Privacy_My_Way {
 						if ( property_exists( $value, 'checked' ) && array_key_exists( $plugin, $value->checked ) ) {
 							unset( $value->checked[ $plugin ] );
 						}
-						if ( array_key_exists( $plugin, $value->response ) ) {
+						if ( property_exists( $value, 'response' ) && array_key_exists( $plugin, $value->response ) ) {
 							unset( $value->response[ $plugin ] );
 						}
-						if ( array_key_exists( $plugin, $value->no_update ) ) {
+						if ( property_exists( $value, 'no_update' ) && array_key_exists( $plugin, $value->no_update ) ) {
 							unset( $value->no_update[ $plugin ] );
 						}
 					}
