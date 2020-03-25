@@ -192,10 +192,22 @@ abstract class PMW_Form_Admin {
 		wp_enqueue_media();
 		wp_enqueue_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), [ 'wp-color-picker' ] );
 		wp_enqueue_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js' ),   [ 'jquery', 'wp-color-picker' ], false, true );
-		$options = apply_filters( 'tcc_form_admin_options_localization', array() );
+		$this->add_localization_object( 'admin-form.js' );
+	}
+
+	/**
+	 *  Add localization object to javascript.
+	 *
+	 * @since 20200324
+	 * @param string $slug    Slug of script to add object to.
+	 * @param string $object  Name of object to add.
+	 * @param string $filter  Filter to used for the object.
+	 */
+	protected function add_localization_object( $slug, $object = 'tcc_admin_options', $filter = 'tcc_form_admin_options_localization' ) {
+		$options = apply_filters( $filter, array() );
 		if ( $options ) {
 			$options = $this->normalize_options( $options, $options );
-			wp_localize_script( 'admin-form.js', 'tcc_admin_options', $options );
+			wp_localize_script( $slug, $object, $options );
 		}
 	}
 

@@ -58,6 +58,7 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 		$paths = PMW_Plugin_Paths::instance();
 		wp_enqueue_style(  'privacy-form.css', $paths->get_plugin_file_uri( 'css/pmw-admin-form.css' ), null, $paths->version );
 		wp_enqueue_script( 'privacy-form.js',  $paths->get_plugin_file_uri( 'js/pmw-admin-form.js' ), array( 'jquery' ), $paths->version, true );
+		$this->add_localization_object( 'privacy-form.js', 'pmw_admin_form' );
 	}
 
 	/**
