@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 5.3.2
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our
@@ -49,6 +49,9 @@ Release updates are handled using [Plugin Update Checker](https://github.com/Yah
 See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Open an issue if you can't find the info you need.
 
 == Changelog ==
+
+= 1.7.1 =
+* Bugfix:  Now passes script localization information properly.
 
 = 1.7.0 =
 * Enhancement:  Rewrote plugin classes to bring them in sync with core files.

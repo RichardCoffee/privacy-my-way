@@ -13,7 +13,7 @@
 **Tested up to:** 5.3.2
 
 
-**Stable tag:** 1.7.0
+**Stable tag:** 1.7.1
 
 
 **License:** MIT
@@ -65,6 +65,9 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 Contributions are welcome - fork, fix and send pull requests against the `development` branch please.
 
 ## Changelog
+
+### 1.7.1
+* Bugfix:  Now passes script localization information properly.
 
 ### 1.7.0
 * Enhancement:  Rewrote plugin classes to bring them in sync with core files.
