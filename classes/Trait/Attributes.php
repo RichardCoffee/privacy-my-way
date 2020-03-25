@@ -293,6 +293,11 @@ trait PMW_Trait_Attributes {
 				$attrs['sandbox'] = '';
 			}
 		}
+		if ( ( $tag === 'script' ) && ! empty( static::$attr_javascript_nonce ) ) {
+			if ( ! array_key_exists( 'nonce', $attrs ) ) {
+				$attrs['nonce'] = static::$attr_javascript_nonce;
+			}
+		}
 		return $attrs;
 	}
 
