@@ -23,19 +23,17 @@ Control the information that your wordpress site is sending to wordpress.org
 
 ## Description
 
-This plugin will enable you to finely control some of the information that the WordPress
-core code sends back to wordpress.org, including your site's url, the number of users
-you have, what plugins are installed and active, and what themes are installed and
-active.  It does not filter what PHP and MySQL versions your
-server is running, nor the language files installed.
+This plugin will enable you to finely control some of the information that the WordPress core code sends back to wordpress.org, including your site's url,
+the number of users you have, what plugins are installed and active, and what themes are installed and active.  It does not filter what PHP and MySQL
+versions your server is running, nor the language files installed.
 
 ## Installation
 
 Please use [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 
 When using the Upload option, be aware that Github includes the version number as part of the directory name inside the zip file.  You will
-need FTP or SSH access to around that.  Once you have the plugin actually installed, then upgrades via the admin dashboard will work just fine.
-If anyone knows how to get github not to add the version number to the tarball's internal directory, please let me.
+need FTP or SSH access to get around that.  Once you have the plugin actually installed, then upgrades via the admin dashboard will work just fine.
+If anyone knows how to get github not to add the version number to the tarball's internal directory, please drop me a note.
 
 ### Manual Installation
 
@@ -65,6 +63,9 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 Contributions are welcome - fork, fix and send pull requests against the `development` branch please.
 
 ## Changelog
+
+### Next Release
+* Bugfix:  More property object checks added.
 
 ### 1.7.1
 * Bugfix:  Now passes script localization information properly.

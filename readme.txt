@@ -5,16 +5,13 @@ Tested up to: 5.3.2
 Stable tag: 1.7.1
 License: MIT
 
-Control the information that your wordpress site is sending to wordpress.org.  View our
-[repository](https://github.com/RichardCoffee/privacy-my-way) on github.
+Control the information that your wordpress site is sending to wordpress.org.  View our [repository](https://github.com/RichardCoffee/privacy-my-way) on github.
 
 == Description ==
 
-This plugin will enable you to finely control some of the information that the WordPress
-core code sends back to wordpress.org, including your site's url, the number of users
-you have, what plugins are installed and active, and what themes are installed and
-active.  It does not filter what PHP and MySQL versions your
-server is running, nor the language files installed.
+This plugin will enable you to finely control some of the information that the WordPress core code sends back to wordpress.org, including your site's url,
+the number of users you have, what plugins are installed and active, and what themes are installed and active.  It does not filter what PHP and MySQL
+versions your server is running, nor the language files installed.
 
 == Installation ==
 
@@ -27,8 +24,8 @@ server is running, nor the language files installed.
 5.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
 
 Note:  If an error occurs when attempting to activate the plugin, then manually check your site's plugin directory and
-make sure that the plugin directory name does not end with a version number.  If it does, you will need to remove the
-version number from the directory name before the plugin can be activated.
+make sure that the plugin directory name does not end with a version number.  If it does, you should remove the
+version number from the directory name before activating the plugin.
 
 = Manual =
 
@@ -49,6 +46,9 @@ Release updates are handled using [Plugin Update Checker](https://github.com/Yah
 See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Open an issue if you can't find the info you need.
 
 == Changelog ==
+
+= Next Release =
+* Bugfix:  More property object checks added.
 
 = 1.7.1 =
 * Bugfix:  Now passes script localization information properly.
