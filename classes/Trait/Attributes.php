@@ -23,11 +23,6 @@ trait PMW_Trait_Attributes {
 	 */
 	protected static $attr_iframe_sandbox = false;
 	/**
-	 * @since 20191118
-	 * @var bool  Flag for double quote replacement in attribute values, except for the 'value' attribute.
-	 */
-	protected static $attr_quote_replacement = false;
-	/**
 	 * @since 20200313
 	 * @var string  Nonce to be added for javascript events.
 	 */
@@ -46,13 +41,13 @@ trait PMW_Trait_Attributes {
 	 * @param bool   $raw    Set this to true to prevent $text from being escaped when displayed.  Use this at your own risk.
 	 */
 	public function element( $tag, $attrs, $text = '', $raw = false ) {
-		echo $this->get_apply_attrs_element( $tag, $attrs, $text, $raw );
+		echo $this->get_element( $tag, $attrs, $text, $raw );
 	}
 
 	/**
 	 *  Return an HTML element.
 	 *
-	 * @since 20180426
+	 * @since 20180408
 	 * @param string $tag    Tag for the HTML element.
 	 * @param array  $attrs  Attributes to be applied to element.
 	 * @param string $text   Text to appear between the opening and closing tags.
@@ -61,7 +56,16 @@ trait PMW_Trait_Attributes {
 	 * @used-by PMW_Form_Admin::field_label()
 	 */
 	public function get_element( $tag, $attrs, $text = '', $raw = false ) {
-		return $this->get_apply_attrs_element( $tag, $attrs, $text, $raw );
+		$tag   = $this->sanitize_tag( $tag );
+		$attrs = $this->filter_attributes_by_tag( $tag, $attrs );
+		$html  = "<$tag" . $this->get_apply_attrs( $attrs );
+		$inner = ( $raw ) ? $text : esc_html( $text );
+		if ( $this->is_tag_self_closing( $tag ) ) {
+			$html .= ' />' . $inner;
+		} else {
+			$html .= '>' . $inner . "</$tag>";
+		}
+		return $html;
 	}
 
 	/**
@@ -72,20 +76,25 @@ trait PMW_Trait_Attributes {
 	 * @param array  $attrs  Attributes to be applied to element.
 	 */
 	public function tag( $tag, $attrs ) {
-		echo $this->get_apply_attrs_tag( $tag, $attrs );
+		echo $this->get_tag( $tag, $attrs );
 	}
 
 	/**
 	 *  Return a string containing a self-closing HTML element.
 	 *
-	 * @since 20180426
+	 * @since 20170506
 	 * @param string $tag    Tag for the HTML element.
 	 * @param array  $attrs  Attributes to be applied to element.
 	 * @return string        An HTML tag element in string form.
 	 */
 	public function get_tag( $tag, $attrs ) {
-		return $this->get_apply_attrs_tag( $tag, $attrs );
+		$attrs = $this->filter_attributes_by_tag( $tag, $attrs );
+		$html  = '<' . $this->sanitize_tag( $tag );
+		$html .= $this->get_apply_attrs( $attrs );
+		$html .= ( $this->is_tag_self_closing( $tag ) ) ? ' />' : '>';
+		return $html;
 	}
+
 
 	/**
 	 *  Echo the generated HTML attributes.
@@ -145,9 +154,6 @@ trait PMW_Trait_Attributes {
 				default:
 					$value = esc_attr( $value );
 			}
-			if ( static::$attr_quote_replacement ) {
-				if ( ! ( $attr === 'value' ) ) $value = str_replace( '"', "'", $value );
-			}
 			$html .= ' ' . $attr . '="' . $value . '"';
 		}
 		return $html;
@@ -195,22 +201,6 @@ trait PMW_Trait_Attributes {
 	}
 
 	/**
-	 *  Generates the initial HTML for the desired tag and attributes.
-	 *
-	 * @since 20170506
-	 * @param string $tag    Tag for the HTML element.
-	 * @param array  $attrs  Attributes to be applied to element.
-	 * @return string        An HTML tag element in string form.
-	 */
-	public function get_apply_attrs_tag( $tag, $attrs ) {
-		$attrs = $this->filter_attributes_by_tag( $tag, $attrs );
-		$html  = '<' . $this->sanitize_tag( $tag );
-		$html .= $this->get_apply_attrs( $attrs );
-		$html .= ( $this->is_tag_self_closing( $tag ) ) ? ' />' : '>';
-		return $html;
-	}
-
-	/**
 	 *  Sanitize the element tag.
 	 *
 	 * @since 20180829
@@ -237,41 +227,6 @@ trait PMW_Trait_Attributes {
 			$self_closing = apply_filters( 'fluid_is_tag_self_closing', $self_closing );
 		}
 		return in_array( $tag, $self_closing, true );
-	}
-
-	/**
-	 *  Echo the generated html.
-	 *
-	 * @since 20180408
-	 * @param string $tag    Tag for the HTML element.
-	 * @param array  $attrs  Attributes to be applied to element.
-	 * @param string $text   Text to appear between the opening and closing tags.
-	 */
-	public function apply_attrs_element( $tag, $attrs, $text = '' ) {
-		echo $this->get_apply_attrs_element( $tag, $attrs, $text );
-	}
-
-	/**
-	 *  Generates the html for the element with enclosed content
-	 *
-	 * @since 20180408
-	 * @param string $tag    Tag for the HTML element.
-	 * @param array  $attrs  Attributes to be applied to element.
-	 * @param string $text   Text to appear between the opening and closing tags.
-	 * @param bool   $raw    Set this to true to prevent $text from being escaped when displayed.  Use this at your own risk.
-	 * @return string        An HTML element in string form.
-	 */
-	public function get_apply_attrs_element( $tag, $attrs, $text = '', $raw = false ) {
-		$tag   = $this->sanitize_tag( $tag );
-		$attrs = $this->filter_attributes_by_tag( $tag, $attrs );
-		$html  = "<$tag" . $this->get_apply_attrs( $attrs );
-		$inner = ( $raw ) ? $text : esc_html( $text );
-		if ( $this->is_tag_self_closing( $tag ) ) {
-			$html .= ' />' . $inner;
-		} else {
-			$html .= '>' . $inner . "</$tag>";
-		}
-		return $html;
 	}
 
 	/**
@@ -387,30 +342,6 @@ trait PMW_Trait_Attributes {
 			'spellcheck'     => 'false',
 		);
 		return array_merge( $defaults, $attrs );
-	}
-
-
-	/***  methods for controlling the attr_quote_replacement property  ***/
-
-	/**
-	 *  Get the attr_quote_replacement property
-	 *
-	 * @since 20191118
-	 * @return bool
-	 */
-	public function get_attr_quote_replacement() {
-		return static::$attr_quote_replacement;
-	}
-
-	/**
-	 *  Set the attr_quote_replacement property
-	 *
-	 * @since 20191118
-	 * @param bool
-	 */
-	public function set_attr_quote_replacement( $new = true ) {
-		static::$attr_quote_replacement = ( $new ) ? true : false;
-		return static::$attr_quote_replacement;
 	}
 
 

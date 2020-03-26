@@ -65,6 +65,7 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ## Changelog
 
 ### Next Release
+* Upgrade:  updated core files.
 * Bugfix:  Added an error handler for when blocking all reports of plugins.
 * Bugfix:  More property object checks added.
 * Minor:  Remove an unneeded method.

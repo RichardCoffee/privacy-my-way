@@ -48,6 +48,7 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 == Changelog ==
 
 = Next Release =
+* Upgrade:  updated core files.
 * Bugfix:  Added an error handler for when blocking all reports of plugins.
 * Bugfix:  More property object checks added.
 * Minor:  Remove an unneeded method.
