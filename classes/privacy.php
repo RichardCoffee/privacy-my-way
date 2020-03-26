@@ -240,8 +240,10 @@ class Privacy_My_Way {
 		$args['_pmw_privacy_filter'] = true;
 		$response = wp_remote_request( $url, $args );	//  response really seems to have a lot of duplicated data in it.
 		if ( is_wp_error( $response ) ) {
-			$this->logging_force = true;  //  Log the error.
-			$this->logg( 'response error', $url, $response );
+			if ( ! defined( 'WP_HTTP_BLOCK_EXTERNAL' ) ) {
+				$this->logging_force = true;  //  Log the error.
+				$this->logg( 'response error', $url, $response );
+			}
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$this->logg( $url, $args, 'response body', json_decode( $body, true ) );
@@ -322,7 +324,8 @@ class Privacy_My_Way {
 				$plugins = json_decode( $args['body']['plugins'], true );
 				switch ( $this->options['plugins'] ) {
 					case 'none':
-						$plugins = array();
+						defined( 'WP_HTTP_BLOCK_EXTERNAL' ) || define( 'WP_HTTP_BLOCK_EXTERNAL', true );
+						set_error_handler( [ $this, 'privacy_error_handler' ], E_USER_WARNING | E_USER_NOTICE );
 						break;
 					case 'active':
 						// If the index does not exist, then the array is already the active plugins
@@ -581,6 +584,17 @@ class Privacy_My_Way {
 			$this->logg( compact( 'original', 'url' ) );
 		}
 		return $url;
+	}
+
+	/**
+	 *  Error handler to silence a wordpress complaint when blocking reports of all plugins.
+	 *
+	 * @since 20200325
+	 * @link https://www.php.net/manual/en/function.set-error-handler.php
+	 */
+	public function privacy_error_handler( $errno, $errstr, $errfile = '', $errline = -1, $errcontext = array() ) {
+		restore_error_handler();
+		return ( strpos( $errfile, 'update.php' ) ) ? true : false;
 	}
 
 
