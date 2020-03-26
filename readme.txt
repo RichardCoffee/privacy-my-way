@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 5.3.2
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our [repository](https://github.com/RichardCoffee/privacy-my-way) on github.
