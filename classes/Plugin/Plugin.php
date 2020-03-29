@@ -1,6 +1,6 @@
 <?php
 /**
- *   Supplies basic plugin functions
+ *   Abstract class that contains helper functions for a plugin.
  *
  * @package Privacy_My_Way
  * @subpackage Plugin_Core
@@ -10,11 +10,7 @@
  * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Plugin/Plugin.php
  */
 defined( 'ABSPATH' ) || exit;
-/**
- *  Abstract class that contains helper functions for a plugin.
- *
- * @since 20170214
- */
+
 abstract class PMW_Plugin_Plugin {
 
 
@@ -23,59 +19,59 @@ abstract class PMW_Plugin_Plugin {
 #	 * @since 20170111
 	public    $dbvers = '0';
 	/**
-	 *  Branch to be used in conjunction with https://github.com/YahnisElsts/plugin-update-checker
-	 *
 	 * @since 20200221
-	 * @var string
+	 * @var string  Branch to be used in conjunction with https://github.com/YahnisElsts/plugin-update-checker
 	 */
 	protected $branch = 'master';
 	/**
-	 *  Github address used in conjunction with https://github.com/YahnisElsts/plugin-update-checker
-	 *
-	 * @since 20170325
-	 * @var string
+	 * @since 20200329
+	 * @var string  Text domain string, DO NOT USE as a variable.
 	 */
-	protected $github = '';    #  'https://github.com/MyGithubName/my-plugin-name/';
+	protected $domain = 'plugin-domain';
 	/**
-	 *  PMW_Plugin_Paths object
+	 * @since 20170325
+	 * @var string  Github address used in conjunction with https://github.com/YahnisElsts/plugin-update-checker.
+	 */
+	protected $github = '';
+	/**
+	 * @since 20200329
+	 * @var string  Language dir path.
+	 */
+	protected $lang = '/languages';
+	/**
 	 *
 	 * @since 20170113
-	 * @var object
+	 * @var object  PMW_Plugin_Paths object.
 	 */
 	public $paths = null;
 	/**
-	 *  Slug for the plugin.  Gets set in the constructor method.
 	 *
 	 * @since 20170111
-	 * @var string
+	 * @var string  Slug for the plugin.
 	 */
 	public $plugin = 'plugin-slug';
 	/**
-	 *  The priority used when loading via the 'plugins_loaded' hook
 	 *
 	 * @since 20200205
-	 * @var int
+	 * @var int  The priority used when loading via the 'plugins_loaded' hook
 	 */
 	protected $priority = 10;
 	/**
-	 *  Wordpress link to a settings page for the plugin.  Shown on the admin plugins list page.
 	 *
 	 * @since 20170207
-	 * @var string url link
+	 * @var string  Wordpress link to a settings page for the plugin.  Shown on the admin plugins list page.
 	 */
 	protected $setting = '';
 	/**
-	 *  Used for integration purposes with certain themes and plugins.  Can be safely ignored.
 	 *
 	 * @since 20170207
-	 * @var string
+	 * @var string  Used for integration purposes with certain themes and plugins.  Can be safely ignored.
 	 */
 	protected $state = 'alone';
 	/**
-	 *  Used for a settings tab in conjunction with certain themes.  Can be safely ignored.
 	 *
 	 * @since 20170111
-	 * @var string
+	 * @var string  Used for a settings tab in conjunction with certain themes.  Can be safely ignored.
 	 */
 	protected $tab = 'about';
 
@@ -106,7 +102,13 @@ abstract class PMW_Plugin_Plugin {
 	 */
 	protected function __construct( $args = array() ) {
 		if ( ! empty( $args['file'] ) ) {
-			$data = get_file_data( $args['file'], [ 'ver' => 'Version', 'github' => 'Github URI' ] );
+			$seek = array(
+				'ver'    => 'Version',
+				'github' => 'Github URI',
+				'domain' => 'Text Domain',
+				'lang'   => 'Domain Path',
+			);
+			$data = get_file_data( $args['file'], $seek );
 			$defaults = array(
 				'dir'     => plugin_dir_path( $args['file'] ),
 				'plugin'  => dirname( plugin_basename( $args['file'] ) ),
@@ -188,19 +190,14 @@ abstract class PMW_Plugin_Plugin {
 	 * @link https://github.com/schemapress/Schema
 	 */
 	private function load_textdomain() {
-		$args = array(
-			'text_domain' => 'Text Domain',
-			'lang_dir'    => 'Domain Path',
-		);
-		$data = get_file_data( $this->paths->file, $args );
-		if ( $data && ( ! empty( $data['text_domain'] ) ) ) {
-			list( $lang_dir, $mofile_local, $mofile_global ) = $this->determine_textdomain_filenames( $data );
+		if ( ! empty( $this->domain ) ) {
+			list( $lang_dir, $mofile_local, $mofile_global ) = $this->determine_textdomain_filenames();
 			if ( is_readable( $mofile_global ) ) {
-				load_textdomain( $data['text_domain'], $mofile_global );
+				load_textdomain( $this->domain, $mofile_global );
 			} else if ( is_readable( $mofile_local ) ) {
-				load_textdomain( $data['text_domain'], $mofile_local );
+				load_textdomain( $this->domain, $mofile_local );
 			} else {
-				load_plugin_textdomain( $data['text_domain'], false, $lang_dir );
+				load_plugin_textdomain( $this->domain, false, $lang_dir );
 			}
 		}
 	}
@@ -212,16 +209,16 @@ abstract class PMW_Plugin_Plugin {
 	 * @param array Should contain data read from the main plugin file.
 	 * @return array Possible locations of language files
 	 */
-	private function determine_textdomain_filenames( $data ) {
-		$lang_def = ( empty( $data['lang_dir'] ) ) ? '/languages' : $data['lang_dir'];
+	private function determine_textdomain_filenames() {
 		//  Where the language files should be.
+		$lang_def = ( empty( $this->lang ) ) ? '/languages' : $this->lang;
 		$files[]  = untrailingslashit( $this->paths->dir ) . $lang_def;
 		//  Determine the language file to load.
-		$locale   = apply_filters( 'plugin_locale',  get_locale(), $data['text_domain'] );
-		$mofile   = sprintf( '%1$s-%2$s.mo', $data['text_domain'], $locale );
+		$locale   = apply_filters( 'plugin_locale',  get_locale(), $this->domain );
+		$mofile   = sprintf( '%1$s-%2$s.mo', $this->domain, $locale );
 		$files[]  = $files[0] . '/' . $mofile;
 		//  Where a global file might be at.
-		$files[]  = WP_LANG_DIR . '/plugins/' . $data['text_domain'] . '/' . $mofile;
+		$files[]  = WP_LANG_DIR . '/plugins/' . $this->domain . '/' . $mofile;
 		return $files;
 	}
 
