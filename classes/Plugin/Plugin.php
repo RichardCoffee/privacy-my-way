@@ -115,9 +115,8 @@ abstract class PMW_Plugin_Plugin {
 				'url'     => plugin_dir_url( $args['file'] ),
 				'version' => $data['ver'],
 			);
-			if ( is_url( $data['github'] ) ) {
-				$defaults['github'] = $data['github'];
-			}
+			if ( is_url( $data['github'] ) ) $defaults['github'] = $data['github'];
+			if ( $this->tab === 'about' )    $this->tab = $defaults['plugin'];
 			$args = array_merge( $defaults, $args );
 			$this->parse_args( $args );
 			$this->paths = PMW_Plugin_Paths::get_instance( $args );
@@ -248,7 +247,7 @@ abstract class PMW_Plugin_Plugin {
 	 */
 	public function settings_link( $links, $file, $data, $context ) {
 		if ( strpos( $file, $this->plugin ) !== false ) {
-			unset( $links['edit'] );
+			if ( array_key_exists( 'edit', $links ) ) unset( $links['edit'] );
 			if ( is_plugin_active( $file ) && ! ( $this->tab === 'about' ) ) {
 				$url = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
 				$links['settings'] = sprintf( '<a href="%s"> %s </a>', esc_url( $url ), esc_html__( 'Settings', 'privacy-my-way' ) );
