@@ -43,8 +43,8 @@ This is your best option, although if you have gotten this far you probably don'
 2.  Upload the master.zip file to your site via the Upload Plugin button on the __Plugins -> Add New__ admin page,
     or if using ftp, unzip the file into a temp directory and copy the `privacy-my-way` directory into your WordPress
     plugin directory.  Remove the version number when doing so.
-3.  Go to __Dashboard -> Plugins__ screen and activate the plugin.
-4.  Either click on the __Settings__ link, or go to __Dashboard -> Setting -> Privacy My Way__, to edit and save the options.
+3.  Go to the __Plugins__ screen and activate the plugin.
+4.  Either click on the __Settings__ link on the Plugins screen, or go to __Settings -> Privacy My Way__, to edit and save the options.
 
 ### Upgrades
 
@@ -64,11 +64,12 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ## Changelog
 
-### Next Release
+### 1.7.2
 * Upgrade:  updated core files.
+* Bugfix:  Bug in core file made 'Setting' link disappear.
 * Bugfix:  Added an error handler for when blocking all reports of plugins.
 * Bugfix:  More property object checks added.
-* Minor:  Remove an unneeded method.
+* Minor:  Remove a superfluous method.
 
 ### 1.7.1
 * Bugfix:  Now passes script localization information properly.

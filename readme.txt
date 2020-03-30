@@ -20,8 +20,8 @@ versions your server is running, nor the language files installed.
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 2.  Go to the Plugins -> Add New screen and click the Upload tab.
 3.  Upload the zipped archive directly.
-4.  Go to the Plugins screen and click Activate.
-5.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
+4.  Go to the installed Plugins screen and click Activate.
+5.  Either click on the Settings link on the Plugin screen, or go to Settings -> Privacy My Way, to edit and save the options.
 
 Note:  If an error occurs when attempting to activate the plugin, then manually check your site's plugin directory and
 make sure that the plugin directory name does not end with a version number.  If it does, you should remove the
@@ -34,8 +34,8 @@ This is your best option, although if you have gotten this far you probably don'
 1.  Download [the latest release](https://github.com/RichardCoffee/privacy-my-way/releases/latest).
 2.  Unzip the master.zip file into a temp directory in your local harddrive.
 3.  Using FTP, copy the `privacy-my-way` directory into your site's WordPress plugin directory.  Remove the version number when doing so.
-4.  Go to your WordPress Admin Dashboard -> Plugins screen and activate the plugin.
-5.  Either click on the Settings link, or go to Dashboard -> Setting -> Privacy My Way, to edit and save the options.
+4.  Go to your WordPress Admin installed Plugins screen and activate the plugin.
+5.  Either click on the Settings link on the Plugin screen, or go to Settings -> Privacy My Way, to edit the default options.
 
 = Upgrades =
 
@@ -47,11 +47,12 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
-= Next Release =
+= 1.7.2 =
 * Upgrade:  updated core files.
+* Bugfix:  Bug in core file made 'Setting' link disappear.
 * Bugfix:  Added an error handler for when blocking all reports of plugins.
 * Bugfix:  More property object checks added.
-* Minor:  Remove an unneeded method.
+* Minor:  Remove a superfluous method.
 
 = 1.7.1 =
 * Bugfix:  Now passes script localization information properly.
