@@ -64,6 +64,9 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ## Changelog
 
+### Next Release
+* Upgrade:  Updated core file.
+
 ### 1.7.3
 * Bugfix:  Blocking all plugin updates was also blocking core updates.
 

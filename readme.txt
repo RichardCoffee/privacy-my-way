@@ -47,6 +47,9 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
+= Next Release =
+* Upgrade:  Updated core file.
+
 = 1.7.3 =
 * Bugfix:  Blocking all plugin updates was also blocking core updates.
 
