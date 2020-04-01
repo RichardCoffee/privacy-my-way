@@ -13,7 +13,7 @@
 **Tested up to:** 5.3.2
 
 
-**Stable tag:** 1.7.2
+**Stable tag:** 1.7.3
 
 
 **License:** MIT
@@ -63,6 +63,9 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 Contributions are welcome - fork, fix and send pull requests against the `development` branch please.
 
 ## Changelog
+
+### 1.7.3
+* Bugfix:  Blocking all plugin updates was also blocking core updates.
 
 ### 1.7.2
 * Upgrade:  updated core files.

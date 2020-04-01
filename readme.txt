@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 5.3.2
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our [repository](https://github.com/RichardCoffee/privacy-my-way) on github.
@@ -46,6 +46,9 @@ Release updates are handled using [Plugin Update Checker](https://github.com/Yah
 See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Open an issue if you can't find the info you need.
 
 == Changelog ==
+
+= 1.7.3 =
+* Bugfix:  Blocking all plugin updates was also blocking core updates.
 
 = 1.7.2 =
 * Upgrade:  updated core files.

@@ -232,10 +232,12 @@ class Privacy_My_Way {
 			return $preempt;
 		}
 
+		//  Apply filters.
 		$url  = $this->filter_url( $url );
 		$args = $this->strip_site_url( $args );
 		$args = $this->filter_plugins( $args, $url );
-		$args = $this->filter_themes( $args, $url );
+		$args = $this->filter_themes(  $args, $url );
+
 		//  Make the request.
 		$args['_pmw_privacy_filter'] = true;
 		$response = wp_remote_request( $url, $args );	//  response really seems to have a lot of duplicated data in it.
@@ -324,11 +326,11 @@ class Privacy_My_Way {
 				$plugins = json_decode( $args['body']['plugins'], true );
 				switch ( $this->options['plugins'] ) {
 					case 'none':
-						defined( 'WP_HTTP_BLOCK_EXTERNAL' ) || define( 'WP_HTTP_BLOCK_EXTERNAL', true );
-						set_error_handler( [ $this, 'privacy_error_handler' ], E_USER_WARNING | E_USER_NOTICE );
+						//  Give wordpress something to do.
+						$plugins = array( 'plugins' => array( 'hello.php' => $this->hello_dolly() ) );
 						break;
 					case 'active':
-						// If the index does not exist, then the array is already the active plugins
+						//  If the index does not exist, then the array is already the active plugins
 						if ( array_key_exists( 'plugins', $plugins ) ) {
 							$plugins = $this->plugins_option_active( $plugins );
 						}
@@ -346,6 +348,30 @@ class Privacy_My_Way {
 			}
 		}
 		return $args;
+	}
+
+	/**
+	 *  Provides plugin info to give WordPress something to chew on when blocking all plugins.
+	 *
+	 * @since 20200331
+	 * @return array  Info on the Hello Dolly plugin by Matt Mullenweg.
+	 */
+	private function hello_dolly() {
+		return array(
+			'Name'        => 'Hello Dolly',
+			'PluginURI'   => 'http://wordpress.org/plugins/hello-dolly/',
+			'Version'     => '1.7.2',
+			'Description' => 'This is not just a plugin, it symbolizes the hope and enthusiasm of an entire generation summed up in two words sung most famously by Louis Armstrong: Hello, Dolly. When activated you will randomly see a lyric from <cite>Hello, Dolly</cite> in the upper right of your admin screen on every page.',
+			'Author'      => 'Matt Mullenweg',
+			'AuthorURI'   => 'http://ma.tt/',
+			'TextDomain'  => '',
+			'DomainPath'  => '',
+			'Network'     => '',
+			'RequiresWP'  => '',
+			'RequiresPHP' => '',
+			'Title'       => 'Hello Dolly',
+			'AuthorName'  => 'Matt Mullenweg',
+		);
 	}
 
 	/**
@@ -468,7 +494,7 @@ class Privacy_My_Way {
 					$args['body']['themes'] = wp_json_encode( $themes );
 					$args['_pmw_privacy_filter_themes'] = true;
 				}
-			} #else { $this->logg( 'already been here', $args ); }
+			}
 		}
 		return $args;
 	}
@@ -588,6 +614,7 @@ class Privacy_My_Way {
 
 	/**
 	 *  Error handler to silence a wordpress complaint when blocking reports of all plugins.
+	 *  This method is no longer utilized, but I'm keeping it around, just in case.
 	 *
 	 * @since 20200325
 	 * @link https://www.php.net/manual/en/function.set-error-handler.php
