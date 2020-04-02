@@ -22,7 +22,7 @@ trait PMW_Trait_Singleton {
 	/**
 	 * @since 20170323
 	 * @var bool  Flag to indicate that construction has been aborted.
-	 *
+	 */
 	public  static $abort__construct = false;
 	/**
 	 * @since 20170111
