@@ -47,7 +47,8 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
-= Next Release =
+= 1.7.4 Release =
+* Upgrade:  Bumped tested WP version to 5.4
 * Upgrade:  Updated core file.
 
 = 1.7.3 =

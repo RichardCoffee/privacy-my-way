@@ -64,7 +64,8 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ## Changelog
 
-### Next Release
+### 1.7.4
+* Upgrade:  Bumped tested WP version to 5.4
 * Upgrade:  Updated core file.
 
 ### 1.7.3
