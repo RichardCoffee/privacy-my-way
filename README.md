@@ -13,7 +13,7 @@
 **Tested up to:** 5.4.0
 
 
-**Stable tag:** 1.7.4
+**Stable tag:** 1.7.5
 
 
 **License:** MIT
@@ -63,6 +63,9 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 Contributions are welcome - fork, fix and send pull requests against the `development` branch please.
 
 ## Changelog
+
+### 1.7.5
+* Bugfix:  Version information didn't get updated properly for the 1.7.4 release.
 
 ### 1.7.4
 * Upgrade:  Bumped tested WP version to 5.4

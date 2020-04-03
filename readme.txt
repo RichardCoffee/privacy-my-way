@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 5.4.0
-Stable tag: 1.7.4
+Stable tag: 1.7.5
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our [repository](https://github.com/RichardCoffee/privacy-my-way) on github.
@@ -47,7 +47,10 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
-= 1.7.4 Release =
+= 1.7.5 =
+* Bugfix:  Version information didn't get updated properly for the 1.7.4 release.
+
+= 1.7.4 =
 * Upgrade:  Bumped tested WP version to 5.4
 * Upgrade:  Updated core file.
 
