@@ -64,6 +64,9 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ## Changelog
 
+### Next Release
+* Upgrade:  Updated core files.
+
 ### 1.7.5
 * Bugfix:  Version information didn't get updated properly for the 1.7.4 release.
 

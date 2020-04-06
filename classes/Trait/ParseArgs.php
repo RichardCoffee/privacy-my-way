@@ -7,21 +7,18 @@
  * @since 20170128
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright Copyright (c) 2018, Richard Coffee
- * @link https://github.com/RichardCoffee/fluidity-theme/blob/master/classes/Trait/ParseArgs.php
+ * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Trait/ParseArgs.php
  */
 defined( 'ABSPATH' ) || exit;
-/**
- *  trait PMW_Trait_ParseArgs
- *
- * @since 20170128
- */
+
+
 trait PMW_Trait_ParseArgs {
 
 	/**
-	 *  parse args that have a corresponding property
+	 *  Parse key/value pairs that have a corresponding property.
 	 *
 	 * @since 20170128
-	 * @param array $args required.
+	 * @param array $args  Values to be parsed.
 	 */
 	protected function parse_args( $args ) {
 		if ( ! $args ) return;
@@ -33,10 +30,10 @@ trait PMW_Trait_ParseArgs {
 	}
 
 	/**
-	 *  parse all args into either existing properties or create new public properties
+	 *  Parse all key/value pairs into either existing properties or create new public properties.
 	 *
 	 * @since 20170128
-	 * @param array $args
+	 * @param array $args  Values to be parsed.
 	 */
 	protected function parse_all_args( $args ) {
 		if ( ! $args ) return;
@@ -49,7 +46,7 @@ trait PMW_Trait_ParseArgs {
 	 *  Parse all args into existing properties.  Will do a top level merge of arrays.
 	 *
 	 * @since 20190624
-	 * @param array $args
+	 * @param array $args  Values to be parsed.
 	 */
 	protected function parse_args_merge( $args ) {
 		if ( ! $args ) return;

@@ -18,17 +18,17 @@ trait PMW_Trait_Magic {
 
 	/**
 	 * @since 20170305
-	 * @var bool toggles functionality of set method
+	 * @var bool  Toggles functionality of set method.
 	 */
 	protected $set__callable = false;
 	/**
 	 * @since 20200114
-	 * @var bool controls access to private variables
+	 * @var bool  Allows access to private variables.
 	 */
 	protected $magic__private = true;
 	/**
 	 * @since 20170202
-	 * @var array stores aliases for methods
+	 * @var array  Stores aliases for methods.
 	 */
 	protected static $magic__call = array();
 
@@ -37,8 +37,8 @@ trait PMW_Trait_Magic {
 	 *  Enables aliasing of class methods - do not use is_callable() within this function
 	 *
 	 * @since 20170116
-	 * @param string method name/alias
-	 * @param mixed parameter(s) to be passed to method
+	 * @param string $string  Method name/alias
+	 * @param mixed  $args    Parameter(s) to be passed to method
 	 * @return mixed
 	 */
 	public function __call( $string, $args ) {
@@ -81,6 +81,10 @@ trait PMW_Trait_Magic {
 	 * @param string property name
 	 */
 	public function __isset( $name ) {
+		if ( ! $this->magic__private ) {
+			$test = new ReflectionProperty( $this, $name );
+			if ( $test->isPrivate() ) return null;
+		}
 		return property_exists( $this, $name );
 	} //*/
 
@@ -106,12 +110,14 @@ trait PMW_Trait_Magic {
 	} //*/
 
 	/**
-	 *  Provides ability to set generic private/protected properties
+	 *  Provides ability to set generic private/protected properties, which kind of defeats the purpose of having them private/protected in the first place...
+	 *
+	 *  Note:  Had a use case for this once, so kept the method around in case one crops up again.
 	 *
 	 * @since 20170325
-	 * @param string property name
-	 * @param mixed new property value
-	 * @return mixed old value of property
+	 * @param string  Property name
+	 * @param mixed   New property value
+	 * @return mixed  Old value of property
 	 */
 	public function set( $property, $value ) {
 		$result = null;
@@ -119,6 +125,10 @@ trait PMW_Trait_Magic {
 			if ( ( ! empty( $property ) ) && ( ! empty( $value ) ) ) {
 				$result = "property '$property' does not exist.";
 				if ( property_exists( $this, $property ) ) {
+					if ( ! $this->magic__private ) {
+						$test = new ReflectionProperty( $this, $name );
+						if ( $test->isPrivate() ) return $result;
+					}
 					$result = $this->$property;
 					$this->{$property} = $value;
 				}

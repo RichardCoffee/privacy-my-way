@@ -2,13 +2,14 @@
 /*
  *  Provides methods for implementing singleton classes.
  *  Notes:  Any class that uses this trait must be sterile, or the child must declare 'private static $instance;'
- *          __clone and __wakeup are private, so can never get called.
+ *          __clone and __wakeup are private, so can never get called from outside the class.
  *
  * @package Privacy_My_Way
  * @subpackage Traits
  * @since 20170111
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright Copyright (c) 2017-2020, Richard Coffee
+ * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Trait/Singleton.php
  * @link https://secure.php.net/manual/en/language.oop5.magic.php
  * @link https://lornajane.net/posts/2012/9-magic-methods-in-php
  * @link http://stackoverflow.com/questions/203336/creating-the-singleton-design-pattern-in-php
@@ -21,7 +22,7 @@ trait PMW_Trait_Singleton {
 
 	/**
 	 * @since 20170323
-	 * @var bool  Flag to indicate that construction has been aborted.
+	 * @var bool|mixed  Flag to indicate that construction has been aborted.
 	 */
 	public  static $abort__construct = false;
 	/**
@@ -50,31 +51,15 @@ trait PMW_Trait_Singleton {
 	 */
 	public static function get_instance( $args = array() ) {
 		if ( ! ( self::$instance instanceof self ) ) {
+			static::$abort__construct = false;
 			$instance = new self( $args );
 			if ( static::$abort__construct ) {
-				static::$abort__construct = false;
+				return static::$abort__construct;
 			} else {
 				self::$instance = $instance;
 			}
 		}
 		return self::$instance;
-	} //*/
-
-	/**  An alternate methodology  **/
-/*
-	private static $instances = array();
-
-	public static function get_instance( $args = array() ) {
-		$class = get_called_class();
-		if ( ! array_key_exists( $class, self::$instances ) ) {
-			$instance = new $class( $args );
-			if ( static::$abort__construct ) {
-				static::$abort__construct = false;
-			} else {
-				self::$instances[ $class ] = $instance;
-			}
-		}
-		return ( array_key_exists( $class, self::$instances ) ) ? self::$instances[ $class ] : null;
 	} //*/
 
 	/**

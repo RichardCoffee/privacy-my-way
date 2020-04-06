@@ -47,6 +47,9 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
+= Next Release =
+* Upgrade:  Updated core files.
+
 = 1.7.5 =
 * Bugfix:  Version information didn't get updated properly for the 1.7.4 release.
 

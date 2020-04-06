@@ -236,11 +236,11 @@ trait PMW_Trait_Logging {
 		if ( empty( $destination ) ) $destination = $this->logging_write_destination( $log_file );
 		$message = $log_me;
 		if ( is_array( $log_me ) || is_object( $log_me ) ) {
-			$message = print_r( $log_me, true ); // PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 33226752 bytes)
-		} else if ( $log_me === 'stack' ) {
+			$message = print_r( $log_me, true );
+		} else if ( in_array( $log_me, [ 'stack' ] ) ) {
 			$backtrace = $this->logging_stack_with_origin( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) );
 			$message = print_r( $backtrace, true );
-		} else if ( $log_me === 'full-stack' ) {
+		} else if ( in_array( $log_me, [ 'full-stack' ] ) ) {
 			$message = print_r( debug_backtrace(), true );
 		}
 		$message = date( '[d-M-Y H:i:s e] ' ) . $message . "\n";
@@ -259,7 +259,7 @@ trait PMW_Trait_Logging {
 	private function logging_stack_with_origin( $backtrace ) {
 		$current = $backtrace[0];
 		foreach( $backtrace as $key => $data ) {
-			if ( $key === 0 ) continue;
+			if ( in_array( $key, [ 0 ] ) ) continue;
 			if ( array_key_exists( 'line', $current ) ) {
 				$backtrace[ $key ]['function'] .= " - {$current['line']}";
 			}
@@ -271,7 +271,7 @@ trait PMW_Trait_Logging {
 	/**  Helper functions  **/
 
 	/**
-	 *  Remove object references on an object, object is returned as an array.
+	 *  Remove object references on an object, object is returned as an array.  Non-recursive.
 	 *
 	 * @since 20180501
 	 * @param object $object
@@ -284,7 +284,7 @@ trait PMW_Trait_Logging {
 		if ( $parents ) $classes = array_merge( $classes, $parents );
 		$reduced = array( 'class:name' => $classes[0] );
 		foreach ( (array)$object as $key => $value ) {
-			if ( $key[0] === "\0" ) {
+			if ( in_array( $key[0], [ "\0" ] ) ) {
 				$key = str_replace( "\0*\0", 'protected:', $key );
 				foreach( $classes as $class ) {
 					$key = str_replace( "\0$class\0", "private:$class:", $key );
