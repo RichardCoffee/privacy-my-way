@@ -7,6 +7,7 @@ class PMW_Register_Register {
 	protected static $options  = 'about';
 	protected static $php_vers = '5.3.6';         #  trait feature added
 	protected static $prefix   = 'tcc_options_';  #  Option slug prefix
+	protected static $register = 'PMW_Register_Register';
 	protected static $title    = 'This plugin';
 	protected static $wp_vers  = '4.7.0';         #  get_theme_file_uri function added
 
@@ -43,7 +44,7 @@ class PMW_Register_Register {
 
 	public static function php_version_check() {
 		if ( version_compare( phpversion(), static::php_version_required(), '<' ) ) {
-			add_action( 'admin_notices', [ 'PMW_Register_Register', 'unsupported_php_version' ], 10, 2 );
+			add_action( 'admin_notices', [ static::$register, 'unsupported_php_version' ], 10, 2 );
 			return false;
 		}
 		return true;
@@ -77,7 +78,7 @@ class PMW_Register_Register {
 
 	public static function wp_version_check() {
 		if ( version_compare( $GLOBALS['wp_version'], static::wp_version_required(), '<' ) ) {
-			add_action( 'admin_notices', [ 'PMW_Register_Register', 'unsupported_wp_version' ], 10, 2 );
+			add_action( 'admin_notices', [ static::$register, 'unsupported_wp_version' ], 10, 2 );
 			return false;
 		}
 		return true;
@@ -131,24 +132,28 @@ class PMW_Register_Register {
 
 	/**  Turn things on  **/
 
-	protected static function create_new_page( $new = array() ) {
+	protected static function create_new_page( $new = array(), $overwrite = false ) {
 		if ( $new ) {
 			$page = false;
 			if ( ! empty( $new['post_name'] ) ) {
 				global $wpdb;
-				$page_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_name = '$slug' AND post_type = 'page'" );
+				$page_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM posts WHERE post_name = %s AND post_type = 'page'", $new['post_name'] ) );
 				if ( $page_id ) {
 					$page = get_post( $page_id );
 				}
 			}
-			if ( ! $page && ! empty( $new['post_title'] ) ) {
+			if ( ( ! $page ) && array_key_exists( 'post_title', $new ) && $new['post_title'] ) {
 				$page = get_page_by_title( $new['post_title'] );
 			}
 			if ( $page ) {
 				$new = array_merge( (array) $page, $new );
-				unset( $new['ID'] );
 			}
-			wp_insert_post( $new );
+			if ( $overwrite && array_key_exists( 'ID', $new ) && $new['ID'] ) {
+				wp_update_post( $new );
+			} else {
+				unset( $new['ID'] );
+				wp_insert_post( $new );
+			}
 		}
 	}
 
@@ -183,7 +188,7 @@ class PMW_Register_Register {
 	private static function verify_option( $option ) {
 		$option = ( $option )
 			? $option
-			: ( ( ! empty( static::$option ) )
+			: ( static::$option )
 				? static::$option
 				: null );
 		return $option;

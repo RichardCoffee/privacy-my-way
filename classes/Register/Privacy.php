@@ -3,6 +3,7 @@
 class PMW_Register_Privacy extends PMW_Register_Register {
 
 	public    static $option      = 'privacy';
+	protected static $register    = 'PMW_Register_Privacy';
 	private   static $versions    =  array();
 	protected static $plugin_file = 'privacy-my-way/privacy-my-way.php';
 
