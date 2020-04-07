@@ -77,11 +77,13 @@ abstract class PMW_Plugin_Plugin {
 
 
 	/**
-	 *  Trait that provides default magic methods, see classes/Trait/Magic.php for more details
+	 * @since 20170214
+	 * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Trait/Magic.php
 	 */
 	use PMW_Trait_Magic;
 	/**
-	 *  Trait that provides methods used in autoloading plugin properties.
+	 * @since 20170214
+	 * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Trait/ParseArgs.php
 	 */
 	use PMW_Trait_ParseArgs;
 
@@ -115,8 +117,8 @@ abstract class PMW_Plugin_Plugin {
 				'url'     => plugin_dir_url( $args['file'] ),
 				'version' => $data['ver'],
 			);
-			if ( is_url( $data['github'] ) ) $defaults['github'] = $data['github'];
-			if ( $this->tab === 'about' )    $this->tab = $defaults['plugin'];
+			if ( is_url( $data['github'] ) )           $defaults['github'] = $data['github'];
+			if ( in_array( $this->tab, [ 'about' ] ) ) $this->tab = $defaults['plugin'];
 			$args = array_merge( $defaults, $args );
 			$this->parse_args( $args );
 			$this->paths = PMW_Plugin_Paths::get_instance( $args );
@@ -169,7 +171,11 @@ abstract class PMW_Plugin_Plugin {
 		return $state;
 	}
 
-#	 * @since 20170227
+	/**
+	 *  Decides when to initialize plugin.
+	 *
+	 * @since 20170227
+	 */
 	protected function schedule_initialize() {
 		switch ( $this->state ) {
 			case 'plugin':
@@ -246,9 +252,9 @@ abstract class PMW_Plugin_Plugin {
 	 * @return array
 	 */
 	public function settings_link( $links, $file, $data, $context ) {
-		if ( strpos( $file, $this->plugin ) !== false ) {
+		if ( ! in_array( strpos( $file, $this->plugin ), [ false ] ) ) {
 			if ( array_key_exists( 'edit', $links ) ) unset( $links['edit'] );
-			if ( is_plugin_active( $file ) && ! ( $this->tab === 'about' ) ) {
+			if ( is_plugin_active( $file ) ) {
 				$url = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
 				$links['settings'] = sprintf( '<a href="%s"> %s </a>', esc_url( $url ), esc_html__( 'Settings', 'privacy-my-way' ) );
 			}
@@ -307,6 +313,13 @@ abstract class PMW_Plugin_Plugin {
 
 }
 
+/**
+ *  Test for a valid url.
+ *
+ * @since 20200227
+ * @param string $url  URL to check.
+ * @return bool        True for a valid url, false otherwise.
+ */
 if ( ! function_exists( 'is_url' ) ) {
 	function is_url( $url ) {
 		return filter_var( $url, FILTER_VALIDATE_URL );

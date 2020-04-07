@@ -13,8 +13,20 @@ defined( 'ABSPATH' ) || exit;
 
 class PMW_Plugin_Library {
 
+	/**
+	 * @since 20180410
+	 * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Trait/Attributes.php
+	 */
 	use PMW_Trait_Attributes;
+	/**
+	 * @since 20180410
+	 * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Trait/Logging.php
+	 */
 	use PMW_Trait_Logging;
+	/**
+	 * @since 20180410
+	 * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Trait/Magic.php
+	 */
 	use PMW_Trait_Magic;
 
 	/**
@@ -53,7 +65,6 @@ class PMW_Plugin_Library {
 	 *
 	 * @since 20180501
 	 */
-	#duplicated in PMW_Theme_Library
 	public function kses() {
 		return array(
 			'a'    => [ 'class' => [ ], 'href' => [ ], 'itemprop' => [ ], 'rel' => [ ], 'target' => [ ], 'title' => [ ], 'aria-label' => [ ] ],
@@ -75,7 +86,7 @@ class PMW_Plugin_Library {
 		if ( is_string( $original ) ) {
 			if ( $original === serialize( false ) ) return false;
 			$test = @unserialize( $original, $acceptable );
-			if ( ! ( $test === false ) ) return $test;
+			if ( $test ) return $test;
 		}
 		return $original;
 	}
