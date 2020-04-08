@@ -24,7 +24,6 @@
  * License URI:       https://opensource.org/licenses/MIT
  * Text Domain:       privacy-my-way
  * Domain Path:       /languages
- * Tags:              privacy, updates, plugins, themes, core, translations
  */
 
 # https://github.com/helgatheviking/Nav-Menu-Roles/blob/master/nav-menu-roles.php
