@@ -1,17 +1,49 @@
 <?php
+/**
+ * @since 20170301
+ */
+defined('ABSPATH') || exit;
 
 
 final class PMW_Options_Privacy extends PMW_Options_Options {
 
-	private   $active   = array();
-	protected $base     = 'privacy-my-way';
-	private   $library;
-	private   $options  = array();
-	protected $priority = 550;  #  internal theme option
-	private   $plugins  = array();
-	private   $themes   = array();
+	/**
+	 * @since 20170301
+	 * @var array  Active plugins.
+	 */
+	private $active = array();
+	/**
+	 * @since 20170301
+	 * @var string
+	 */
+	protected $base = 'privacy-my-way';
+	/**
+	 * @since 20170404
+	 * @var array  Plugin option settings.
+	 */
+	private $options = array();
+	/**
+	 * @since 20170301
+	 * @var int  Used by Fluidity theme options for tab positioning.
+	 */
+	protected $priority = 550;
+	/**
+	 * @since 20170301
+	 * @var array  List of installed plugins.
+	 */
+	private $plugins = array();
+	/**
+	 * @since 20170301
+	 * @var array  List of installed themes.
+	 */
+	private $themes = array();
 
-#	 * @link https://codex.wordpress.org/Function_Reference/get_plugins
+	/**
+	 *  Get values for class properties.
+	 *
+	 * @since 20170404
+	 * @link https://codex.wordpress.org/Function_Reference/get_plugins
+	 */
 	private function initialize() {
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -19,21 +51,44 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$this->plugins = ( $this->plugins ) ? $this->plugins : get_plugins();
 		$this->active  = ( $this->active  ) ? $this->active  : get_option( 'active_plugins', array() );
 		$this->themes  = ( $this->themes  ) ? $this->themes  : wp_get_themes();
-		$this->library = new PMW_Plugin_Library;
 	}
 
+	/**
+	 *  Returns the form title.
+	 *
+	 * @since 20170415
+	 * @return string
+	 */
 	protected function form_title() {
 		return __( 'Privacy', 'privacy-my-way' );
 	}
 
+	/**
+	 *  Returns the CSS class for the tab icon.
+	 *
+	 * @since 20180830
+	 * @return string
+	 */
 	protected function form_icon() {
 		return 'dashicons-admin-network';
 	}
 
+	/**
+	 *  Displays a description on the settings screen.
+	 *
+	 * @since 20170301
+	 */
 	public function describe_options() {
 		esc_html_e( 'Control the information that WordPress collects from your site.  The default settings, marked by a (*), duplicate what WordPress currently collects.', 'privacy-my-way' );
 	}
 
+	/**
+	 *  Returns the layout for the settings screen.
+	 *
+	 * @since 20170301
+	 * @param bool  Force return of all options.
+	 * @return array
+	 */
 	protected function options_layout( $all = false ) {
 		$this->initialize();
 		$layout  = array( 'default' => true );
@@ -235,6 +290,12 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 
 	/**  Plugin functions  **/
 
+	/**
+	 *  Gets, and possibly sets, the default values for reporting plugins.
+	 *
+	 * @since 20170301
+	 * @return array
+	 */
 	public function get_plugin_defaults( ) {
 		$options = $this->get_option( 'plugin_list', array() );
 		$preset  = $this->get_option( 'install_default', 'yes' );
@@ -250,13 +311,20 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		return $options;
 	}
 
+	/**
+	 *  Creates the plugin list for the settings screen.
+	 *
+	 * @since 20170301
+	 * @return array
+	 */
 	private function get_plugin_list() {
 		$plugin_list  = array();
 		$title_label  = __( 'Plugin website', 'privacy-my-way' );
-		$author_label = __( 'Plugin author', 'privacy-my-way' );
+		$author_label = __( 'Plugin author',  'privacy-my-way' );
 		$active   = sprintf( '<span class="pmw-plugin-active">(%s)</span>',   esc_html__( 'active',   'privacy-my-way' ) );
 		$inactive = sprintf( '<span class="pmw-plugin-inactive">(%s)</span>', esc_html__( 'inactive', 'privacy-my-way' ) );
 		$format   = esc_html_x( '%1$s %2$s by %3$s', '1: plugin title, 2: plugin active/inactive status, 3: plugin author name', 'privacy-my-way' );
+		$library  = new PMW_Plugin_Library;
 		foreach ( $this->plugins as $key => $plugin ) {
 			if ( empty( $plugin['PluginURI'] ) ) {
 				$title = wp_strip_all_tags( $plugin['Name'] );
@@ -267,7 +335,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 					'title'  => $title_label,
 					'aria-label' => $title_label,
 				);
-				$title  = '<a ' . $this->library->get_apply_attrs( $title_attrs ) . '>' . esc_html( $plugin['Name'] ) . '</a>';
+				$title = $library->get_element( 'a', $title_attrs, $plugin['Name'] );
 			}
 			$status = ( in_array( $key, $this->active ) ) ? $active : $inactive;
 			if ( empty( $plugin['AuthorURI'] ) ) {
@@ -279,7 +347,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 					'title'  => $author_label,
 					'aria-label' => $author_label,
 				);
-				$author = '<a ' . $this->library->get_apply_attrs( $author_attrs ) . '>' . esc_html( $plugin['Author'] ) . '</a>';
+				$author = $library->get_element( 'a', $author_attrs, $plugin['Author'] );
 			}
 			$plugin_list[ $key ] = sprintf( $format, $title, $status, $author );
 		}
@@ -289,6 +357,12 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 
 	/**  Theme functions  **/
 
+	/**
+	 *  Gets, and possibly sets, default values for reporting themes.
+	 *
+	 * @since 20170301
+	 * @return array
+	 */
 	private function get_theme_defaults() {
 		$options = $this->get_option( 'theme_list', array() );
 		$preset  = $this->get_option( 'install_default', 'yes' );
@@ -300,34 +374,48 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		return $options;
 	}
 
+	/**
+	 *  Get the list of themes for the settings screen.
+	 *
+	 * @since 20170301
+	 * @return array
+	 */
 	private function get_theme_list() {
 		$theme_list   = array();
 		$theme_label  = __( 'Theme website', 'privacy-my-way' );
 		$author_label = __( 'Theme author', 'privacy-my-way' );
-		$format = esc_html_x( '%1$s by %2$s', '1: Theme title, 2: Author name', 'privacy-my-way' );
+		$format  = esc_html_x( '%1$s by %2$s', '1: Theme title, 2: Author name', 'privacy-my-way' );
+		$library = new PMW_Plugin_Library;
 		foreach( $this->themes as $key => $theme ) {
-			if ( strpos( $key, 'twenty' ) === 0 ) {
-				continue;  #  Do not filter wordpress themes
-			}
+			//  Do not filter wordpress themes.
+			if ( strpos( $key, 'twenty' ) === 0 ) continue;
 			$title_attrs = array(
 				'href'   => $theme->get( 'ThemeURI' ),
 				'target' => $key,
 				'title'  => $theme_label,
 				'aria-label' => $theme_label,
 			);
-			$title  = '<a ' . $this->library->get_apply_attrs( $title_attrs ) . '>' . esc_html( $theme->get( 'Name' ) ) . '</a>';
+			$title  = $library->get_element( 'a', $title_attrs, $theme->get( 'Name' ) );
 			$author_attrs = array(
 				'href'   => $theme->get( 'AuthorURI' ),
 				'target' => sanitize_title( $theme->get( 'Author' ) ),
 				'title'  => $author_label,
 				'aria-label' => $author_label,
 			);
-			$author = '<a ' . $this->library->get_apply_attrs( $author_attrs ) . '>' . esc_html( $theme->get( 'Author' ) ) . '</a>';
+			$author = $library->get_element( 'a', $author_attrs, $theme->get( 'Author' ) );
 			$theme_list[ $key ] = sprintf( $format, $title, $author );
 		}
 		return $theme_list;
 	}
 
+	/**
+	 *  Returns the requested option.
+	 *
+	 * @since 20170404
+	 * @param string $option Option slug.
+	 * @param mixed  $value  Default value.
+	 * @return mixed         The option value.
+	 */
 	private function get_option( $option, $value = '' ) {
 		if ( empty( $this->options ) ) {
 			$this->options = get_option( 'tcc_options_privacy-my-way', array() );
@@ -338,6 +426,12 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		return $value;
 	}
 
+	/**
+	 *  Returns customizer data for settings options.
+	 *
+	 * @since 20180404
+	 * @return array
+	 */
 	protected function customizer_data() {
 		$data = array(
 			array(
