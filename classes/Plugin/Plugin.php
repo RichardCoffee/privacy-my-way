@@ -113,6 +113,7 @@ abstract class PMW_Plugin_Plugin {
 			$data = get_file_data( $args['file'], $seek );
 			$defaults = array(
 				'dir'     => plugin_dir_path( $args['file'] ),
+				'domain'  => $data['domain'],
 				'plugin'  => dirname( plugin_basename( $args['file'] ) ),
 				'url'     => plugin_dir_url( $args['file'] ),
 				'version' => $data['ver'],
