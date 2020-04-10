@@ -11,7 +11,9 @@
  */
 defined( 'ABSPATH' ) || exit;
 
+
 class PMW_Form_Privacy extends PMW_Form_Admin {
+
 
 	/**
 	 * @since 20170310
@@ -29,7 +31,7 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 		$this->tab = $this->slug;
 		add_action( 'admin_menu',              [ $this, 'add_menu_option'    ] );
 		add_action( 'admin_enqueue_scripts',   [ $this, 'enqueue_theme_scripts' ] );
-		add_filter( "form_text_{$this->slug}", [ $this, 'form_trans_text' ], 10, 2 );
+		add_filter( "form_text_{$this->slug}", [ $this, 'form_text_filter' ], 10, 2 );
 		parent::__construct();
 	}
 
@@ -92,7 +94,7 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 	 * @param array $text  Pre-set text.
 	 * @param array $orig  Original text.
 	 */
-	public function form_trans_text( $text, $orig ) {
+	public function form_text_filter( $text, $orig ) {
 		$text['submit']['object']  = __( 'Privacy', 'privacy-my-way' );
 		$text['submit']['subject'] = __( 'Privacy', 'privacy-my-way' );
 		return $text;
