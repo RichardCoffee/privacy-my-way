@@ -253,11 +253,11 @@ abstract class PMW_Plugin_Plugin {
 	 * @return array
 	 */
 	public function settings_link( $links, $file, $data, $context ) {
-		if ( ! in_array( strpos( $file, $this->plugin ), [ false ] ) ) {
+		if ( strpos( $file, basename( $this->paths->file ) ) ) {
 			if ( array_key_exists( 'edit', $links ) ) unset( $links['edit'] );
 			if ( is_plugin_active( $file ) ) {
-				$url = ( $this->setting ) ? $this->setting : admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab );
-				$links['settings'] = sprintf( '<a href="%s"> %s </a>', esc_url( $url ), esc_html__( 'Settings', 'privacy-my-way' ) );
+				$url = ( $this->setting ) ? $this->setting : ( ( in_array( $this->state, [ 'plugin', 'theme' ] ) ) ? admin_url( 'admin.php?page=fluidity_options&tab=' . $this->tab ) : false );
+				if ( $url ) $links['settings'] = sprintf( '<a href="%s"> %s </a>', esc_url( $url ), esc_html__( 'Settings', 'privacy-my-way' ) );
 			}
 		}
 		return $links;
