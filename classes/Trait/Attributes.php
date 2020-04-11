@@ -127,7 +127,8 @@ trait PMW_Trait_Attributes {
 		$html = '';
 		foreach( $attrs as $key => $value ) {
 			$attr = sanitize_key( $key );
-			if ( empty( $value ) ) {
+			//  empty returns true if string is '0', which is not a valid result in this case.
+			if ( empty( $value ) && ( ! is_string( $value ) || ! mb_strlen( $value ) ) ) {
 				if ( in_array( $attr, $is_allowed_no_value, true ) ) {
 					$html .= ' ' . $attr;
 				}
