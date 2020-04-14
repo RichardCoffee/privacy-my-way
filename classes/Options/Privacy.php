@@ -92,7 +92,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 	protected function options_layout( $all = false ) {
 		$this->initialize();
 		$layout  = array( 'default' => true );
-		$warning = _x( '*** Turning off reporting a %1$s means you will not be notified of upgrades for that %1$s! ***', 'noun - singular', 'privacy-my-way' );
+		$warning = _x( '*** Turning off reporting a %1$s means WordPress will not notify you about upgrades for that %1$s! ***', 'noun - singular', 'privacy-my-way' );
 		$extra_html = array( 'yes' => ' <span class="red"> ' . esc_html_x( ' ( Recommended ) ', 'Added to a string to indicate the recommended option', 'privacy-my-way' ) . '</span>' );
 		$layout['blog'] = array(
 			'default' => 'yes',
