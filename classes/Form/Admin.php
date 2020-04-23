@@ -1,6 +1,6 @@
 <?php
 /**
- *  Abstract class to provide basic functionality for displaying admin option screens
+ *  Abstract class to provide basic functionality for displaying admin option screens.
  *
  * @package Privacy_My_Way
  * @subpackage Forms
@@ -80,12 +80,19 @@ abstract class PMW_Form_Admin {
 	 * @var string  Callback function for field validation.
 	 */
 	protected $validate;
+	/**
+	 * @since 20200421
+	 * @var string  Version string used for wp_enqueue_*
+	 */
+	protected $version = '1.0.0';
 
 	/**
+	 * @since 20170507
 	 * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Trait/Attributes.php
 	 */
 	use PMW_Trait_Attributes;
 	/**
+	 * @since 20170330
 	 * @link https://github.com/RichardCoffee/custom-post-type/blob/master/classes/Trait/Logging.php
 	 */
 	use PMW_Trait_Logging;
@@ -94,7 +101,6 @@ abstract class PMW_Form_Admin {
 	 *  Abstract method declaration for child classes.  Function should return an array.
 	 *
 	 * @since 20150323
-	 * @used-by PMW_Form_Admin::load_form_page()
 	 */
 	abstract protected function form_layout( $option );
 	/**
@@ -167,15 +173,15 @@ abstract class PMW_Form_Admin {
 	}
 
 	/**
-	 *  Load required style and script files.  Provides filter 'tcc_form_admin_options_localization' to allow child classes to add javascript variables.
+	 *  Load required style and script files.  This method should be overridden by the child class.
 	 *
 	 * @since 20150925
 	 * @param string $hook_suffix  Admin page menu option suffix - passed by WP but not used
 	 */
 	public function admin_enqueue_scripts( $hook_suffix ) {
 		wp_enqueue_media();
-		wp_enqueue_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), [ 'wp-color-picker' ] );
-		wp_enqueue_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js' ),   [ 'jquery', 'wp-color-picker' ], false, true );
+		wp_enqueue_style(  'admin-form.css', get_theme_file_uri( 'css/admin-form.css' ), [ 'wp-color-picker' ], $this->version );
+		wp_enqueue_script( 'admin-form.js',  get_theme_file_uri( 'js/admin-form.js' ),   [ 'jquery', 'wp-color-picker' ], $this->version, true );
 		$this->add_localization_object( 'admin-form.js' );
 	}
 
@@ -185,7 +191,7 @@ abstract class PMW_Form_Admin {
 	 * @since 20200324
 	 * @param string $slug    Slug of script to add object to.
 	 * @param string $object  Name of object to add.
-	 * @param string $filter  Filter to used for the object.
+	 * @param string $filter  Filter to be used for the object.
 	 */
 	protected function add_localization_object( $slug, $object = 'tcc_admin_options', $filter = 'tcc_form_admin_options_localization' ) {
 		$options = apply_filters( $filter, array() );
@@ -203,7 +209,7 @@ abstract class PMW_Form_Admin {
 	 * @param  array $old  Old and busted options.
 	 * @return array       New and improved versions of old and busted options.
 	 */
-	protected function normalize_options( $new, $old ) {
+	protected function normalize_options( array $new, array $old ) {
 		if ( array_key_exists( 'showhide', $old ) ) {
 			$new['showhide'] = array_map( [ $this, 'normalize_showhide' ], $old['showhide'] );
 		}
@@ -217,7 +223,7 @@ abstract class PMW_Form_Admin {
 	 * @param  array $item  Item to normalize.
 	 * @return array        Normalized item.
 	 */
-	public function normalize_showhide( $item ) {
+	public function normalize_showhide( array $item ) {
 		$default = array(
 			'origin' => null,
 			'target' => null,
@@ -237,22 +243,34 @@ abstract class PMW_Form_Admin {
 		$text = array(
 			'error'  => array(
 				'render'    => _x( 'ERROR: Unable to locate function %s', 'string - a function name', 'privacy-my-way' ),
-				'subscript' => _x( 'ERROR: Not able to locate form data subscript:  %s', 'placeholder will be an ASCII character string', 'privacy-my-way' )
+				'subscript' => _x( 'ERROR: Not able to locate form data subscript:  %s', 'placeholder will be an ASCII character string', 'privacy-my-way' ),
 			),
 			'submit' => array(
 				'save'      => __( 'Save Changes', 'privacy-my-way' ),
 				'object'    => __( 'Form', 'privacy-my-way' ),
 				'reset'     => _x( 'Reset %s', 'placeholder is a noun, may be plural', 'privacy-my-way' ),
 				'subject'   => __( 'Form', 'privacy-my-way' ),
-				'restore'   => _x( 'Default %s options restored.', 'placeholder is a noun, probably singular', 'privacy-my-way' )
+				'restore'   => _x( 'Default %s options restored.', 'placeholder is a noun, probably singular', 'privacy-my-way' ),
 			),
 			'media'  => array(
 				'title'     => __( 'Assign/Upload Image', 'privacy-my-way' ),
 				'button'    => __( 'Assign Image', 'privacy-my-way' ),
-				'delete'    => __( 'Unassign Image', 'privacy-my-way' )
-			)
+				'delete'    => __( 'Unassign Image', 'privacy-my-way' ),
+			),
 		);
-		$this->form_text = apply_filters( 'form_text_' . $this->slug, $text, $text );
+		$this->form_text = apply_filters( "form_text_{$this->slug}", $text, $text );
+		add_filter( 'tcc_form_admin_options_localization', [ $this, 'add_form_text_localization' ] );
+	}
+
+	/**
+	 *  Send form text to javascript.
+	 *
+	 * @since 20200420
+	 * @param  array $options  Incoming localization data.
+	 * @return array           Data to be passed to javascript.
+	 */
+	public function add_form_text_localization( array $options ) {
+		return array_merge( $this->form_text, $options );
 	}
 
 
@@ -295,7 +313,7 @@ abstract class PMW_Form_Admin {
 	public function register_tabbed_form() {
 		$validater = ( array_key_exists( 'validate', $this->form ) ) ? $this->form['validate'] : $this->validate;
 		foreach( $this->form as $key => $section ) {
-			if ( ! ( (array)$section === $section ) )
+			if ( ! ( (array) $section === $section ) )
 				continue; // skip string variables
 			if ( ! ( $section['option'] === $this->current ) )
 				continue; // skip all but current screen
@@ -313,32 +331,40 @@ abstract class PMW_Form_Admin {
 	}
 
 	/**
-	 *  Register fields with the WP Settings API
+	 *  Register fields with the WP Settings API.
 	 *
 	 * @since 20150323
+	 * @param string $option
+	 * @param string $key
+	 * @param string $item_id
+	 * @param array  $data
 	 */
-	private function register_field( $option, $key, $itemID, $data ) {
+	private function register_field( $option, $key, $item_id, $data ) {
 		if ( ! is_array( $data ) )                     return; // skip string variables
 		if ( ! array_key_exists( 'render', $data ) )   return; // skip variables without render data
-		if ( in_array( $data['render'], [ 'skip' ] ) ) return; // skip variables when needed
+		if ( in_array( $data['render'], [ 'skip' ] ) ) return; // skip variables when requested
 		if ( in_array( $data['render'], [ 'array' ] ) ) {
-/*			$count = max( count( $data['default'] ), count( $this->form_opts[ $key ][ $itemID ] ) );
+		/*	$count = max( count( $data['default'] ), count( $this->form_opts[ $key ][ $item_id ] ) );
 			for ( $i = 0; $i < $count; $i++ ) {
-				$label  = "<label for='$itemID'>{$data['label']} ".($i+1)."</label>";
-				$args   = array( 'key' => $key, 'item' => $itemID, 'num' => $i );
-#				if ( $i + 1 === $count ) { $args['add'] = true; }
+				$text  = $data['label'] . ' ' . ($i+1);
+				$label = $this->element( 'label', [ 'for' => $item_id ], $text );
+				$args  = array( 'key' => $key, 'item' => $item_id, 'num' => $i );
+				//if ( $i + 1 === $count ) { $args['add'] = true; }
 				add_settings_field( "{$item}_$i", $label, array( $this, $this->options ), $this->slug, $current, $args );
 			} //*/
-			$this->log( 'ALERT: data[render] = array', $data );
+			$this->logg( 'ALERT: data[render] = array', $data );
 		} else {
-			$label = $this->field_label( $itemID, $data );
-			$args  = [ 'key' => $key, 'item' => $itemID ];
-			add_settings_field( $itemID, $label, [ $this, $this->options ], $option, $option, $args );
+			$label = $this->field_label( $item_id, $data );
+			$args  = array(
+				'key'  => $key,
+				'item' => $item_id,
+			);
+			add_settings_field( $item_id, $label, [ $this, $this->options ], $option, $option, $args );
 		}
 	}
 
 	/**
-	 *  Display label for field
+	 *  Display label for field.
 	 *
 	 * @since 20150930
 	 * @param string $ID    Field ID
@@ -366,8 +392,8 @@ abstract class PMW_Form_Admin {
 	 *  Checks to make sure that field's validation callback function is callable.
 	 *
 	 * @since 20160228
-	 * @param  array  $data  Data to sterilize.
-	 * @return string        Squeaky clean data.
+	 * @param  array  $data  Data for item to be sterilized.
+	 * @return array|string  Callback for squeaky clean data.
 	 */
 	private function sanitize_callback( $data ) {
 		$valid_func = "validate_{$data['render']}";
@@ -378,10 +404,10 @@ abstract class PMW_Form_Admin {
 	}
 
 
-  /**  Data functions  **/
+	/**  Data functions  **/
 
 	/**
-	 *  Determine 'current' property value
+	 *  Determine 'current' property value.
 	 *
 	 * @since 20150323
 	 */
@@ -409,41 +435,45 @@ abstract class PMW_Form_Admin {
 		if ( empty( $this->form ) ) {
 			$this->form = $this->form_layout();
 		}
-		$defaults = array();
 		if ( in_array( $this->type, [ 'single' ] ) ) {
-			foreach( $this->form['layout'] as $ID => $item ) {
-				if ( is_string( $item ) || empty( $item['default'] ) ) {
-					continue;
-				}
-				$defaults[ $ID ] = $item['default'];
-			}
+			return $this->get_defaults_loop( $this->form['layout'] );
 		} else {  //  tabbed page
 			if ( array_key_exists( $option, $this->form ) ) {
-				foreach( $this->form[ $option ]['layout'] as $key => $item ) {
-					if ( empty( $item['default'] ) ) {
-						continue;
-					}
-					$defaults[ $key ] = $item['default'];
-				}
+				return $this->get_defaults_loop( $this->form[ $option ]['layout'] );
 			} else {
 				$this->logg( sprintf( $this->form_text['error']['subscript'], $option ), 'stack' );
 			}
 		}
-		return $defaults;
+		return [];
 	} //*/
 
 	/**
-	 *  Retrieve theme/plugin option values
+	 *  Loop through the layout array for the default values.
+	 *
+	 * @since 20200413
+	 * @param  array $layout  The layout to search.
+	 * @return array          Default values for the layout.
+	 */
+	private function get_defaults_loop( $layout ) {
+		$default = array();
+		foreach( $layout as $key => $item ) {
+			if ( ! is_array( $item ) ) continue;
+			if ( ! array_key_exists( 'default', $item ) ) continue;
+			$defaults[ $key ] = $item['default'];
+		}
+		return $defaults;
+	}
+
+	/**
+	 *  Retrieve theme/plugin option values, with default value backup.
 	 *
 	 * @since 20150323
 	 */
 	private function get_form_options() {
-		$this->form_opts = get_option( $this->current );
-		if ( empty( $this->form_opts ) ) {
-			$option = explode( '_', $this->current );
-			$this->form_opts = $this->get_defaults( array_pop( $option ) );
-			add_option( $this->current, $this->form_opts );
-		}
+		$database = get_option( $this->current, array() );
+		$option   = explode( '_', $this->current );
+		$defaults = $this->get_defaults( array_pop( $option ) );
+		$this->form_opts = array_merge( $defaults, $database );
 	}
 
 
@@ -454,17 +484,25 @@ abstract class PMW_Form_Admin {
 	 *
 	 * @since 20150323
 	 */
-	public function render_single_form() { ?>
-		<div class="wrap">
-			<?php settings_errors(); ?>
-			<form method="post" action="options.php"><?php
-				do_action( 'form_admin_pre_display_' . $this->current );
+	public function render_single_form() {
+		//  Wrap the form in a div.
+		$this->tag( 'div', [ 'class' => 'wrap' ] );
+			//  Show any errors.
+			settings_errors();
+			//  Start the form
+			$this->tag( 'form', [ 'method' => 'post', 'action' => 'options.php' ] );
+				//  Do actions at start of form.
+				do_action( "fluid_form_admin_pre_display_{$this->current}" );
+				//  Establish the form section.
 				settings_fields( $this->current );
+				//  Show the form section.
 				do_settings_sections( $this->current );
-				do_action( 'form_admin_post_display_' . $this->current );
-				$this->submit_buttons(); ?>
-			</form>
-		</div><?php //*/
+				//  Do actions at end of form.
+				do_action( "fluid_form_admin_post_display_{$this->current}" );
+				//  Show the form buttons.
+				$this->submit_buttons();
+		//  Close the form and wrapping div.
+		echo '</form></div>';
 	}
 
 	/**
@@ -473,35 +511,52 @@ abstract class PMW_Form_Admin {
 	 * @since 20150323
 	 */
 	public function render_tabbed_form() {
-		$active_page = sanitize_key( $_GET['page'] ); ?>
-		<div class="wrap"><?php
+		//  Get the active tab.
+		$active_page = sanitize_key( $_GET['page'] );
+		//  Wrap the form in a div.
+		$this->tag( 'div', [ 'class' => 'wrap' ] );
+			//  Insert div for screen icon.
 			$this->element( 'div', [ 'id' => 'icon-themes', 'class' => 'icon32' ] );
+			//  Show the screen title.
 			$this->element( 'h1', [ 'class' => 'centered' ], $this->form['title'] );
-			settings_errors(); ?>
-			<h2 class="nav-tab-wrapper"><?php
+			//  Show any error messages.
+			settings_errors();
+			//  Show the tab header
+			$this->tag( 'h2', [ 'class' => 'nav-tab-wrapper' ] );
+				//  Set the referer.
 				$refer = "admin.php?page=$active_page";
+				//  Loop to display tabs.
 				foreach( $this->form as $key => $menu_item ) {
 					if ( is_string( $menu_item ) ) continue;
 					$tab_ref = "$refer&tab=$key";
 					$tab_css = 'nav-tab' . ( ( $this->tab === $key ) ? ' nav-tab-active' : '' );
 					$this->tag( 'a', [ 'href' => $tab_ref, 'class' => $tab_css ] );
-						if ( ! empty( $menu_item['icon'] ) ) {
-							$this->element( 'i', [ 'class' => [ 'dashicons', $menu_item['icon'] ] ] );
-						}
-						e_esc_html( $menu_item['title'] );
+					if ( ! empty( $menu_item['icon'] ) ) {
+						$this->element( 'i', [ 'class' => [ 'dashicons', $menu_item['icon'] ] ] );
+					}
+					echo esc_html( $menu_item['title'] );
 					echo '</a>';
-				} ?>
-			</h2>
-			<form method="post" action="options.php"><?php
+				}
+			//  Close tab header
+			echo '</h2>';
+			//  Show the form.
+			$this->tag( 'form', [ 'method' => 'post', 'action' => 'options.php' ] );
+				//  Insert current tab value into the form.
 				$this->tag( 'input', [ 'type' => 'hidden', 'name' => 'tab', 'value' => $this->tab ] );
+				//  Derive the current section.
 				$current = ( array_key_exists( 'option', $this->form[ $this->tab ] ) ) ? $this->form[ $this->tab ]['option'] : $this->prefix . $this->tab;
-				do_action( "form_admin_pre_display_{$this->tab}" );
+				//  Do actions at start of form.
+				do_action( "fluid_form_admin_pre_display_{$this->tab}" );
+				//  Establish the form section.
 				settings_fields( $current );
+				//  Show the form section.
 				do_settings_sections( $current );
-				do_action( "form_admin_post_display_{$this->tab}" );
-				$this->submit_buttons( $this->form[ $this->tab ]['title'] ); ?>
-			</form>
-		<div><?php //*/
+				//  Do actions at end of form.
+				do_action( "fluid_form_admin_post_display_{$this->tab}" );
+				//  Show the form buttons.
+				$this->submit_buttons( $this->form[ $this->tab ]['title'] );
+		//  Close the form and wrapping div.
+		echo '</form><div>';
 	}
 
 	/**
@@ -511,15 +566,14 @@ abstract class PMW_Form_Admin {
 	 * @param string $title  Text for reset button.
 	 */
 	private function submit_buttons( $title = '' ) {
-		$buttons = $this->form_text['submit']; ?>
-		<p><?php
-			submit_button( $buttons['save'], 'primary', 'submit', false ); ?>
-			<span style='float:right;'><?php
+		$buttons = $this->form_text['submit'];
+		$this->tag( 'p' );
+			submit_button( $buttons['save'], 'primary', 'submit', false );
+			$this->tag( 'span', [ 'style' => 'float:right;' ] );
 				$object = ( empty( $title ) ) ? $buttons['object'] : $title;
 				$reset  = sprintf( $buttons['reset'], $object );
-				submit_button( $reset, 'secondary', 'reset', false ); ?>
-			</span>
-		</p><?php
+				submit_button( $reset, 'secondary', 'reset', false );
+		echo '</span></p>';
 	}
 
 	/**
@@ -534,12 +588,12 @@ abstract class PMW_Form_Admin {
 		$layout = $this->form['layout'];
 		$this->tag( 'div', $this->render_attributes( $layout[ $item ] ) );
 			if ( empty( $layout[ $item ]['render'] ) ) {
-				e_esc_html( $data[ $item ] );
+				echo esc_html( $data[ $item ] );
 			} else {
 				$func  = 'render_' . $layout[ $item ]['render'];
 				$name  = $this->current . '[' . $item . ']';
 				$value = ( array_key_exists( $item, $data ) ) ? $data[ $item ] : '';
-				if ( $layout[ $item ]['render'] === 'array' ) {
+				if ( in_array( $layout[ $item ]['render'], [ 'array' ] ) ) {
 					$name .= '[' . $num . ']';
 					#if ( isset( $add ) && $add ) { $layout[ $item ]['add'] = true; }
 					$value = ( array_key_exists( $num, $data[ $item ] ) ) ? $data[ $item ][ $num ] : '';
@@ -558,8 +612,8 @@ abstract class PMW_Form_Admin {
 				} else {
 					$this->logg( sprintf( $this->form_text['error']['render'], $func ) );
 				}
-			} ?>
-		</div><?php
+			}
+		echo '</div>';
 	}
 
 	/**
@@ -569,33 +623,33 @@ abstract class PMW_Form_Admin {
 	 * @param array $args  Field identificatin information
 	 */
 	public function render_tabbed_options( $args ) {
-		extract( $args );  #  $args = array( 'key' => {group-slug}, 'item' => {item-slug} )
+		extract( $args );  //  $args array( 'key' => {group-slug}, 'item' => {item-slug} )
 		$data   = $this->form_opts;
 		$layout = $this->form[ $key ]['layout'];
 		$this->tag( 'div', $this->render_attributes( $layout[ $item ] ) );
 		if ( empty( $layout[ $item ]['render'] ) ) {
-			e_esc_html( $data[$item] );
+			echo esc_html( $data[ $item ] );
 		} else {
 			$func = "render_{$layout[$item]['render']}";
 			$name = $this->current . "[$item]";
 			if ( ! array_key_exists( $item, $data ) ) {
-				$data[ $item ] = ( empty( $layout[ $item ]['default'])) ? '' : $layout[ $item ]['default'];
+				$data[ $item ] = ( empty( $layout[ $item ]['default'] ) ) ? '' : $layout[ $item ]['default'];
 			}
-			$fargs = array(
+			$args = array(
 				'ID'     => $item,
 				'value'  => $data[ $item ],
 				'layout' => $layout[ $item ],
-				'name'   => $name
+				'name'   => $name,
 			);
 			if ( method_exists( $this, $func ) ) {
-				$this->$func( $fargs );
+				$this->$func( $args );
 			} elseif ( function_exists( $func ) ) {
-				$func( $fargs );
+				$func( $args );
 			} else {
-				$this->log( sprintf( $this->form_text['error']['render'], $func ) );
+				$this->logg( sprintf( $this->form_text['error']['render'], $func ) );
 			}
 		}
-		echo "</div>"; //*/
+		echo '</div>'; //*/
 	}
 
 	/**
@@ -616,8 +670,8 @@ abstract class PMW_Form_Admin {
 	 */
 	private function render_attributes( $layout ) {
 		$attrs = array();
-		$attrs['class'] = ( ! empty( $layout['divcss'] ) ) ? $layout['divcss'] : '';
-		$attrs['title'] = ( array_key_exists( 'help', $layout ) )     ? $layout['help']   : '';
+		$attrs['class'] = ( ! empty( $layout['divcss'] ) )        ? $layout['divcss'] : '';
+		$attrs['title'] = ( array_key_exists( 'help', $layout ) ) ? $layout['help']   : '';
 		if ( ! empty( $layout['showhide'] ) ) {
 			$state = array_merge( [ 'show' => null, 'hide' => null ], $layout['showhide'] );
 			$attrs['data-item'] = ( array_key_exists( 'item', $state ) ) ? $state['item'] : $state['target'];
@@ -644,7 +698,7 @@ abstract class PMW_Form_Admin {
 	private function render_array( $data ) {
 		extract( $data );  //  Extracts 'ID', 'value', 'layout', and 'name'.
 		if ( ! array_key_exists( 'type', $layout ) ) $layout['type'] = 'text';
-		if ( $layout['type'] === 'image' ) {
+		if ( in_array( $layout['type'], [ 'image' ] ) ) {
 			$this->render_image( $data );
 		} else {
 			$this->render_text( $data );
@@ -652,7 +706,7 @@ abstract class PMW_Form_Admin {
 	}
 
 	/**
-	 *  Render a checkbox field
+	 *  Render a checkbox field.
 	 *
 	 * @since 20150323
 	 * @param array $data field information
@@ -663,18 +717,18 @@ abstract class PMW_Form_Admin {
 			'type' => 'checkbox',
 			'id'   => $ID,
 			'name' => $name,
-			'value' => 'yes',
+			'value' => $value,
 			'onchange' => ( array_key_exists( 'change', $layout ) ) ? $layout['change'] : '',
 		);
-		$this->checked( $attrs, $value, 'yes' );
+		$this->checked( $attrs, $value, true );
 		$html  = $this->get_tag( 'input', $attrs );
 		$html .= '&nbsp;';
-		$html .= $this->get_element( 'span', [ ], $layout['text'] );
-		$this->element( 'label', [ ], $html, true );
+		$html .= $this->get_element( 'span', [], $layout['text'] );
+		$this->element( 'label', [], $html, true );
 	}
 
 	/**
-	 *  Render a multiple checkbox field
+	 *  Render multiple checkbox fields.
 	 *
 	 * @since 20170202
 	 * @param array $data field information
@@ -685,7 +739,7 @@ abstract class PMW_Form_Admin {
 			return;
 		}
 		if ( ! empty( $layout['text'] ) ) {
-			$this->element( 'div', [ ], $layout['text'] );
+			$this->element( 'div', [], $layout['text'] );
 		}
 		foreach( $layout['source'] as $key => $text ) {
 			$attrs = array(
@@ -698,9 +752,9 @@ abstract class PMW_Form_Admin {
 			$this->checked( $attrs, $check );
 			$html  = $this->get_tag( 'input', $attrs );
 			$html .= '&nbsp;';
-			$html .= $this->get_element( 'span',  [ ], $text );
-			$label = $this->get_element( 'label', [ ], $html, true );
-			$this->element( 'div', [ ], $label, true );
+			$html .= $this->get_element( 'span',  [], $text );
+			$label = $this->get_element( 'label', [], $html, true );
+			$this->element( 'div', [], $label, true );
 		}
 	}
 
@@ -722,7 +776,7 @@ abstract class PMW_Form_Admin {
 		$this->element( 'input', $attrs );
 		$text = ( ! empty( $layout['text'] ) ) ? $layout['text'] : '';
 		if ( ! empty( $text ) ) {
-			?>&nbsp;<?php
+			echo '&nbsp;';
 			$this->element( 'span', [ 'class' => 'form-colorpicker-text' ], $text );
 		}
 	}
@@ -736,7 +790,7 @@ abstract class PMW_Form_Admin {
 	private function render_display( $data ) {
 		extract( $data );  //  Extracts 'ID', 'value', 'layout', 'name'
 		if ( array_key_exists( 'default', $layout ) && ! empty( $value ) ) {
-			e_esc_html( $value );
+			echo esc_html( $value );
 		}
 		if ( ! empty( $layout['text'] ) ) {
 			$this->element( 'span', [ ], ' ' . $layout['text'] );
@@ -784,8 +838,8 @@ abstract class PMW_Form_Admin {
 			'data-button' => $media['button'],
 			'data-field'  => $ID,
 		);
-		$img_css = 'form-image-container' . ( ( empty( $value ) ) ? ' hidden' : '');
-		$btn_css = 'form-image-delete' . ( ( empty( $value ) ) ? ' hidden' : '');
+		$img_css = 'form-image-container' . ( ( empty( $value ) ) ? ' hidden' : '' );
+		$btn_css = 'form-image-delete'    . ( ( empty( $value ) ) ? ' hidden' : '' );
 		$attrs = array(
 			'id'    => $ID . '_input',
 			'type'  => 'text',
@@ -793,7 +847,7 @@ abstract class PMW_Form_Admin {
 			'name'  => $name,
 			'value' => $value,
 		);
-		$html  = $this->get_element( 'button', [ 'type' => "button", 'class' => "form-image" ], $media['button'] );
+		$html  = $this->get_element( 'button', [ 'type' => 'button', 'class' => 'form-image' ], $media['button'] );
 		$html .= $this->get_element( 'input', $attrs );
 		$img   = $this->get_tag( 'img', [ 'id' => $ID . '_img', 'src' => $value, 'alt' => $value ] );
 		$html .= $this->get_element( 'div', [ 'class' => $img_css ], $img, true );
@@ -838,7 +892,7 @@ abstract class PMW_Form_Admin {
 			$html .= $this->get_element( 'div',   [], $label, true );
 		}
 		if ( array_key_exists( 'postext', $layout ) ) {
-			$html .= $this->get_element( 'div', [ ], $layout['postext'] ) ;
+			$html .= $this->get_element( 'div', [], $layout['postext'] );
 		}
 		$this->element( 'div', [], $html, true );
 	}
@@ -860,9 +914,9 @@ abstract class PMW_Form_Admin {
 		//  Pre-Text
 		$html = $this->get_element( 'div', [ 'class' => $pre_css ], $pre_text );
 		//  Radio labels
-		$label  = $this->get_element( 'span', [ 'class' => 'radio-multiple-yes' ],    __( 'Yes', 'privacy-my-way' ) );
+		$label  = $this->get_element( 'span', [ 'class' => 'radio-multiple-yes' ], __( 'Yes', 'privacy-my-way' ) );
 		$label .= '&nbsp;';
-		$label .= $this->get_element( 'span', [ 'class' => 'radio-multiple-no'  ],    __( 'No',  'privacy-my-way' ) );
+		$label .= $this->get_element( 'span', [ 'class' => 'radio-multiple-no'  ], __( 'No',  'privacy-my-way' ) );
 		$html  .= $this->get_element( 'div',  [ 'class' => 'radio-multiple-header' ], $label, true );
 		//  Radio buttons
 		foreach( $layout['source'] as $key => $text ) {
@@ -872,7 +926,7 @@ abstract class PMW_Form_Admin {
 				'type'  => 'radio',
 				'value' => 'yes',
 				'class' => 'radio-multiple-list radio-multiple-list-yes',
-				'name'  => $name .'[' . $key . ']',
+				'name'  => $name . '[' . $key . ']',
 			);
 			$this->checked( $yes, $check, 'yes' );
 			$item  = $this->get_element( 'input', $yes );
@@ -897,25 +951,27 @@ abstract class PMW_Form_Admin {
 	}
 
 	/**
-	 *  Render a select field
+	 *  Render a select field.
 	 *
 	 * @since 20150323
-	 * @param array $data field information
+	 * @param array $data  Field information.
 	 */
 	private function render_select( $data ) {
 		extract( $data );  //  Extracts 'ID', 'value', 'layout', 'name'
 		if ( empty( $layout['source'] ) ) {
 			return;
 		}
-		if ( ! empty( $layout['text'] ) ) {
+		if ( array_key_exists( 'text', $layout ) ) {
 			$this->element( 'div', [ 'class' => 'form-select-text' ], $layout['text'] );
 		}
 		$attrs = array(
 			'id'   => $ID,
 			'name' => $name
 		);
-		if ( strpos( '[]', $name ) ) {
+		$helper = 'selected';
+		if ( strpos( $name, '[]' ) ) {
 			$attrs['multiple'] = 'multiple';
+			$helper = 'selected_m';
 		}
 		if ( array_key_exists( 'change', $layout ) ) {
 			$attrs['onchange'] = $layout['change'];
@@ -925,15 +981,15 @@ abstract class PMW_Form_Admin {
 			if ( is_array( $source_func ) ) {
 				foreach( $source_func as $key => $text ) {
 					$attrs = [ 'value' => $key ];
-					$this->selected( $attrs, $key, $value );
+					$this->$helper( $attrs, $key, $value );
 					$this->element( 'option', $attrs, ' ' . $text . ' ' );
 				}
 			} else if ( method_exists( $this, $source_func ) ) {
 				$this->$source_func( $value );
 			} else if ( function_exists( $source_func ) ) {
 				$source_func( $value );
-			} ?>
-		</select><?php
+			}
+		echo '</select>';
 	}
 
 	/**
@@ -955,20 +1011,39 @@ abstract class PMW_Form_Admin {
 	 */
 	private function render_spinner( $data ) {
 		extract( $data );  //  Extracts 'ID', 'value', 'layout', 'name'
+		if ( array_key_exists( 'text', $layout ) ) {
+			$this->element( 'div', [], $layout['text'] );
+		}
+		$attrs = array(
+			'id'    => $ID,
+			'name'  => $name,
+			'value' => $value,
+		);
+		$attrs = array_merge( $attrs, $this->attributes_spinner( $layout ) );
+		$this->element( 'input', $attrs );
+		if ( array_key_exists( 'postext', $layout ) ) {
+			$this->element( 'div', [], $layout['postext'] );
+		}
+	}
+
+	/**
+	 *  Provide spinner defaults.
+	 *
+	 * @since 20200411
+	 * @param array $layout  The item to provide defaults for.
+	 * @return array         Attributes for the spinner input element.
+	 */
+	private function attributes_spinner( $layout ) {
 		$attrs = array(
 			'type'  => 'number',
 			'class' => 'small-text',
-			'id'    => $ID,
-			'name'  => $name,
-			'min'   => '1',
+#			'min'   => '1',
 			'step'  => '1',
-			'value' => $value,
 		);
 		if ( array_key_exists( 'attrs', $layout ) ) {
 			$attrs = array_merge( $attrs, array_intersect_key( $layout['attrs'], $attrs ) );
 		}
-		$this->element( 'input', $attrs );
-		if ( ! empty( $layout['stext'] ) ) e_esc_attr( $layout['stext'] );
+		return $attrs;
 	}
 
 	/**
@@ -978,26 +1053,26 @@ abstract class PMW_Form_Admin {
 	 * @param array $data  Field information.
 	 */
 	private function render_text( $data ) {
-		extract( $data );  #  array( 'ID' => $item, 'value' => $data[ $item ], 'layout' => $layout[ $item ], 'name' => $name )
+		extract( $data );  //  array( 'ID' => $item, 'value' => $data[ $item ], 'layout' => $layout[ $item ], 'name' => $name )
 		if ( ! empty( $layout['text'] ) ) {
-			$this->element( 'p', [ ], ' ' . $layout['text'] );
+			$this->element( 'p', [], ' ' . $layout['text'] );
 		}
 		$attrs = array(
 			'type'  => 'text',
 			'id'    => $ID,
-			'class' => ( array_key_exists( 'class', $layout ) )  ? $layout['class'] : 'regular-text',
+			'class' => ( array_key_exists( 'class', $layout ) ) ? $layout['class'] : 'regular-text',
 			'name'  => $name,
 			'value' => $value,
-			'title' => ( array_key_exists( 'help', $layout ) )   ? $layout['help']  : '',
-			'placeholder' => ( array_key_exists( 'place',  $layout ) ) ? $layout['place'] : '',
-			'onchange'    => ( array_key_exists( 'change', $layout ) ) ? $layout['change']  : '',
+			'title' => ( array_key_exists( 'help', $layout ) ) ? $layout['help'] : '',
+			'placeholder' => ( array_key_exists( 'place',  $layout ) ) ? $layout['place']  : '',
+			'onchange'    => ( array_key_exists( 'change', $layout ) ) ? $layout['change'] : '',
 		);
 		$this->element( 'input', $attrs );
-		if ( ! empty( $layout['stext'] ) ) {
-			e_esc_html( ' ' . $layout['stext'] );
+		if ( array_key_exists( 'stext', $layout ) ) {
+			$this->element( 'span', [], ' ' . $layout['stext'] );
 		}
-		if ( ! empty( $layout['etext'] ) ) {
-			$this->element( 'p', [ ], ' ' . $layout['etext'] );
+		if ( array_key_exists( 'postext', $layout ) ) {
+			$this->element( 'p', [], $layout['postext'] );
 		}
 	}
 
@@ -1089,7 +1164,7 @@ abstract class PMW_Form_Admin {
 		}
 		foreach( $input as $key => $data ) {
 			$item = ( array_key_exists( $key, $this->form[ $option ]['layout'] ) ) ? $this->form[ $option ]['layout'][ $key ] : array();
-			if ( (array)$data === $data ) {
+			if ( (array) $data === $data ) {
 				foreach( $data as $ID => $subdata ) {
 					$output[ $key ][ $ID ] = $this->do_validate_function( $subdata, $item );
 				}
@@ -1130,8 +1205,8 @@ abstract class PMW_Form_Admin {
 	 * @param string $input
 	 * @return string
 	 */
-	private function validate_checkbox( $input, $item ) {
-		return sanitize_key( $input );
+	private function validate_checkbox( $input, $item = array() ) {
+		return ( $input ) ? true : false;
 	}
 
 	/**
@@ -1142,7 +1217,7 @@ abstract class PMW_Form_Admin {
 	 * @return string
 	 */
 	private function validate_checkbox_multiple( $input, $item ) {
-		return sanitize_key( $input );
+		return array_map( array( $this, 'validate_checkbox' ), $input );
 	}
 
 	/**
@@ -1200,7 +1275,7 @@ abstract class PMW_Form_Admin {
 	 */
 	private function validate_radio( $input, $item ) {
 		$input = sanitize_key( $input );
-		return ( array_key_exists( $input, $item['source'] ) ? $input : $item['source'] );
+		return ( array_key_exists( $input, $item['source'] ) ? $input : $item['default'] );
 	}
 
 	/**
@@ -1234,7 +1309,10 @@ abstract class PMW_Form_Admin {
 	 * @return string
 	 */
 	private function validate_select_multiple( $input, $item ) {
-		return array_map( array( $this, 'validate_select' ), $input ); // FIXME
+		foreach( $input as $key => $choice ) {
+			$input[ $key ] = $this->validate_select( $choice, $item );
+		}
+		return array_unique( $input );
 	}
 
 	/**
@@ -1245,22 +1323,30 @@ abstract class PMW_Form_Admin {
 	 * @return string
 	 */
 	private function validate_spinner( $input, $item ) {
-		return $this->validate_text( $input );
+		$attrs = $this->attributes_spinner( $item );
+		if ( array_key_exists( 'step', $attrs ) && ( $attrs['step'] % 1 ) ) {
+			$input = floatval( $input );
+		} else {
+			$input = intval( $input );
+		}
+		if ( array_key_exists( 'min', $attrs ) ) $input = max( $input, $attrs['min'] );
+		if ( array_key_exists( 'max', $attrs ) ) $input = min( $input, $attrs['max'] );
+		return "$input";
 	}
 
 	/**
-	 *  Validate text field value
+	 *  Validate text field value.
 	 *
 	 * @since 20170305
 	 * @param string $input
 	 * @return string
 	 */
-	protected function validate_text( $input, $item ) {
+	protected function validate_text( $input, $item = array() ) {
 		return wp_kses_data( $input );
 	}
 
 	/**
-	 *  Validate text color field value
+	 *  Validate text color field value.  Allows color text string, ie 'red', 'blue', 'black', etc.
 	 *
 	 * @since 20160910
 	 * @param string $input
@@ -1271,7 +1357,7 @@ abstract class PMW_Form_Admin {
 	}
 
 	/**
-	 *  Validate url field value
+	 *  Validate url field value.
 	 *
 	 * @since 20150323
 	 * @param string $input
@@ -1285,31 +1371,7 @@ abstract class PMW_Form_Admin {
 } # end of PMW_Form_Admin class
 
 
-/**  These are just shorthand functions  **/
-
-/**
- *  Echo an escaped attribute string
- *
- * @param string $string
- * @see esc_attr()
- */
-if ( ! function_exists( 'e_esc_attr' ) ) {
-	function e_esc_attr( $string ) {
-		echo esc_attr( $string );
-	}
-}
-
-/**
- *  Echo an escaped HTML string
- *
- * @param string $string
- * @see esc_html()
- */
-if ( ! function_exists( 'e_esc_html' ) ) {
-	function e_esc_html( $string ) {
-		echo esc_html( $string );
-	}
-}
+/**  These are compatibility functions  **/
 
 /**
  *  array_key_first() introduced in PHP 7.3.0

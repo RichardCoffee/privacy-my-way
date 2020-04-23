@@ -128,7 +128,9 @@ abstract class PMW_Options_Options {
 		foreach( $options as $key => $item ) {
 			if ( ! is_array( $item ) ) continue;
 			if ( array_key_exists( 'showhide', $item ) ) {
-				$data['showhide'][] = $item['showhide'];
+				$info = $item['showhide'];
+				$info['render'] = $item['render'];
+				$data['showhide'][] = $info;
 			}
 		}
 		return $data;

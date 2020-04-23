@@ -216,7 +216,7 @@ class PMW_Register_Register {
 		} ?>
 		<div class="notice notice-error">
 			<p style="max-width:800px;">
-				<b><?php echo esc_html( sprintf( _x( '%s can not be activated.', 'Plugin title', 'privacy-my-way' ), static::$title ) );?></b>
+				<b><?php echo esc_html( sprintf( _x( '%s can not be activated.', 'Plugin title', 'privacy-my-way' ), static::$title ) ); ?></b>
 				<?php echo esc_html( $short ); ?>
 			</p>
 			<p style="max-width:800px;">
@@ -247,6 +247,7 @@ class PMW_Register_Register {
 	/**
 	 *  Creates a new page, or modifies a current page.
 	 *
+	 * @todo This function needs more testing before using it.
 	 * @since 20170214
 	 * @param array  Post array.
 	 * @param bool   If true, will overwrite existing page.

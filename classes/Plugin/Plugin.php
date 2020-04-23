@@ -17,7 +17,7 @@ abstract class PMW_Plugin_Plugin {
 #	 * @since 20170111
 	protected $admin = null;
 #	 * @since 20170111
-	public    $dbvers = '0';
+	public $dbvers = '0';
 	/**
 	 * @since 20200221
 	 * @var string  Branch to be used in conjunction with https://github.com/YahnisElsts/plugin-update-checker
@@ -264,7 +264,7 @@ abstract class PMW_Plugin_Plugin {
 	}
 
 
-  /** Update functions **/
+	/** Update functions **/
 
 	/**
 	 *  Load the plugin update checker.

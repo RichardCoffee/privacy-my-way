@@ -24,7 +24,7 @@ trait PMW_Trait_Singleton {
 	 * @since 20170323
 	 * @var bool|mixed  Flag to indicate that construction has been aborted.
 	 */
-	public  static $abort__construct = false;
+	public static $abort__construct = false;
 	/**
 	 * @since 20170111
 	 * @var object  Pointer to the class instantiation.

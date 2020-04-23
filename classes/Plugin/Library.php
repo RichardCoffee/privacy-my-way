@@ -67,10 +67,10 @@ class PMW_Plugin_Library {
 	 */
 	public function kses() {
 		return array(
-			'a'    => [ 'class' => [ ], 'href' => [ ], 'itemprop' => [ ], 'rel' => [ ], 'target' => [ ], 'title' => [ ], 'aria-label' => [ ] ],
-			'b'    => [ ],
-			'i'    => [ 'class' => [ ] ],
-			'span' => [ 'class' => [ ], 'itemprop' => [ ] ],
+			'a'    => [ 'class' => [], 'href' => [], 'itemprop' => [], 'rel' => [], 'target' => [], 'title' => [], 'aria-label' => [] ],
+			'b'    => [],
+			'i'    => [ 'class' => [] ],
+			'span' => [ 'class' => [], 'itemprop' => [] ],
 		);
 	}
 

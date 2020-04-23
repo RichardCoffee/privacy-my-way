@@ -108,7 +108,7 @@ trait PMW_Trait_Logging {
 			'logg',
 #			'logging',
 			'logging_log_deprecated',
-			'logobj'
+			'logobj',
 		);
 		$default = $file = $func = $line = 'n/a';
 		$call_trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
@@ -283,7 +283,7 @@ trait PMW_Trait_Logging {
 		$parents = class_parents( $object, false );
 		if ( $parents ) $classes = array_merge( $classes, $parents );
 		$reduced = array( 'class:name' => $classes[0] );
-		foreach ( (array)$object as $key => $value ) {
+		foreach ( (array) $object as $key => $value ) {
 			if ( in_array( $key[0], [ "\0" ] ) ) {
 				$key = str_replace( "\0*\0", 'protected:', $key );
 				foreach( $classes as $class ) {
