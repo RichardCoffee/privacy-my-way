@@ -242,10 +242,8 @@ class Privacy_My_Way {
 		$args['_pmw_privacy_filter'] = true;
 		$response = wp_remote_request( $url, $args );	//  response really seems to have a lot of duplicated data in it.
 		if ( is_wp_error( $response ) ) {
-			if ( ! defined( 'WP_HTTP_BLOCK_EXTERNAL' ) ) {
-				$this->logging_force = true;  //  Log the error.
-				$this->logg( 'response error', $url, $response );
-			}
+			$this->logging_force = true;  //  Log the error.
+			$this->logg( 'response error', $url, $response );
 		} else {
 			$body = trim( wp_remote_retrieve_body( $response ) );
 			$this->logg( $url, $args, 'response body', json_decode( $body, true ) );
