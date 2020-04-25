@@ -66,6 +66,8 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 
 ### Next Release
 * Upgrade:  Updated core files.
+* Minor:    Removed reference to WP constant.
+* Minor:    Removed obsolete css.
 
 ### 1.7.5
 * Bugfix:  Version information didn't get updated properly for the 1.7.4 release.

@@ -531,7 +531,7 @@ abstract class PMW_Form_Admin {
 					$tab_ref = "$refer&tab=$key";
 					$tab_css = 'nav-tab' . ( ( $this->tab === $key ) ? ' nav-tab-active' : '' );
 					$this->tag( 'a', [ 'href' => $tab_ref, 'class' => $tab_css ] );
-					if ( ! empty( $menu_item['icon'] ) ) {
+					if ( array_key_exists( 'icon', $menu_item ) ) {
 						$this->element( 'i', [ 'class' => [ 'dashicons', $menu_item['icon'] ] ] );
 					}
 					echo esc_html( $menu_item['title'] );
@@ -567,7 +567,7 @@ abstract class PMW_Form_Admin {
 	 */
 	private function submit_buttons( $title = '' ) {
 		$buttons = $this->form_text['submit'];
-		$this->tag( 'p' );
+		$this->tag( 'p', [] );
 			submit_button( $buttons['save'], 'primary', 'submit', false );
 			$this->tag( 'span', [ 'style' => 'float:right;' ] );
 				$object = ( empty( $title ) ) ? $buttons['object'] : $title;
@@ -587,7 +587,7 @@ abstract class PMW_Form_Admin {
 		$data   = $this->form_opts;
 		$layout = $this->form['layout'];
 		$this->tag( 'div', $this->render_attributes( $layout[ $item ] ) );
-			if ( empty( $layout[ $item ]['render'] ) ) {
+			if ( ! array_key_exists( 'render', $layout[ $item ] ) ) {
 				echo esc_html( $data[ $item ] );
 			} else {
 				$func  = 'render_' . $layout[ $item ]['render'];
@@ -627,13 +627,13 @@ abstract class PMW_Form_Admin {
 		$data   = $this->form_opts;
 		$layout = $this->form[ $key ]['layout'];
 		$this->tag( 'div', $this->render_attributes( $layout[ $item ] ) );
-		if ( empty( $layout[ $item ]['render'] ) ) {
+		if ( ! array_key_exists( 'render', $layout[ $item ] ) ) {
 			echo esc_html( $data[ $item ] );
 		} else {
 			$func = "render_{$layout[$item]['render']}";
 			$name = $this->current . "[$item]";
 			if ( ! array_key_exists( $item, $data ) ) {
-				$data[ $item ] = ( empty( $layout[ $item ]['default'] ) ) ? '' : $layout[ $item ]['default'];
+				$data[ $item ] = ( array_key_exists( 'default', $layout[ $item ] ) ) ? $layout[ $item ]['default'] : '';
 			}
 			$args = array(
 				'ID'     => $item,
@@ -670,9 +670,9 @@ abstract class PMW_Form_Admin {
 	 */
 	private function render_attributes( $layout ) {
 		$attrs = array();
-		$attrs['class'] = ( ! empty( $layout['divcss'] ) )        ? $layout['divcss'] : '';
-		$attrs['title'] = ( array_key_exists( 'help', $layout ) ) ? $layout['help']   : '';
-		if ( ! empty( $layout['showhide'] ) ) {
+		$attrs['class'] = ( array_key_exists( 'divcss', $layout ) ) ? $layout['divcss'] : '';
+		$attrs['title'] = ( array_key_exists( 'help',   $layout ) ) ? $layout['help']   : '';
+		if ( array_key_exists( 'showhide', $layout ) ) {
 			$state = array_merge( [ 'show' => null, 'hide' => null ], $layout['showhide'] );
 			$attrs['data-item'] = ( array_key_exists( 'item', $state ) ) ? $state['item'] : $state['target'];
 			$attrs['data-show'] = $state['show'];
@@ -735,10 +735,10 @@ abstract class PMW_Form_Admin {
 	 */
 	private function render_checkbox_multiple( $data ) {
 		extract( $data );  //  Keys are 'ID', 'value', 'layout', 'name'
-		if ( empty( $layout['source'] ) ) {
+		if ( ! array_key_exists( 'source', $layout ) ) {
 			return;
 		}
-		if ( ! empty( $layout['text'] ) ) {
+		if ( array_key_exists( 'text', $layout ) ) {
 			$this->element( 'div', [], $layout['text'] );
 		}
 		foreach( $layout['source'] as $key => $text ) {
@@ -774,8 +774,8 @@ abstract class PMW_Form_Admin {
 			'data-default-color' => $layout['default']
 		);
 		$this->element( 'input', $attrs );
-		$text = ( ! empty( $layout['text'] ) ) ? $layout['text'] : '';
-		if ( ! empty( $text ) ) {
+		$text = ( array_key_exists( 'text', $layout ) ) ? $layout['text'] : '';
+		if ( $text ) {
 			echo '&nbsp;';
 			$this->element( 'span', [ 'class' => 'form-colorpicker-text' ], $text );
 		}
@@ -789,10 +789,10 @@ abstract class PMW_Form_Admin {
 	 */
 	private function render_display( $data ) {
 		extract( $data );  //  Extracts 'ID', 'value', 'layout', 'name'
-		if ( array_key_exists( 'default', $layout ) && ! empty( $value ) ) {
+		if ( array_key_exists( 'default', $layout ) && $value ) {
 			echo esc_html( $value );
 		}
-		if ( ! empty( $layout['text'] ) ) {
+		if ( array_key_exists( 'text', $layout ) ) {
 			$this->element( 'span', [ ], ' ' . $layout['text'] );
 		}
 	}
@@ -818,7 +818,7 @@ abstract class PMW_Form_Admin {
 			$html .= $this->get_element( 'option', $attrs, ' ' . $key . ' ' );
 		}
 		$this->element( 'select', $attrs, $html, true );
-		if ( ! empty( $data['layout']['text'] ) ) {
+		if ( array_key_exists( 'text', $data['layout'] ) ) {
 			$this->element( 'span', [ ], ' ' . $data['layout']['text'] );
 		}
 	}
@@ -863,7 +863,7 @@ abstract class PMW_Form_Admin {
 	 */
 	private function render_radio( $data ) {
 		extract( $data );  //  Extracts 'ID', 'value', 'layout', 'name'
-		if ( empty( $layout['source'] ) ) return;
+		if ( ! array_key_exists( 'source', $layout ) ) return;
 		$base_attrs = array(
 			'type'     => 'radio',
 			'name'     => $name,
@@ -905,8 +905,7 @@ abstract class PMW_Form_Admin {
 	 */
 	private function render_radio_multiple( $data ) {
 		extract( $data );   //  Extracts 'ID', 'value', 'layout', 'name'
-		if ( empty( $layout['source'] ) )
-			return;
+		if ( ! array_key_exists( 'source', $layout ) ) return;
 		$pre_css   = ( array_key_exists( 'textcss', $layout ) ) ? $layout['textcss'] : '';
 		$pre_text  = ( array_key_exists( 'text',    $layout ) ) ? $layout['text']    : '';
 		$post_text = ( array_key_exists( 'postext', $layout ) ) ? $layout['postext'] : '';
@@ -958,9 +957,7 @@ abstract class PMW_Form_Admin {
 	 */
 	private function render_select( $data ) {
 		extract( $data );  //  Extracts 'ID', 'value', 'layout', 'name'
-		if ( empty( $layout['source'] ) ) {
-			return;
-		}
+		if ( ! array_key_exists( 'source', $layout ) ) return;
 		if ( array_key_exists( 'text', $layout ) ) {
 			$this->element( 'div', [ 'class' => 'form-select-text' ], $layout['text'] );
 		}
@@ -1054,7 +1051,7 @@ abstract class PMW_Form_Admin {
 	 */
 	private function render_text( $data ) {
 		extract( $data );  //  array( 'ID' => $item, 'value' => $data[ $item ], 'layout' => $layout[ $item ], 'name' => $name )
-		if ( ! empty( $layout['text'] ) ) {
+		if ( array_key_exists( 'text', $layout ) ) {
 			$this->element( 'p', [], ' ' . $layout['text'] );
 		}
 		$attrs = array(

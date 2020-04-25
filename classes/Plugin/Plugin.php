@@ -16,13 +16,21 @@ abstract class PMW_Plugin_Plugin {
 
 #	 * @since 20170111
 	protected $admin = null;
-#	 * @since 20170111
-	public $dbvers = '0';
 	/**
 	 * @since 20200221
 	 * @var string  Branch to be used in conjunction with https://github.com/YahnisElsts/plugin-update-checker
 	 */
 	protected $branch = 'master';
+	/**
+	 * @since 20170111
+	 * @var int  Update version.
+	 */
+	protected $dbvers = 0;
+	/**
+	 * @since 20200424
+	 * @var string  Option slug for version data.
+	 */
+	protected $dbv_option = '';
 	/**
 	 * @since 20200329
 	 * @var string  Text domain string, DO NOT USE as a variable.
@@ -127,6 +135,7 @@ abstract class PMW_Plugin_Plugin {
 			$this->schedule_initialize();
 			$this->load_textdomain();
 			$this->load_update_checker();
+			$this->perform_update();
 		} else {
 			static::$abort__construct = true;
 		}
@@ -239,7 +248,7 @@ abstract class PMW_Plugin_Plugin {
 		return $this->paths->get_plugin_file_path( $file );
 	}
 
-	/*
+	/**
 	 *  Removes 'Edit' option from plugin action links, and adds 'Settings' option.
 	 *
 	 * @since 20170111
@@ -283,33 +292,52 @@ abstract class PMW_Plugin_Plugin {
 		}
 	}
 
-/*
-#	 * @since 20170111
-  public function check_update() {
-    $addr = 'tcc_options_'.$this->tab;
-    $data = get_option($addr);
-    if ( ! array_key_exists( 'dbvers', $data ) ) return;
-    if (intval($data['dbvers'],10)>=intval($this->dbvers)) return;
-    $this->perform_update($addr);
-  }
+	/**
+	 *  Handles running update functions.
+	 *
+	 * @since 20170111
+	 */
+	public function check_update() {
+		if ( empty( $this->dbvers     ) ) return;
+		if ( empty( $this->dbv_option ) ) return;
+		$current = intval( $this->get_option( $this->dbv_option, $this->dbvers ) );
+		if ( $this->dbvers > $current ) {
+			$this->perform_update( $current );
+		}
+	}
 
-#	 * @since 20170111
-  private function perform_update($addr) {
-    $option = get_option($addr);
-    $dbvers = intval($option['dbvers'],10);
-    $target = intval($this->dbvers,10);
-    while($dbvers<$target) {
-      $dbvers++;
-      $update_func = "update_$dbvers";
-      if ( method_exists( get_called_class(), $update_func ) ) {
-        $this->$update_func();
-      }
-    }
-    $option = get_option($addr); // reload in case an update changes an array value
-    $option['dbvers']  = $dbvers;
-    $option['version'] = $this->paths->version;
-    update_option($addr,$option);
-  } //*/
+	/**
+	 *  Call update functions.
+	 *
+	 * @since 20170111
+	 * @param int $dbvers  Current update status.
+	 */
+	private function perform_update( $dbvers ) {
+		while( $dbvers < $this->dbvers ) {
+			$dbvers++;
+			$update_func = "update_$dbvers";
+			if ( method_exists( get_called_class(), $update_func ) ) {
+				$this->$update_func( $dbvers );
+			}
+		}
+		/*  old code kept around just in case...
+		$option = get_option( $this->dbv_option ); // reload in case an update changes an array value
+		$option['dbvers']  = $dbvers;
+		$option['version'] = $this->paths->version; */
+		update_option( $this->dbv_option, $dbvers );
+	} //*/
+
+	/**
+	 *  Get an option, mainly provided so that a child class can replace it.
+	 *
+	 * @since 20200425
+	 * @param string $slug     Option to retrieve.
+	 * @param mixed  $default  Default option value.
+	 * @return mixed           Option value.
+	 */
+	protected function get_options( $slug, $default ) {
+		return get_option( $slug, $default );
+	}
 
 
 }

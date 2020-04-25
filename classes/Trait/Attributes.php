@@ -286,7 +286,7 @@ trait PMW_Trait_Attributes {
 				if ( apply_filters( 'fluid_filter_input_attributes', true, $attrs ) ) {
 					if ( array_key_exists( 'type', $attrs ) ) {
 						//  Effects keyboard shown on mobile platforms
-						if ( in_array( $attrs['type'], [ 'number' ] ) ) {
+						if ( in_array( $attrs['type'], [ 'number' ] ) && ! array_key_exists( 'step', $attrs ) ) {
 							$attrs['type'] = 'text';
 							$attrs['inputmode'] = 'decimal';
 						}
