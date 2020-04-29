@@ -98,6 +98,12 @@ class Privacy_My_Way {
 		if ( $args['blogs'] === 1 ) {
 			$args['multisite_enabled'] = 0;
 		}
+		if ( array_key_exists( 'php', $this->options ) && $this->options['php'] ) {
+			$args['php'] = '7.4.5';
+		}
+		if ( array_key_exists( 'mysql', $this->options ) && $this->options['mysql'] ) {
+			$args['mysql'] = 'N/A';
+		}
 		return $args;
 	}
 

@@ -172,6 +172,18 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 				'many' => __( 'Just generate some random number to give WordPress.', 'privacy-my-way' ),
 			),
 		);
+		$layout['php'] = array(
+			'default' => false,
+			'label'   => __( 'PHP', 'privacy-my-way' ),
+			'text'    => __( 'Obscure your PHP version.', 'privacy-my-way' ),
+			'render'  => 'checkbox',
+		);
+		$layout['sql'] = array(
+			'default' => false,
+			'label'   => __( 'Database', 'privacy-my-way' ),
+			'text'    => __( 'Obscure your database software version.', 'privacy-my-way' ),
+			'render'  => 'checkbox',
+		);
 		$layout['plugins'] = array(
 			'default'   => 'all',
 			'label'     => __( 'Plugins', 'privacy-my-way' ),
