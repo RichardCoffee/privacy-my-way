@@ -65,6 +65,7 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ## Changelog
 
 ### Next Release
+* Enhancement:  add options to obscure the php and database versions.
 * Upgrade:  Updated core files.
 * Minor:    Removed reference to WP constant.
 * Minor:    Removed obsolete css.

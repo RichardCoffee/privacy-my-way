@@ -48,7 +48,10 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 == Changelog ==
 
 = Next Release =
+* Enhancement:  add options to obscure the php and database versions.
 * Upgrade:  Updated core files.
+* Minor:    Removed reference to WP constant.
+* Minor:    Removed obsolete css.
 
 = 1.7.5 =
 * Bugfix:  Version information didn't get updated properly for the 1.7.4 release.
