@@ -15,6 +15,8 @@ class PMW_Plugin_pmwLib extends PMW_Plugin_Library {
 
 
 	public function php_version_reported() {
+#		return '7.2.30';
+#		return '7.3.17';
 		return '7.4.5';
 	}
 
