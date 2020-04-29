@@ -1127,27 +1127,36 @@ abstract class PMW_Form_Admin {
 			$object = ( array_key_exists( 'title', $this->form ) ) ? $this->form['title'] : $this->form_test['submit']['object'];
 			$string = sprintf( $this->form_text['submit']['restore'], $object );
 			add_settings_error( $this->slug, 'restore_defaults', $string, 'updated fade' );
-			return $output;
-		}
-		foreach( $input as $ID => $data ) {
-			$item = $this->form['layout'][ $ID ];
-			$multiple = array( 'array', 'radio_multiple' );
-			if ( in_array( $item['render'], $multiple ) ) {
-				$item['render'] = ( array_key_exists( 'type', $item ) ) ? $item['type'] : 'text';
-				$vals = array();
-				foreach( $data as $key => $indiv ) {
-					$vals[ $key ] = $this->do_validate_function( $indiv, $item );
+		} else {
+			foreach( $input as $ID => $data ) {
+				$item = $this->form['layout'][ $ID ];
+				$multiple = array( 'array', 'radio_multiple' );
+				if ( in_array( $item['render'], $multiple ) ) {
+					$item['render'] = ( array_key_exists( 'type', $item ) ) ? $item['type'] : 'text';
+					$vals = array();
+					foreach( $data as $key => $indiv ) {
+						$vals[ $key ] = $this->do_validate_function( $indiv, $item );
+					}
+					$output[ $ID ] = $vals;
+				} else if ( in_array( $item['render'], [ 'checkbox' ] ) ) {
+					$output[ $ID ] = true;
+				} else {
+					$output[ $ID ] = $this->do_validate_function( $data, $item );
 				}
-				$output[ $ID ] = $vals;
-			} else {
-				$output[ $ID ] = $this->do_validate_function( $data, $item );
 			}
-		}
-		// check for required fields FIXME: notify user
-		foreach( $this->form['layout'] as $ID => $item ) {
-			if ( is_array( $item ) && array_key_exists( 'require', $item ) && $item['require'] ) {
-				if ( empty( $output[ $ID ] ) ) {
-					$output[ $ID ] = $item['default'];
+			// check for required fields FIXME: notify user
+			foreach( $this->form['layout'] as $ID => $item ) {
+				if ( is_array( $item ) && array_key_exists( 'require', $item ) && $item['require'] ) {
+					if ( empty( $output[ $ID ] ) ) {
+						$output[ $ID ] = $item['default'];
+					}
+				}
+			}
+			$diff = array_diff_key( $output, $input );
+			foreach( $diff as $key => $data ) {
+				$item = ( array_key_exists( $key, $this->form['layout'] ) ) ? $this->form['layout'][ $key ] : array();
+				if ( array_key_exists( 'render', $item ) && in_array( $item['render'], [ 'checkbox' ] ) ) {
+					$output[ $key ] = false;
 				}
 			}
 		}
