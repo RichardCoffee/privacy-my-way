@@ -99,7 +99,7 @@ class Privacy_My_Way {
 			$args['multisite_enabled'] = 0;
 		}
 		if ( array_key_exists( 'php', $this->options ) && $this->options['php'] ) {
-			$args['php'] = '7.4.5';
+			$args['php'] = pmw()->php_version_reported();
 		}
 		if ( array_key_exists( 'mysql', $this->options ) && $this->options['mysql'] ) {
 			$args['mysql'] = 'N/A';

@@ -37,7 +37,7 @@ spl_autoload_register( 'pmw_privacy_class_loader' ); //*/
 function pmw( $force_log = false ) {
 	static $library;
 	if ( empty( $library ) ) {
-		$library = new PMW_Plugin_Library;
+		$library = new PMW_Plugin_pmwLib();
 	}
 	if ( $force_log ) {
 		$library->logging_force = true;

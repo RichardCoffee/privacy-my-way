@@ -94,6 +94,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$layout  = array( 'default' => true );
 		$warning = _x( '*** Turning off reporting a %1$s means WordPress will not notify you about upgrades for that %1$s! ***', 'noun - singular', 'privacy-my-way' );
 		$extra_html = array( 'yes' => ' <span class="red"> ' . esc_html_x( ' ( Recommended ) ', 'Added to a string to indicate the recommended option', 'privacy-my-way' ) . '</span>' );
+		$phpversion = pmw()->php_version_reported();
 		$layout['blog'] = array(
 			'default' => 'yes',
 			'label'   => __( 'Blog URL', 'privacy-my-way' ),
@@ -175,13 +176,13 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$layout['php'] = array(
 			'default' => false,
 			'label'   => __( 'PHP', 'privacy-my-way' ),
-			'text'    => __( 'Obscure your PHP version.', 'privacy-my-way' ),
+			'text'    => __( "Obscure your PHP version (will report it as '$phpversion').", 'privacy-my-way' ),
 			'render'  => 'checkbox',
 		);
 		$layout['sql'] = array(
 			'default' => false,
 			'label'   => __( 'Database', 'privacy-my-way' ),
-			'text'    => __( 'Obscure your database software version.', 'privacy-my-way' ),
+			'text'    => __( "Obscure your database software version (will report it as 'N/A').", 'privacy-my-way' ),
 			'render'  => 'checkbox',
 		);
 		$layout['plugins'] = array(
@@ -336,7 +337,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$active   = sprintf( '<span class="pmw-plugin-active">(%s)</span>',   esc_html__( 'active',   'privacy-my-way' ) );
 		$inactive = sprintf( '<span class="pmw-plugin-inactive">(%s)</span>', esc_html__( 'inactive', 'privacy-my-way' ) );
 		$format   = esc_html_x( '%1$s %2$s by %3$s', '1: plugin title, 2: plugin active/inactive status, 3: plugin author name', 'privacy-my-way' );
-		$library  = new PMW_Plugin_Library;
+		$library  = pmw();
 		foreach ( $this->plugins as $key => $plugin ) {
 			if ( empty( $plugin['PluginURI'] ) ) {
 				$title = wp_strip_all_tags( $plugin['Name'] );
@@ -397,7 +398,7 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 		$theme_label  = __( 'Theme website', 'privacy-my-way' );
 		$author_label = __( 'Theme author', 'privacy-my-way' );
 		$format  = esc_html_x( '%1$s by %2$s', '1: Theme title, 2: Author name', 'privacy-my-way' );
-		$library = new PMW_Plugin_Library;
+		$library = pmw();
 		foreach( $this->themes as $key => $theme ) {
 			//  Do not filter wordpress themes.
 			if ( strpos( $key, 'twenty' ) === 0 ) continue;
