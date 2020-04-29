@@ -3,7 +3,7 @@
  *   Abstract class that contains helper functions for a plugin.
  *
  * @package Privacy_My_Way
- * @subpackage Plugin_Core
+ * @subpackage Core
  * @since 20170111
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright Copyright (c) 2017, Richard Coffee
@@ -135,7 +135,7 @@ abstract class PMW_Plugin_Plugin {
 			$this->schedule_initialize();
 			$this->load_textdomain();
 			$this->load_update_checker();
-			$this->perform_update();
+			$this->check_update();
 		} else {
 			static::$abort__construct = true;
 		}

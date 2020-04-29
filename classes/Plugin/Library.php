@@ -3,7 +3,7 @@
  *  Provides library access to core trait functions.
  *
  * @package Privacy_My_Way
- * @subpackage Plugin_Core
+ * @subpackage Core
  * @since 20170503
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright Copyright (c) 2017, Richard Coffee

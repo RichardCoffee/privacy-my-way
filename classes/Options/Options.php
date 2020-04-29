@@ -71,6 +71,7 @@ abstract class PMW_Options_Options {
 	public function __construct() {
 		add_filter( 'fluidity_options_form_layout',        [ $this, 'form_layout' ],          $this->priority );
 		add_filter( 'tcc_form_admin_options_localization', [ $this, 'options_localization' ], $this->priority );
+		add_filter( "fluidity_text_filter_{$this->base}",  [ $this, 'form_text_filter', ] );
 	}
 
 	/**
@@ -80,7 +81,7 @@ abstract class PMW_Options_Options {
 	 * @param  array $form  Contains form information determining the screen layout.
 	 * @return array        Returns the form with a tab layout added.
 	 */
-	public function form_layout( $form ) {
+	public function form_layout( array $form ) {
 		if ( ! array_key_exists( $this->base, $form ) ) {
 			$layout = apply_filters( "tcc_{$this->base}_options_layout", $this->options_layout() );
 			if ( ! empty( $layout ) ) {
@@ -164,6 +165,17 @@ abstract class PMW_Options_Options {
 	public function get_item( $item ) {
 		$layout = ( empty( $this->screen ) ) ? $this->options_layout() : $this->screen['layout'];
 		return ( array_key_exists( $item, $layout ) ) ? $layout[ $item ] : array();
+	}
+
+	/**
+	 *  Filter the standard form text.
+	 *
+	 * @since 20200412
+	 * @param  array $text  The form text.
+	 * @return array        The filtered text.
+	 */
+	public function form_text_filter( $text ) {
+		return $text;
 	}
 
 

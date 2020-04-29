@@ -3,7 +3,7 @@
  *   Supplies plugin pathing functions and serves as an informational clearing house.
  *
  * @package Privacy_My_Way
- * @subpackage Plugin_Core
+ * @subpackage Core
  * @since 20170113
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright Copyright (c) 2017, Richard Coffee

@@ -247,7 +247,7 @@ trait PMW_Trait_Attributes {
 	 *
 	 * @since 20170507
 	 * @param  string $tag  Tag for the HTML element.
-	 * @return bool
+	 * @return bool         Is the passed tag self-closing?
 	 */
 	protected function is_tag_self_closing( $tag ) {
 		static $self_closing;
