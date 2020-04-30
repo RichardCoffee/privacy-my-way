@@ -13,7 +13,7 @@
 **Tested up to:** 5.4.0
 
 
-**Stable tag:** 1.7.5
+**Stable tag:** 1.8.0
 
 
 **License:** MIT
