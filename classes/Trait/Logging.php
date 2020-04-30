@@ -259,7 +259,7 @@ trait PMW_Trait_Logging {
 	private function logging_stack_with_origin( $backtrace ) {
 		$current = $backtrace[0];
 		foreach( $backtrace as $key => $data ) {
-			if ( in_array( $key, [ 0 ] ) ) continue;
+			if ( in_array( $key, [ 0 ], true ) ) continue;
 			if ( array_key_exists( 'line', $current ) ) {
 				$backtrace[ $key ]['function'] .= " - {$current['line']}";
 			}

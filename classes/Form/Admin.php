@@ -585,8 +585,8 @@ abstract class PMW_Form_Admin {
 	 * @since 20150323
 	 * @param array $args
 	 */
-	public function render_single_options( $data ) {
-		extract( $data );  //  $data array( 'key' => $key, 'item' => $item, 'num' => $i );
+	public function render_single_options( $in ) {
+		extract( $in );  //  $data array( 'key' => $key, 'item' => $item, 'num' => $i );
 		$data   = $this->form_opts;
 		$layout = $this->form['layout'];
 		$this->tag( 'div', $this->render_attributes( $layout[ $item ] ) );
@@ -624,10 +624,10 @@ abstract class PMW_Form_Admin {
 	 *  Display fields on tabbed screens
 	 *
 	 * @since 20150323
-	 * @param array $args  Field identificatin information
+	 * @param array $args  Field identificatin information.
 	 */
-	public function render_tabbed_options( $data ) {
-		extract( $data );  //  $data array( 'key' => {group-slug}, 'item' => {item-slug} )
+	public function render_tabbed_options( $in ) {
+		extract( $in );  //  $in array( 'key' => {group-slug}, 'item' => {item-slug} )
 		$data   = $this->form_opts;
 		$layout = $this->form[ $key ]['layout'];
 		$this->tag( 'div', $this->render_attributes( $layout[ $item ] ) );
@@ -654,7 +654,7 @@ abstract class PMW_Form_Admin {
 				$this->logg( sprintf( $this->form_text['error']['render'], $func ) );
 			}
 		}
-		echo '</div>'; //*/
+		echo '</div>';
 	}
 
 	/**
@@ -708,7 +708,7 @@ abstract class PMW_Form_Admin {
 	 * @todo needs add/delete/sort
 	 */
 	private function render_array( $data ) {
-		extract( $data );  //  Extracts 'ID', 'value', 'layout', and 'name'.
+		$layout = $data['layout'];
 		if ( ! array_key_exists( 'type', $layout ) ) $layout['type'] = 'text';
 		if ( in_array( $layout['type'], [ 'image' ] ) ) {
 			$this->render_image( $data );
@@ -726,9 +726,9 @@ abstract class PMW_Form_Admin {
 	private function render_checkbox( $data ) {
 		extract( $data );  //  Keys are 'ID', 'value', 'layout', 'name'
 		$attrs = array(
-			'type' => 'checkbox',
-			'id'   => $ID,
-			'name' => $name,
+			'type'  => 'checkbox',
+			'id'    => $ID,
+			'name'  => $name,
 			'value' => $value,
 			'onchange' => ( array_key_exists( 'change', $layout ) ) ? $layout['change'] : '',
 		);
