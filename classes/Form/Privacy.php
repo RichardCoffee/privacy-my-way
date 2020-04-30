@@ -30,7 +30,6 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 	public function __construct() {
 		$this->tab = $this->slug;
 		add_action( 'admin_menu',              [ $this, 'add_menu_option'    ] );
-		add_action( 'admin_enqueue_scripts',   [ $this, 'enqueue_theme_scripts' ] );
 		add_filter( "form_text_{$this->slug}", [ $this, 'form_text_filter' ], 10, 2 );
 		parent::__construct();
 	}
@@ -68,7 +67,7 @@ class PMW_Form_Privacy extends PMW_Form_Admin {
 	 *
 	 * @since 20170328
 	 */
-	public function enqueue_theme_scripts() {
+	public static function enqueue_theme_scripts() {
 		$paths = PMW_Plugin_Paths::instance();
 		wp_enqueue_style(  'privacy-form.css', $paths->get_plugin_file_uri( 'css/pmw-theme-form.css' ), null, $paths->version );
 	}

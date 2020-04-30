@@ -3,7 +3,7 @@
  *  Handles setup tasks for the plugin.
  *
  * @package Privacy_My_Way
- * @subpackage Plugin_Core
+ * @subpackage Core
  * @since 20170221
  * @author Richard Coffee <richard.coffee@rtcenterprises.net>
  * @copyright Copyright (c) 2018, Richard Coffee
@@ -115,12 +115,15 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	public function add_privacy_options( $options ) {
 		$this->setting = 'admin.php?page=fluidity_options&tab=' . $this->slug;
 		$options['Privacy'] = new PMW_Options_Privacy;
-		add_action( 'tcc_load_form_page', function() {
-			wp_enqueue_style( 'privacy-form.css', $this->paths->get_plugin_file_uri( 'css/pmw-admin-form.css' ), null, $this->paths->version );
-		} );
+		add_action( 'admin_enqueue_scripts',   [ 'PMW_Form_Privacy', 'enqueue_theme_scripts' ] );
 		return $options;
 	}
 
+	/**
+	 *  Loads the class that does all the work around here.
+	 *
+	 * @since 20170321
+	 */
 	private function privacy_setup() {
 		if ( ! $this->privacy ) {
 			include_once( $this->paths->dir . 'classes/privacy.php' );
