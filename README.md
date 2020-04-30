@@ -24,8 +24,13 @@ Control the information that your wordpress site is sending to wordpress.org
 ## Description
 
 This plugin will enable you to finely control some of the information that the WordPress core code sends back to wordpress.org, including your site's url,
-the number of users you have, what plugins are installed and active, and what themes are installed and active.  It does not filter what PHP and MySQL
-versions your server is running, nor the language files installed.
+the number of users you have, what plugins are installed and active, and what themes are installed and active.  It can also obscure what PHP version and
+database software version are being run on your server.
+
+The number of users you have, the PHP version, and database software version are sent to wordpress.org via URL parameters.  This means that, not only is it
+all sent unencrypted, but it is also probably in the log files of every server between you and wordpress.  This means that neither you nor wordpress has any
+control over what is done with that information.  Take back that control with this plugin.
+
 
 ## Installation
 
