@@ -50,6 +50,7 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 = Next Release =
 * Enhancement:  add options to obscure the php and database versions.
 * Upgrade:  Updated core files.
+* Bugfix:   Added a check for a transient object property.
 * Minor:    Removed reference to WP constant.
 * Minor:    Removed obsolete css.
 

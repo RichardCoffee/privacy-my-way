@@ -569,10 +569,12 @@ class Privacy_My_Way {
 	 * @return object            Modified value.
 	 */
 	public function themes_site_transient( $value, $transient ) {
-		foreach( $this->options['theme_list'] as $theme => $state ) {
-			if ( $state === 'no' ) {
-				if ( array_key_exists( $theme, $value->checked ) ) {
-					unset( $value->checked[ $theme ] );
+		if ( property_exists( $value, 'checked' ) ) {
+			foreach( $this->options['theme_list'] as $theme => $state ) {
+				if ( $state === 'no' ) {
+					if ( array_key_exists( $theme, $value->checked ) ) {
+						unset( $value->checked[ $theme ] );
+					}
 				}
 			}
 		}
