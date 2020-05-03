@@ -2,7 +2,7 @@
 Contributors: richard.coffee
 Requires at least: 4.7
 Tested up to: 5.4.0
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our [repository](https://github.com/RichardCoffee/privacy-my-way) on github.
@@ -51,7 +51,11 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 
 == Changelog ==
 
-= Next Release =
+= 1.8.1 =
+* Certify:  Tested with WordPress 5.4.1
+* Upgrade:  Updated core files.
+
+= 1.8.0 =
 * Enhancement:  add options to obscure the php and database versions.
 * Upgrade:  Updated core files.
 * Bugfix:   Added a check for a transient object property.
