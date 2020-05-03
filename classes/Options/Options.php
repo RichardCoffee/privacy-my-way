@@ -130,8 +130,16 @@ abstract class PMW_Options_Options {
 			if ( ! is_array( $item ) ) continue;
 			if ( array_key_exists( 'showhide', $item ) ) {
 				$info = $item['showhide'];
-				$info['render'] = $item['render'];
-				$data['showhide'][] = $info;
+				//  Check for array of arrays
+				if ( array_key_exists( 0, $info ) ) {
+					foreach( $info as $each ) {
+						$each['render'] = $item['render'];
+						$data['showhide'][] = $each;
+					}
+				} else {
+					$info['render'] = $item['render'];
+					$data['showhide'][] = $info;
+				}
 			}
 		}
 		return $data;
