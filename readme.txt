@@ -1,7 +1,7 @@
 === Privacy My Way ===
 Contributors: richard.coffee
-Requires at least: 4.7
-Tested up to: 5.4.0
+Requires at least: 4.7.0
+Tested up to: 5.4.1
 Stable tag: 1.8.1
 License: MIT
 

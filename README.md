@@ -2,12 +2,12 @@
 # Privacy My Way #
 
 
-      Contributors: richardcoffee
-              Tags: privacy, updates, plugins, themes, core, translations
-        Stable tag: 1.8.1
- Requires at least: 4.7.0
-      Tested up to: 5.4.1
-           License: MIT
+       Contributors: richardcoffee
+               Tags: privacy, updates, plugins, themes, core, translations
+         Stable tag: 1.8.1
+  Requires at least: 4.7.0
+       Tested up to: 5.4.1
+            License: MIT
 
 
 Control the information that your wordpress site is sending to wordpress.org
