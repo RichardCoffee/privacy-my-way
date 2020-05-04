@@ -1,7 +1,9 @@
 === Privacy My Way ===
-Contributors: richard.coffee
+Contributors: richardcoffee
+Tags: admin, updates, plugins, themes, core
 Requires at least: 4.7.0
 Tested up to: 5.4.1
+Requires PHP: 5.3.6
 Stable tag: 1.8.1
 License: MIT
 
