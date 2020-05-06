@@ -677,13 +677,6 @@ abstract class PMW_Form_Admin {
 		$attrs = array();
 		$attrs['class'] = ( array_key_exists( 'divcss', $layout ) ) ? $layout['divcss'] : '';
 		$attrs['title'] = ( array_key_exists( 'help',   $layout ) ) ? $layout['help']   : '';
-/*  This code is obsolete, but kept for reference purposes.
-		if ( array_key_exists( 'showhide', $layout ) ) {
-			$state = array_merge( [ 'show' => null, 'hide' => null ], $layout['showhide'] );
-			$attrs['data-item'] = ( array_key_exists( 'item', $state ) ) ? $state['item'] : $state['target'];
-			$attrs['data-show'] = $state['show'];
-			$attrs['data-hide'] = $state['hide'];
-		} */
 		return $attrs;
 	}
 
