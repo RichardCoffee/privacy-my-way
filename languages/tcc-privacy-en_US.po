@@ -11,6 +11,7 @@ msgstr ""
 "PO-Revision-Date: 2018-03-23 02:52:14+00:00\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
+"Language: en_US\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: classes/Form/Admin.php:103

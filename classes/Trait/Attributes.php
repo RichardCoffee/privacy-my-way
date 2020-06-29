@@ -198,14 +198,12 @@ trait PMW_Trait_Attributes {
 				'onkeydown',
 				'onkeyup',
 			);
-			$nonce_required = apply_filters( 'fluid_attr_nonce_required', $nonce_required );
+			$nonce_required = apply_filters( 'element_attribute_nonce_required', $nonce_required );
 		}
 		if ( ! array_key_exists( 'nonce', $attrs ) ) {
-			foreach( $nonce_required as $required ) {
-				if ( array_key_exists( $required, $attrs ) ) {
-					$attrs['nonce'] = static::$attr_javascript_nonce;
-					return $attrs;
-				}
+			$keys = array_keys( $attrs );
+			if ( array_intersect( $keys, $nonce_required ) ) {
+				$attrs['nonce'] = static::$attr_javascript_nonce;
 			}
 		}
 		return $attrs;
