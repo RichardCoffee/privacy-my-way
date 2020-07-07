@@ -4,9 +4,9 @@
 
        Contributors: richardcoffee
                Tags: admin, updates, plugins, themes, core
-         Stable tag: 1.8.1
+         Stable tag: 1.8.2
   Requires at least: 4.7.0
-       Tested up to: 5.4.1
+       Tested up to: 5.4.2
             License: MIT
 
 

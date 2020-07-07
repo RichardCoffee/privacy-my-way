@@ -4,460 +4,503 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Privacy My Way 1.8.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/privacy\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2020-06-29T14:24:43-04:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2020-06-29T14:24:43-04:00\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: privacy-my-way\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Plugin Name of the plugin
-#: classes/Form/Privacy.php:45
-#: classes/Form/Privacy.php:46
-#: classes/Form/Privacy.php:85
-#: classes/Register/Privacy.php:37
+#: classes/Form/Privacy.php:45 classes/Form/Privacy.php:46
+#: classes/Form/Privacy.php:85 classes/Register/Privacy.php:37
 msgid "Privacy My Way"
-msgstr ""
+msgstr "Privacy My Way"
 
 #. Plugin URI of the plugin
 msgid "https://github.com/RichardCoffee/privacy-my-way"
-msgstr ""
+msgstr "https://github.com/RichardCoffee/privacy-my-way"
 
 #. Description of the plugin
-msgid "Control what your WordPress site phones home about.  Does WordPress.org =really= need to know how many users you have?"
+msgid ""
+"Control what your WordPress site phones home about.  Does WordPress.org "
+"=really= need to know how many users you have?"
 msgstr ""
+"Control what your WordPress site phones home about.  Does WordPress.org "
+"=really= need to know how many users you have?"
 
 #. Author of the plugin
 msgid "Richard Coffee"
-msgstr ""
+msgstr "Richard Coffee"
 
 #. Author URI of the plugin
 msgid "http://rtcenterprises.net"
-msgstr ""
+msgstr "http://rtcenterprises.net"
 
 #: classes/Form/Admin.php:245
 msgctxt "string - a function name"
 msgid "ERROR: Unable to locate function %s"
-msgstr ""
+msgstr "ERROR: Unable to locate function %s"
 
 #: classes/Form/Admin.php:246
 msgctxt "placeholder will be an ASCII character string"
 msgid "ERROR: Not able to locate form data subscript:  %s"
-msgstr ""
+msgstr "ERROR: Not able to locate form data subscript:  %s"
 
 #: classes/Form/Admin.php:249
 msgid "Save Changes"
-msgstr ""
+msgstr "Save Changes"
 
-#: classes/Form/Admin.php:250
-#: classes/Form/Admin.php:252
+#: classes/Form/Admin.php:250 classes/Form/Admin.php:252
 msgid "Form"
-msgstr ""
+msgstr "Form"
 
 #: classes/Form/Admin.php:251
 msgctxt "placeholder is a noun, may be plural"
 msgid "Reset %s"
-msgstr ""
+msgstr "Reset %s"
 
 #: classes/Form/Admin.php:253
 msgctxt "placeholder is a noun, probably singular"
 msgid "Default %s options restored."
-msgstr ""
+msgstr "Default %s options restored."
 
 #: classes/Form/Admin.php:256
 msgid "Assign/Upload Image"
-msgstr ""
+msgstr "Assign/Upload Image"
 
 #: classes/Form/Admin.php:257
 msgid "Assign Image"
-msgstr ""
+msgstr "Assign Image"
 
 #: classes/Form/Admin.php:258
 msgid "Unassign Image"
-msgstr ""
+msgstr "Unassign Image"
 
 #: classes/Form/Admin.php:922
 msgid "Yes"
-msgstr ""
+msgstr "Yes"
 
 #: classes/Form/Admin.php:924
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: classes/Form/Admin.php:1014
 msgid "Utilize the 'ctrl+click' combo to choose multiple items."
-msgstr ""
+msgstr "Utilize the 'ctrl+click' combo to choose multiple items."
 
-#: classes/Form/Field/Field.php:185
-#: classes/Form/Field/Field.php:195
+#: classes/Form/Field/Field.php:185 classes/Form/Field/Field.php:195
 msgid "Required Field"
-msgstr ""
+msgstr "Required Field"
 
-#: classes/Form/Field/Field.php:187
-#: classes/Form/Field/Field.php:197
+#: classes/Form/Field/Field.php:187 classes/Form/Field/Field.php:197
 msgid "(required field)"
-msgstr ""
+msgstr "(required field)"
 
-#: classes/Form/Privacy.php:97
-#: classes/Form/Privacy.php:98
+#: classes/Form/Privacy.php:97 classes/Form/Privacy.php:98
 #: classes/Options/Privacy.php:63
 msgid "Privacy"
-msgstr ""
+msgstr "Privacy"
 
 #: classes/Options/Privacy.php:82
-msgid "Control the information that WordPress collects from your site.  The default settings, marked by a (*), duplicate what WordPress currently collects."
+msgid ""
+"Control the information that WordPress collects from your site.  The default "
+"settings, marked by a (*), duplicate what WordPress currently collects."
 msgstr ""
+"Control the information that WordPress collects from your site.  The default "
+"settings, marked by a (*), duplicate what WordPress currently collects."
 
 #: classes/Options/Privacy.php:95
 msgctxt "noun - singular"
-msgid "*** Turning off reporting a %1$s means WordPress will not notify you about upgrades for that %1$s! ***"
+msgid ""
+"*** Turning off reporting a %1$s means WordPress will not notify you about "
+"upgrades for that %1$s! ***"
 msgstr ""
+"*** Turning off reporting a %1$s means WordPress will not notify you about "
+"upgrades for that %1$s! ***"
 
 #: classes/Options/Privacy.php:96
 msgctxt "Added to a string to indicate the recommended option"
 msgid " ( Recommended ) "
-msgstr ""
+msgstr " ( Recommended ) "
 
 #: classes/Options/Privacy.php:100
 msgid "Blog URL"
-msgstr ""
+msgstr "Blog URL"
 
 #: classes/Options/Privacy.php:101
 msgid "I would suggest that you not change this setting."
-msgstr ""
+msgstr "I would suggest that you not change this setting."
 
 #: classes/Options/Privacy.php:104
 msgid "Let WordPress know your site's url. (*)"
-msgstr ""
+msgstr "Let WordPress know your site's url. (*)"
 
 #: classes/Options/Privacy.php:105
 msgid "Do not let them know where you are."
-msgstr ""
+msgstr "Do not let them know where you are."
 
 #: classes/Options/Privacy.php:112
 msgid "Browser"
-msgstr ""
+msgstr "Browser"
 
 #: classes/Options/Privacy.php:113
-msgid "Turning this off prevents wordpress.org from informing you if your browser is considered unsecure or outdated."
+msgid ""
+"Turning this off prevents wordpress.org from informing you if your browser "
+"is considered unsecure or outdated."
 msgstr ""
+"Turning this off prevents wordpress.org from informing you if your browser "
+"is considered unsecure or outdated."
 
 #: classes/Options/Privacy.php:116
-msgid "Let WordPress know what browser is being used to view admin screens. (*)"
+msgid ""
+"Let WordPress know what browser is being used to view admin screens. (*)"
 msgstr ""
+"Let WordPress know what browser is being used to view admin screens. (*)"
 
 #: classes/Options/Privacy.php:117
 msgid "Do not let them know what browser you use."
-msgstr ""
+msgstr "Do not let them know what browser you use."
 
 #: classes/Options/Privacy.php:122
 msgid "Location"
-msgstr ""
+msgstr "Location"
 
 #: classes/Options/Privacy.php:123
-msgid "Disabling this option will cause the Community Events Dashboard widget to not automatically display nearby events."
+msgid ""
+"Disabling this option will cause the Community Events Dashboard widget to "
+"not automatically display nearby events."
 msgstr ""
+"Disabling this option will cause the Community Events Dashboard widget to "
+"not automatically display nearby events."
 
 #: classes/Options/Privacy.php:126
 msgid "Let WordPress know your IP address, locale, and timezone. (*)"
-msgstr ""
+msgstr "Let WordPress know your IP address, locale, and timezone. (*)"
 
 #: classes/Options/Privacy.php:127
 msgid "Do not let them know where you are at."
-msgstr ""
+msgstr "Do not let them know where you are at."
 
 #: classes/Options/Privacy.php:138
 msgid "Multi-Site"
-msgstr ""
+msgstr "Multi-Site"
 
 #: classes/Options/Privacy.php:141
 msgid "Yes - Let WordPress know if you are running a multi-site blog. (*)"
-msgstr ""
+msgstr "Yes - Let WordPress know if you are running a multi-site blog. (*)"
 
 #: classes/Options/Privacy.php:142
 msgid "No -- Tell WordPress you are running just a single blog."
-msgstr ""
+msgstr "No -- Tell WordPress you are running just a single blog."
 
 #: classes/Options/Privacy.php:154
 msgid "Install URL"
-msgstr ""
+msgstr "Install URL"
 
 #: classes/Options/Privacy.php:157
 msgid "Let WordPress know the url you installed WordPress to. (*)"
-msgstr ""
+msgstr "Let WordPress know the url you installed WordPress to. (*)"
 
 #: classes/Options/Privacy.php:158
 msgid "Do not give WordPress this information."
-msgstr ""
+msgstr "Do not give WordPress this information."
 
 #: classes/Options/Privacy.php:166
 msgid "Users"
-msgstr ""
+msgstr "Users"
 
 #: classes/Options/Privacy.php:167
-msgid "Be aware that every server between you and wordpress.org gets to see this information."
+msgid ""
+"Be aware that every server between you and wordpress.org gets to see this "
+"information."
 msgstr ""
+"Be aware that every server between you and wordpress.org gets to see this "
+"information."
 
 #: classes/Options/Privacy.php:170
 msgid "Accurately report to WordPress how many users you have. (*)"
-msgstr ""
+msgstr "Accurately report to WordPress how many users you have. (*)"
 
 #: classes/Options/Privacy.php:171
 msgid "Only let WordPress know that you have some users."
-msgstr ""
+msgstr "Only let WordPress know that you have some users."
 
 #: classes/Options/Privacy.php:172
 msgid "Tell WordPress that you are the only user."
-msgstr ""
+msgstr "Tell WordPress that you are the only user."
 
 #: classes/Options/Privacy.php:173
 msgid "Just generate some random number to give WordPress."
-msgstr ""
+msgstr "Just generate some random number to give WordPress."
 
 #: classes/Options/Privacy.php:178
 msgid "PHP"
-msgstr ""
+msgstr "PHP"
 
 #: classes/Options/Privacy.php:184
 msgid "Database"
-msgstr ""
+msgstr "Database"
 
 #: classes/Options/Privacy.php:185
 msgid "Obscure your database software version (will report it as 'N/A')."
-msgstr ""
+msgstr "Obscure your database software version (will report it as 'N/A')."
 
 #: classes/Options/Privacy.php:190
 msgid "Plugins"
-msgstr ""
+msgstr "Plugins"
 
 #: classes/Options/Privacy.php:193
 msgid "Let WordPress know what plugins you have installed. (*)"
-msgstr ""
+msgstr "Let WordPress know what plugins you have installed. (*)"
 
 #: classes/Options/Privacy.php:194
 msgid "Only report active plugins."
-msgstr ""
+msgstr "Only report active plugins."
 
 #: classes/Options/Privacy.php:195
 msgid "Filter the plugin list that gets sent to WordPress."
-msgstr ""
+msgstr "Filter the plugin list that gets sent to WordPress."
 
 #: classes/Options/Privacy.php:196
 msgid "Do not let them know about your plugins."
-msgstr ""
+msgstr "Do not let them know about your plugins."
 
 #: classes/Options/Privacy.php:207
 msgid "Installs"
-msgstr ""
+msgstr "Installs"
 
 #: classes/Options/Privacy.php:208
 msgid "Default setting for newly installed plugins/themes."
-msgstr ""
+msgstr "Default setting for newly installed plugins/themes."
 
 #: classes/Options/Privacy.php:211
 msgid "Allow wordpress report on new installs. (*)"
-msgstr ""
+msgstr "Allow wordpress report on new installs. (*)"
 
 #: classes/Options/Privacy.php:212
 msgid "Block reports on new installs."
-msgstr ""
+msgstr "Block reports on new installs."
 
 #: classes/Options/Privacy.php:220
 msgid "Plugin List"
-msgstr ""
+msgstr "Plugin List"
 
 #: classes/Options/Privacy.php:221
 msgid "plugin"
-msgstr ""
+msgstr "plugin"
 
 #: classes/Options/Privacy.php:229
 msgid "Themes"
-msgstr ""
+msgstr "Themes"
 
 #: classes/Options/Privacy.php:232
 msgid "Let WordPress know what themes you have installed. (*)"
-msgstr ""
+msgstr "Let WordPress know what themes you have installed. (*)"
 
 #: classes/Options/Privacy.php:233
 msgid "Only let them know about your active theme."
-msgstr ""
+msgstr "Only let them know about your active theme."
 
 #: classes/Options/Privacy.php:234
 msgid "Filter the theme list that gets sent to WordPress."
-msgstr ""
+msgstr "Filter the theme list that gets sent to WordPress."
 
 #: classes/Options/Privacy.php:235
 msgid "Do not let them know about your themes."
-msgstr ""
+msgstr "Do not let them know about your themes."
 
 #: classes/Options/Privacy.php:247
 msgid "Theme List"
-msgstr ""
+msgstr "Theme List"
 
 #: classes/Options/Privacy.php:248
 msgid "theme"
-msgstr ""
+msgstr "theme"
 
 #: classes/Options/Privacy.php:250
-msgid "The WordPress twenty* themes that are installed will always be reported."
+msgid ""
+"The WordPress twenty* themes that are installed will always be reported."
 msgstr ""
+"The WordPress twenty* themes that are installed will always be reported."
 
 #: classes/Options/Privacy.php:251
 msgid "This plugin does not filter default WordPress themes."
-msgstr ""
+msgstr "This plugin does not filter default WordPress themes."
 
 #: classes/Options/Privacy.php:259
 msgid "WP Updates"
-msgstr ""
+msgstr "WP Updates"
 
 #: classes/Options/Privacy.php:260
-msgid "Allow/prevent WordPress automatic updates.  You should not need to set this at all."
+msgid ""
+"Allow/prevent WordPress automatic updates.  You should not need to set this "
+"at all."
 msgstr ""
+"Allow/prevent WordPress automatic updates.  You should not need to set this "
+"at all."
 
 #: classes/Options/Privacy.php:261
 msgid "This will only stop automatic updates, it will not make them happen."
-msgstr ""
+msgstr "This will only stop automatic updates, it will not make them happen."
 
 #: classes/Options/Privacy.php:262
-msgid "WordPress generally does the right thing here.  I recommend the default Allow."
+msgid ""
+"WordPress generally does the right thing here.  I recommend the default "
+"Allow."
 msgstr ""
+"WordPress generally does the right thing here.  I recommend the default "
+"Allow."
 
 #: classes/Options/Privacy.php:265
 msgid "Allow WordPress to perform automatic updates."
-msgstr ""
+msgstr "Allow WordPress to perform automatic updates."
 
 #: classes/Options/Privacy.php:266
 msgid "Core automatic updates only."
-msgstr ""
+msgstr "Core automatic updates only."
 
 #: classes/Options/Privacy.php:267
 msgid "Prevent WordPress from doing any automatic updates."
-msgstr ""
+msgstr "Prevent WordPress from doing any automatic updates."
 
 #: classes/Options/Privacy.php:273
 msgid "Plugin Data"
-msgstr ""
+msgstr "Plugin Data"
 
 #: classes/Options/Privacy.php:274
 msgid "Settings for the Privacy My Way plugin."
-msgstr ""
+msgstr "Settings for the Privacy My Way plugin."
 
 #: classes/Options/Privacy.php:280
 msgid "Logging"
-msgstr ""
+msgstr "Logging"
 
 #: classes/Options/Privacy.php:281
 msgid "Logging Status."
-msgstr ""
+msgstr "Logging Status."
 
 #: classes/Options/Privacy.php:284
 msgid "Do not log anything."
-msgstr ""
+msgstr "Do not log anything."
 
 #: classes/Options/Privacy.php:285
 msgid "Log everything."
-msgstr ""
+msgstr "Log everything."
 
 #: classes/Options/Privacy.php:291
 msgid "Data Deletion"
-msgstr ""
+msgstr "Data Deletion"
 
 #: classes/Options/Privacy.php:292
 msgid "Control when plugin data is deleted."
-msgstr ""
+msgstr "Control when plugin data is deleted."
 
 #: classes/Options/Privacy.php:295
 msgid "Deactivation of the plugin."
-msgstr ""
+msgstr "Deactivation of the plugin."
 
 #: classes/Options/Privacy.php:296
 msgid "Deletion of the plugin."
-msgstr ""
+msgstr "Deletion of the plugin."
 
 #: classes/Options/Privacy.php:297
 msgid "Always retain the plugin data."
-msgstr ""
+msgstr "Always retain the plugin data."
 
 #: classes/Options/Privacy.php:335
 msgid "Plugin website"
-msgstr ""
+msgstr "Plugin website"
 
 #: classes/Options/Privacy.php:336
 msgid "Plugin author"
-msgstr ""
+msgstr "Plugin author"
 
 #: classes/Options/Privacy.php:337
 msgid "active"
-msgstr ""
+msgstr "active"
 
 #: classes/Options/Privacy.php:338
 msgid "inactive"
-msgstr ""
+msgstr "inactive"
 
 #: classes/Options/Privacy.php:339
-msgctxt "1: plugin title, 2: plugin active/inactive status, 3: plugin author name"
+msgctxt ""
+"1: plugin title, 2: plugin active/inactive status, 3: plugin author name"
 msgid "%1$s %2$s by %3$s"
-msgstr ""
+msgstr "%1$s %2$s by %3$s"
 
 #: classes/Options/Privacy.php:398
 msgid "Theme website"
-msgstr ""
+msgstr "Theme website"
 
 #: classes/Options/Privacy.php:399
 msgid "Theme author"
-msgstr ""
+msgstr "Theme author"
 
 #: classes/Options/Privacy.php:400
 msgctxt "1: Theme title, 2: Author name"
 msgid "%1$s by %2$s"
-msgstr ""
+msgstr "%1$s by %2$s"
 
 #: classes/Plugin/Plugin.php:269
 msgid "Settings"
-msgstr ""
+msgstr "Settings"
 
 #: classes/privacy.php:219
 msgid "Report of browser used blocked by Privacy My Way plugin."
-msgstr ""
+msgstr "Report of browser used blocked by Privacy My Way plugin."
 
 #: classes/privacy.php:228
 msgid "Report of current location blocked by Privacy My Way plugin."
-msgstr ""
+msgstr "Report of current location blocked by Privacy My Way plugin."
 
 #: classes/Register/Register.php:122
 msgid "You are running an unsupported version of PHP."
-msgstr ""
+msgstr "You are running an unsupported version of PHP."
 
 #: classes/Register/Register.php:135
 msgctxt "1: Plugin name   2: php version required  3: php version detected"
-msgid "%1$s requires PHP version %2$s, version %3$s detected.  Please upgrade your PHP before attempting to use this plugin. "
+msgid ""
+"%1$s requires PHP version %2$s, version %3$s detected.  Please upgrade your "
+"PHP before attempting to use this plugin. "
 msgstr ""
+"%1$s requires PHP version %2$s, version %3$s detected.  Please upgrade your "
+"PHP before attempting to use this plugin. "
 
 #: classes/Register/Register.php:180
 msgid "You are running an unsupported version of WordPress."
-msgstr ""
+msgstr "You are running an unsupported version of WordPress."
 
 #: classes/Register/Register.php:194
-msgctxt "1: Plugin name  2: Required version of WordPress  3: Current version of WordPress"
-msgid "%1$s requires WordPress %2$s or later and has detected you are running %3$s. Upgrade your WordPress install before using this plugin."
+msgctxt ""
+"1: Plugin name  2: Required version of WordPress  3: Current version of "
+"WordPress"
+msgid ""
+"%1$s requires WordPress %2$s or later and has detected you are running %3$s. "
+"Upgrade your WordPress install before using this plugin."
 msgstr ""
+"%1$s requires WordPress %2$s or later and has detected you are running %3$s. "
+"Upgrade your WordPress install before using this plugin."
 
 #: classes/Register/Register.php:219
 msgctxt "Plugin title"
 msgid "%s can not be activated."
-msgstr ""
+msgstr "%s can not be activated."
 
 #: classes/Trait/Singleton.php:71
 msgid "This class can not be cloned."
-msgstr ""
+msgstr "This class can not be cloned."
 
 #: classes/Trait/Singleton.php:82
 msgid "This class can not be serialized."
-msgstr ""
+msgstr "This class can not be serialized."
 
 #: classes/Trait/Singleton.php:93
 msgid "This class can not be unserialized."
-msgstr ""
+msgstr "This class can not be unserialized."

@@ -2,9 +2,9 @@
 Contributors: richardcoffee
 Tags: admin, updates, plugins, themes, core
 Requires at least: 4.7.0
-Tested up to: 5.4.1
+Tested up to: 5.4.2
 Requires PHP: 5.3.6
-Stable tag: 1.8.1
+Stable tag: 1.8.2
 License: MIT
 
 Control the information that your wordpress site is sending to wordpress.org.  View our [repository](https://github.com/RichardCoffee/privacy-my-way) on github.
