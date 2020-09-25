@@ -12,10 +12,10 @@
  * Plugin Name:       Privacy My Way
  * Plugin URI:        https://github.com/RichardCoffee/privacy-my-way
  * Description:       Control what your WordPress site phones home about.  Does WordPress.org =really= need to know how many users you have?
- * Version:           1.8.2
+ * Version:           1.9.0
  * Requires at least: 4.7.0
  * Requires WP:       4.7.0
- * Tested up to:      5.4.2
+ * Tested up to:      5.5.1
  * Requires PHP:      5.3.6
  * Author:            Richard Coffee
  * Author URI:        http://rtcenterprises.net

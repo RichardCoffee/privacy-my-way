@@ -4,7 +4,7 @@
 
        Contributors: richardcoffee
                Tags: admin, updates, plugins, themes, core
-         Stable tag: 1.8.2
+         Stable tag: 1.9.0
   Requires at least: 4.7.0
        Tested up to: 5.4.2
             License: MIT
@@ -59,6 +59,10 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 Contributions are welcome - fork, fix and send pull requests against the `development` branch please.
 
 ## Changelog
+
+### 1.9.0
+* Certify:  Tested with WordPress 5.5.1
+* Upgrade:  upgraded to version 4.10 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
 
 ### 1.8.1
 * Certify:  Tested with WordPress 5.4.1
