@@ -324,12 +324,9 @@ class PMW_Register_Register {
 	 * @param string   Option slug.
 	 * @return string  Options slug.
 	 */
-	private static function verify_option( $option ) {
-		$option = ( $option )
-			? $option
-			: ( static::$option )
-				? static::$option
-				: null;
+	private static function verify_option( $option, $default = null ) {
+		$default = ( static::$option ) ? static::$option : $default;
+		$option  = ( $option ) ? $option : $default;
 		return $option;
 	}
 
