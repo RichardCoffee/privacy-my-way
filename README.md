@@ -6,7 +6,7 @@
                Tags: admin, updates, plugins, themes, core
          Stable tag: 1.9.0
   Requires at least: 4.7.0
-       Tested up to: 5.4.2
+       Tested up to: 5.7.0
             License: MIT
 
 
@@ -61,8 +61,10 @@ Contributions are welcome - fork, fix and send pull requests against the `develo
 ## Changelog
 
 ### 1.9.0
-* Certify:  Tested with WordPress 5.5.1
-* Upgrade:  upgraded to version 4.10 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
+* Certify:  Tested with WordPress 5.7.0
+* Upgrade:  Updated core files.
+* Upgrade:  Upgraded to version 4.10 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
+* Enhancement:  Add UI filter usage when disabling auto updating.
 
 ### 1.8.1
 * Certify:  Tested with WordPress 5.4.1
