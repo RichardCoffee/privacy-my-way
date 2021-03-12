@@ -279,6 +279,9 @@ trait PMW_Trait_Attributes {
 						$attrs['sandbox'] = '';
 					}
 				}
+				if ( array_key_exists( 'height', $attrs ) && array_key_exists( 'width', $attrs ) && ( ! array_key_exists( 'loading', $attrs ) ) ) {
+					$attrs['loading'] = 'lazy';
+				}
 				break;
 			case 'input':
 				if ( apply_filters( 'fluid_filter_input_attributes', true, $attrs ) ) {
