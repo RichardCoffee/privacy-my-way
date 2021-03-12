@@ -93,9 +93,13 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		if ( array_key_exists( 'autoupdate', $options ) ) {
 			if ( $options['autoupdate'] === 'no' ) {
 				add_filter( 'automatic_updater_disabled', '__return_true' );
+				add_filter( 'plugins_auto_update_enabled', '__return_false' );
+				add_filter( 'themes_auto_update_enabled', '__return_false' );
 			} else if ( $options['autoupdate'] === 'core' ) {
 				add_filter( 'auto_update_plugin', '__return_false', 10, 2 );
+				add_filter( 'plugins_auto_update_enabled', '__return_false' );
 				add_filter( 'auto_update_theme', '__return_false', 10, 2 );
+				add_filter( 'themes_auto_update_enabled', '__return_false' );
 				add_filter( 'auto_update_translation', '__return_false', 10, 2 );
 			}
 		}
