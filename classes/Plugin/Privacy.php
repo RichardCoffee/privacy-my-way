@@ -61,6 +61,11 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 	use PMW_Trait_Singleton;
 
 
+	/**
+	 *  Initializes the plugin.
+	 *
+	 * @since 20170221
+	 */
 	public function initialize() {
 		if ( ( ! PMW_Register_Privacy::php_version_check() ) || ( ! PMW_Register_Privacy::wp_version_check() ) ) {
 			return;
@@ -80,6 +85,11 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		$this->update_privacy_options();
 	}
 
+	/**
+	 *  Add any action calls the plugin may require.
+	 *
+	 * @since 20170221
+	 */
 	public function add_actions() {
 		if ( is_admin() ) {
 			$this->form = new PMW_Form_Privacy;
@@ -87,10 +97,16 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 		parent::add_actions();
 	}
 
+	/**
+	 *  Add any filter calls the plugin may require.
+	 *
+	 * @since 20170221
+	 */
 	public function add_filters() {
 		add_filter( 'fluidity_initialize_options', [ $this, 'add_privacy_options' ] );
 		$options = get_option( 'tcc_options_privacy-my-way', array() );
 		if ( array_key_exists( 'autoupdate', $options ) ) {
+#			add_filter( 'allow_dev_auto_core_updates', '__return_false' );
 			if ( $options['autoupdate'] === 'no' ) {
 				add_filter( 'automatic_updater_disabled', '__return_true' );
 				add_filter( 'plugins_auto_update_enabled', '__return_false' );
