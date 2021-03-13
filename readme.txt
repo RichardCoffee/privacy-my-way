@@ -58,6 +58,7 @@ See the [GitHib Wiki](https://github.com/RichardCoffee/privacy-my-way/wiki).  Op
 * Upgrade:  Updated core files.
 * Upgrade:  Upgraded to version 4.10 of [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
 * Enhancement:  Add UI filter usage when disabling auto updating.
+* Enhancement:  Add options to enable automatic updating of all themes and/or all plugins.
 
 = 1.8.1 =
 * Certify:  Tested with WordPress 5.4.1

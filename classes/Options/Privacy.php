@@ -262,11 +262,29 @@ final class PMW_Options_Privacy extends PMW_Options_Options {
 				'help'    => __( 'WordPress generally does the right thing here.  I recommend the default Allow.', 'privacy-my-way' ),
 				'render'  => 'radio',
 				'source'  => array(
-					'yes'  => __( 'Allow WordPress to perform automatic updates.', 'privacy-my-way' ),
+					'yes'  => __( 'Allow WordPress to perform automatic updates. (*)', 'privacy-my-way' ),
 					'core' => __( 'Core automatic updates only.', 'privacy-my-way' ),
 					'no'   => __( 'Prevent WordPress from doing any automatic updates.', 'privacy-my-way' ),
 				),
 				'extra_html' => $extra_html,
+				'divcss'     => 'privacy-auto-update',
+			);
+			$layout['autoup_cb'] = array(
+				'default' => array(),
+				'label'   => __( 'Theme/Plugin Updates', 'privacy-my-way' ),
+				'text'    => __( 'Get WordPress to automatically update Themes and/or Plugins.', 'privacy-my-way' ),
+				'postext' => __( 'Choosing these options may reduce your control over your website.', 'privacy-my-way' ),
+				'render'  => 'checkbox_multiple',
+				'source'  => array(
+					'themes'  => __( 'Enable automatic updates for all themes.', 'privacy-my-way' ),
+					'plugins' => __( 'Enable automatic updates for all plugins.', 'privacy-my-way' ),
+				),
+				'showhide' => array(
+					'origin' => 'privacy-auto-update',
+					'target' => 'privacy-update-themes-plugins',
+					'show'   => 'yes',
+				),
+				'divcss' => 'privacy-update-themes-plugins',
 			);
 		}
 		$layout['plugindata'] = array(

@@ -117,6 +117,15 @@ class PMW_Plugin_Privacy extends PMW_Plugin_Plugin {
 				add_filter( 'auto_update_theme', '__return_false', 10, 2 );
 				add_filter( 'themes_auto_update_enabled', '__return_false' );
 				add_filter( 'auto_update_translation', '__return_false', 10, 2 );
+			} else if ( array_key_exists( 'autoup_cb', $options ) ) {
+				if ( is_array( $options['autoup_cb'] ) ) {
+					if ( array_key_exists( 'themes', $options['autoup_cb'] ) && $options['autoup_cb']['themes']) {
+						add_filter( 'auto_update_theme', '__return_true' );
+					}
+					if ( array_key_exists( 'plugins', $options['autoup_cb'] ) && $options['autoup_cb']['plugins']) {
+						add_filter( 'auto_update_plugin', '__return_true' );
+					}
+				}
 			}
 		}
 		parent::add_filters();
